@@ -1,5 +1,5 @@
 /*  ----------------------------------------------------------------------------- */
-/*  ------- ¨2000 Werner Hemmert, University of Z’rich and IBM ZRL -------------- */
+/*  ------- ¨2000 Werner Hemmert, University of Zürich and IBM ZRL -------------- */
 /*  ----------------------------------------------------------------------------- */
 /*  ------- modified ¨2001 Werner Hemmert, Infineon Corporate Research ---------- */
 /*  ----------------------------------------------------------------------------- */
@@ -28,11 +28,17 @@
 /*  3.11.2003 New program structure with parameter file */
 /*  2.5.2004  Uses an ideal current source as input */
 
+#include <stdio.h>
+
+#include "bm_wave.h"
+
 /* Global variables for calculation */
 double g11[SECTIONS], g12[SECTIONS], g2[SECTIONS], g3[SECTIONS], g41[SECTIONS], g42[SECTIONS], gh;
 double Z13[SECTIONS], Z32[SECTIONS], Z42[SECTIONS], Z43[SECTIONS], Zhel;
 /* This is a fix to be able to calculate input impedance of the model */
 double R_input;
+
+
 
 /*--------------------------------------- INIT ------------------------------*/
 double bm_init(double f_s, double *Ls, double *Rs, double *Ct, double *Rbm, double *Cbm, double *Lbm, double Rh, double Lh)
@@ -75,20 +81,15 @@ double bm_init(double f_s, double *Ls, double *Rs, double *Ct, double *Rbm, doub
      }
      Zhel = 0.;
      R_input = R14;
-     /*------- mexPrintf("R_input = %f\n",R_input);---------*/
-     return 1;
+
+     return 0;
 }
 
 /*---------------------------------------------------------------------------*/
 /*------------------------------- E N D - INIT ------------------------------*/
 /*---------------------------------------------------------------------------*/
 
-#if debug_on
-void bm_wave(double input, double *x_BM, double *debug, double *ampl_corr, double *Abm, double *Cbm,int mode)
-#endif
-#if !debug_on
-     void bm_wave(double input, double *x_BM, double *ampl_corr, double *Abm, double *Cbm)
-#endif
+void bm_wave(double input, double *x_BM, double *ampl_corr, double *Abm, double *Cbm)
 {
      int sec;
      double  b14[SECTIONS], b44[SECTIONS],b30[SECTIONS], b33[SECTIONS], b20[SECTIONS], b23[SECTIONS];
@@ -128,16 +129,7 @@ void bm_wave(double input, double *x_BM, double *debug, double *ampl_corr, doubl
 
 	  if (sec == 0) {
 	       a14 = 2.*R_input*input + b14[0];
-#if debug_on
-	       if (mode == 4) {
-		    /* Debug[0,:] contains  voltage over input */
-		    debug[0] = (a14 + b14[0])/2.;
-		    /* Debug[1,:] contains input current */
-		    debug[1] = (a14-b14[0])/(2.*R_input);
-	       }
-#endif
-	       /* mexPrintf("Input signal = %f\n",input);
-		  mexPrintf("Input wave = %f\n",a14); */
+
 	  } else {
 	       /* a14 = b21; */
 	       a14 = -b21;
@@ -169,12 +161,6 @@ void bm_wave(double input, double *x_BM, double *debug, double *ampl_corr, doubl
 
 	  x_BM[sec] = (b43+Z43[sec])*Cbm[sec]/2./Abm[sec]*ampl_corr[sec];
 
-
-#if debug_on
-	  if (mode == 1 || mode == 9) {
-	       debug[sec] = (b43+Z43[sec])*Cbm[sec]/2./Abm[sec]; /* return linear BM without ampl_corr, "abort" calculation (xBM = 0) */
-	  }
-#endif
 
 	  Z13[sec] = b13;
 	  Z32[sec] = b32;
