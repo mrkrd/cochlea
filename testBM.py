@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from bai_bm import bm
+import bai_bm
 
 
 
@@ -10,8 +10,14 @@ signal = np.load('test/forward.npy')
 
 def main():
 
+    xBM = bai_bm.run_bm(signal, mode='v')
 
-    xBM = bm.run(signal)
+
+    plt.imshow(xBM.T, aspect='auto')
+    plt.colorbar()
+    plt.show()
+    exit()
+
 
     orig_xBM = np.load('test/xBM.npy')
     orig_LCR4 = np.load('test/LCR4.npy')
@@ -21,18 +27,9 @@ def main():
 
     plt.plot(xBM[:,75])
     plt.plot(orig_LCR4[:,75])
+    # plt.imshow(xBM - orig_LCR4, aspect='auto')
     plt.show()
 
-
-
-    # plt.imshow(xBM.T, aspect='auto')
-
-    # for i in range(5):
-    #     plt.plot(xBM[:,i*20])
-
-    #plt.plot(xBM[:,70])
-    # plt.imshow(xBM.T, aspect='auto')
-    # plt.show()
 
 
 if __name__ == "__main__":

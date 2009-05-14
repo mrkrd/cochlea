@@ -1,31 +1,32 @@
+import numpy as np
 import _bm
 
-bm_pars = np.load('bm_pars.npz')
+bm_pars = np.load('bai_bm/bm_pars.npz')
 
 fs = 48000.0
 
 freq_map = bm_pars['freq_map']
 
 
-class bm(object):
+def run_bm(signal, mode='x', with_LCR=True):
 
-    def run(self, signal, mode='x'):
+    _bm.bm_init(48000,
+                bm_pars['Ls'],
+                bm_pars['Rs'],
+                bm_pars['Ct'],
+                bm_pars['Rbm'],
+                bm_pars['Cbm'],
+                bm_pars['Lbm'],
+                float(bm_pars['Rh']),
+                float(bm_pars['Lh']))
 
-        _bm.bm_init(48000,
-                    bm_pars['Ls'],
-                    bm_pars['Rs'],
-                    bm_pars['Ct'],
-                    bm_pars['Rbm'],
-                    bm_pars['Cbm'],
-                    bm_pars['Lbm'],
-                    float(bm_pars['Rh']),
-                    float(bm_pars['Lh']))
+    xBM = _bm.bm_wave(signal,
+                      bm_pars['ampl_corr'],
+                      bm_pars['Abm'],
+                      bm_pars['Cbm'])
 
-        xBM = _bm.bm_wave(signal,
-                          bm_pars['ampl_corr'],
-                          bm_pars['Abm'],
-                          bm_pars['Cbm'])
 
+    if with_LCR:
 
         _bm.LCR4_init(fs,
                       bm_pars['freq_map'],
@@ -39,9 +40,10 @@ class bm(object):
                        bm_pars['Qmin']);
 
 
-        if mode == 'x':
-            outBM = xBM
-        elif mode == 'v':
-            outBM = np.diff(xBM, axis=0) * fs
+    if mode == 'x':
+        outBM = xBM
+    elif mode == 'v':
+        outBM = np.diff(xBM, axis=0) * fs
 
-        return outBM
+
+    return np.fliplr(outBM)
