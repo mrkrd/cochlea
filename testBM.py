@@ -14,6 +14,9 @@ signal = np.zeros(len(t))
 signal[len(signal)/5] = 1e-9;
 
 
+signal = np.load('test/forward.npy')
+
+
 def main():
 
     _bm.bm_init(48000,
@@ -32,6 +35,18 @@ def main():
                       bm_pars['Abm'],
                       bm_pars['Cbm'])
 
+
+
+    orig_xBM = np.load('test/xBM.npy')
+
+    d = xBM - orig_xBM
+    print np.max(xBM), np.max(orig_xBM), np.max(d)
+
+    # plt.plot(xBM[:,75])
+    # plt.plot(orig_xBM[:,75])
+    # plt.show()
+
+
     # print sys.getrefcount(xBM)
 
     _bm.LCR4_init(fs,
@@ -42,11 +57,20 @@ def main():
 
 
     xBM = _bm.LCR4(xBM,
-                   bm_pars['Qmin'],
-                   bm_pars['Qmax']);
+                   bm_pars['Qmax'],
+                   bm_pars['Qmin']);
 
     # print sys.getrefcount(xBM)
 
+
+    orig_LCR4 = np.load('test/LCR4.npy')
+
+    d = xBM - orig_LCR4
+    print np.max(xBM), np.max(orig_LCR4), np.max(d)
+
+    plt.plot(xBM[:,75])
+    plt.plot(orig_LCR4[:,75])
+    plt.show()
 
     vBM = np.diff(xBM, axis=0) * fs
 
@@ -56,9 +80,9 @@ def main():
     # for i in range(5):
     #     plt.plot(xBM[:,i*20])
 
-    plt.plot(xBM[:,70])
-    plt.plot(vBM[:,70])
-    plt.show()
+    #plt.plot(xBM[:,70])
+    # plt.imshow(xBM.T, aspect='auto')
+    # plt.show()
 
 
 if __name__ == "__main__":

@@ -13,6 +13,8 @@
 /*  4. 2.2004  SAT-values are set separately for each section. */
 /* 21. 9.2005  Setting abs to the xBM (i.e. right place) */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include "LCR4.h"
@@ -35,6 +37,7 @@ void LCR4_init(double f_s,
 {
      int sec, i;
      double R1, R2, tau;
+
 
      tau = 1./(2*M_PI*0.8e3);
 
@@ -92,6 +95,11 @@ void LCR4(double *xBM,
 
      int sec;
      double rect, rect_LP, b2;
+
+     /* printf("%f\n", Qmin[50]); */
+     /* exit(0); */
+
+
      for (sec=first_sec;sec < last_sec; sec++) {
 
 
