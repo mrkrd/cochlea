@@ -22,6 +22,7 @@ def main():
     orig_xBM = np.load('test/xBM.npy')
     orig_LCR4 = np.load('test/LCR4.npy')
 
+
     d = xBM - orig_LCR4
     print np.max(xBM), np.max(orig_LCR4), np.max(d)
 

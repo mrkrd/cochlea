@@ -12,7 +12,7 @@ bm_pars = np.load('bm_pars.npz')
 fs = 48000.0
 t = np.arange(0, 0.1, 1/fs)
 signal = np.zeros(len(t))
-signal[len(signal)/5] = 1e-9;
+signal[len(signal)/5] = 1e-9
 
 
 def main():
