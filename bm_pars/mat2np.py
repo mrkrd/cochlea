@@ -4,6 +4,10 @@ import scipy.io
 mat_lin = scipy.io.loadmat('param_lin.mat')
 mat_res = scipy.io.loadmat('param_res.mat')
 
+lin_names = ['Ls', 'Rs', 'Ct', 'Rbm', 'Cbm', 'Lbm', 'Rh', 'Lh', 'ampl_corr',
+             'Abm', 'Cbm']
+res_names = ['freq_map_res', 'Qmin', 'Qmax', 'SAT1', 'SAT4']
+
 np.savez('bm_pars.npz',
          Ls=mat_lin['Ls'].astype(float),
          Rs=mat_lin['Rs'].astype(float),
@@ -22,4 +26,10 @@ np.savez('bm_pars.npz',
          SAT1=mat_res['SAT1'].astype(float),
          SAT4=mat_res['SAT4'].astype(float))
 
+
+for name in lin_names:
+    np.savetxt(name+".txt", mat_lin[name].T, fmt='%.100e')
+
+for name in res_names:
+    np.savetxt(name+".txt", mat_res[name].T, fmt='%.100e')
 

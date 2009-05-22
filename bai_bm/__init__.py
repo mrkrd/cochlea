@@ -1,9 +1,8 @@
 import numpy as np
 import scipy.signal as dsp
 import _bm
+import bm_pars
 
-bm_pars = np.load('bm_pars.npz')
-freq_map = bm_pars['freq_map']
 
 S_ST = 3.1e-6                          # Area of stapes [m^2]
 S_ED = 55.e-6;                         # Ear drum area in m^2
@@ -25,37 +24,37 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
     """
     assert fs == 48000
 
-    # Pa -> uPa
+    # uPa -> Pa
     signal = signal * 1e-6
 
     _bm.bm_init(48000,
-                bm_pars['Ls'],
-                bm_pars['Rs'],
-                bm_pars['Ct'],
-                bm_pars['Rbm'],
-                bm_pars['Cbm'],
-                bm_pars['Lbm'],
-                float(bm_pars['Rh']), # helicotrema, end of BM
-                float(bm_pars['Lh'])) # end of BM
+                bm_pars.Ls,
+                bm_pars.Rs,
+                bm_pars.Ct,
+                bm_pars.Rbm,
+                bm_pars.Cbm,
+                bm_pars.Lbm,
+                bm_pars.Rh, # helicotrema, end of BM
+                bm_pars.Lh) # end of BM
 
     xBM = _bm.bm_wave(signal,
-                      bm_pars['ampl_corr'],
-                      bm_pars['Abm'],
-                      bm_pars['Cbm'])
+                      bm_pars.ampl_corr,
+                      bm_pars.Abm,
+                      bm_pars.Cbm)
 
 
     if with_LCR:
 
         _bm.LCR4_init(fs,
-                      bm_pars['freq_map'],
-                      bm_pars['Qmin'],
-                      bm_pars['SAT1'],
-                      bm_pars['SAT4'])
+                      bm_pars.freq_map,
+                      bm_pars.Qmin,
+                      bm_pars.SAT1,
+                      bm_pars.SAT4)
 
 
         xBM = _bm.LCR4(xBM,
-                       bm_pars['Qmax'],
-                       bm_pars['Qmin']);
+                       bm_pars.Qmax,
+                       bm_pars.Qmin);
 
 
     if mode == 'x':

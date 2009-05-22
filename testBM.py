@@ -1,9 +1,8 @@
-
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-import bai_bm
 
+import bai_bm
 
 
 signal = np.load('test/forward.npy')
@@ -11,7 +10,7 @@ signal = np.load('test/forward.npy')
 
 def main():
 
-    xBM = bai_bm.run_bm(signal, mode='v')
+    xBM = bai_bm.run_bm(48000, signal, mode='v')
 
 
     plt.imshow(xBM.T, aspect='auto')
