@@ -2,8 +2,7 @@ import numpy as np
 import scipy.signal as dsp
 import _bm
 
-bm_pars = np.load('bai_bm/bm_pars.npz')
-fs = 48000.0
+bm_pars = np.load('bm_pars.npz')
 freq_map = bm_pars['freq_map']
 
 S_ST = 3.1e-6                          # Area of stapes [m^2]
@@ -11,10 +10,11 @@ S_ED = 55.e-6;                         # Ear drum area in m^2
 C_eardrum = (0.7e-9/20.e-3/S_ED);      # Ear drum compliance nm/dbspl/m^2
 
 
-def run_bm(signal, mode='x', with_LCR=True):
+def run_bm(fs, signal, mode='v', with_LCR=True):
     """
     Simulate response of the Basilar membrane to audio siganl.
 
+    fs: sampling frequency
     signal: audio signal sampled at 48000Hz
     mode: 'x' return BM displacement
           'v' return BM velocity
@@ -23,6 +23,11 @@ def run_bm(signal, mode='x', with_LCR=True):
     return: BM displacement or velocity for 100 frequency sections
             (freq_map)
     """
+    assert fs == 48000
+
+    # Pa -> uPa
+    signal = signal * 1e-6
+
     _bm.bm_init(48000,
                 bm_pars['Ls'],
                 bm_pars['Rs'],
@@ -83,7 +88,7 @@ def run_mid_ear_filter_orig(fs, signal):
         Z_ME = b2
         out[i] = ((Z_ME_b - b2) / R2_ME)
 
-        return out
+    return out
 
 
 def run_mid_ear_filter(fs, signal):
