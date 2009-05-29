@@ -8,6 +8,7 @@ S_ST = 3.1e-6                          # Area of stapes [m^2]
 S_ED = 55.e-6;                         # Ear drum area in m^2
 C_eardrum = (0.7e-9/20.e-3/S_ED);      # Ear drum compliance nm/dbspl/m^2
 
+# np.fliplr are necessary for compatimility with DSAM
 
 def run_bm(fs, signal, mode='v', with_LCR=True):
     """
@@ -24,10 +25,13 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
     """
     assert fs == 48000
 
+    signal = np.squeeze(signal)
+    assert signal.ndim == 1
+
     # uPa -> Pa
     signal = signal * 1e-6
 
-    _bm.bm_init(48000,
+    _bm.bm_init(float(fs),
                 bm_pars.Ls,
                 bm_pars.Rs,
                 bm_pars.Ct,
@@ -45,7 +49,7 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
 
     if with_LCR:
 
-        _bm.LCR4_init(fs,
+        _bm.LCR4_init(float(fs),
                       bm_pars.freq_map,
                       bm_pars.Qmin,
                       bm_pars.SAT1,
@@ -65,6 +69,25 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
 
     return np.fliplr(outBM)
 
+
+
+
+def run_ihcrp(fs, xBM):
+    """
+    Run modified Shama DSAM module.
+
+    uIHC = run_ihcrp(fs, xBM)
+
+    fs: sampling frequency
+    xBM: BM displacement
+
+    uIHC: IHC potential
+    """
+    _bm.ihcrp_init(float(fs))
+
+    uIHC = _bm.ihcrp(np.fliplr(xBM), bm_pars.ciliaGain)
+
+    return np.fliplr(uIHC)
 
 
 
