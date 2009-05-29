@@ -6,7 +6,7 @@ mat_res = scipy.io.loadmat('param_res.mat')
 
 lin_names = ['Ls', 'Rs', 'Ct', 'Rbm', 'Cbm', 'Lbm', 'Rh', 'Lh', 'ampl_corr',
              'Abm', 'Cbm']
-res_names = ['freq_map_res', 'Qmin', 'Qmax', 'SAT1', 'SAT4']
+res_names = ['freq_map_res', 'Qmin', 'Qmax', 'SAT1', 'SAT4', 'ciliaGain']
 
 np.savez('bm_pars.npz',
          Ls=mat_lin['Ls'].astype(float),
@@ -24,7 +24,8 @@ np.savez('bm_pars.npz',
          Qmin=mat_res['Qmin'].astype(float),
          Qmax=mat_res['Qmax'].astype(float),
          SAT1=mat_res['SAT1'].astype(float),
-         SAT4=mat_res['SAT4'].astype(float))
+         SAT4=mat_res['SAT4'].astype(float),
+         ciliaGain=mat_res['ciliaGain'].astype(float))
 
 
 for name in lin_names:

@@ -46,6 +46,7 @@ double bm_init(double f_s, double *Ls, double *Rs, double *Ct, double *Rbm, doub
      int sec;
      double R14, R44, G33, G23;
 
+
      for(sec=SECTIONS-1;sec>=0;sec--)
      {
 
@@ -160,6 +161,8 @@ void bm_wave(double input, double *x_BM, double *ampl_corr, double *Abm, double 
 	  /* x_BM[sec-1]=(b33[sec]+Z3[sec])/4.*C[sec];                 BM dislpacement x = F * C */
 
 	  x_BM[sec] = (b43+Z43[sec])*Cbm[sec]/2./Abm[sec]*ampl_corr[sec];
+
+	  /* if (sec == 10) x_BM[sec] = 100; */
 
 
 	  Z13[sec] = b13;

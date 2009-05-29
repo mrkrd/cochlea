@@ -3,6 +3,7 @@
 
 #include "bm_wave.h"
 #include "LCR4.h"
+#include "ihcrp.h"
 
 static PyObject*
 bm_init_wrap(PyObject* self, PyObject* args)
@@ -293,6 +294,87 @@ LCR4_wrap(PyObject* self, PyObject* args)
 }
 
 
+
+static PyObject*
+ihcrp_init_wrap(PyObject* self, PyObject* args)
+{
+     double f_s;
+
+     if (!PyArg_ParseTuple(args, "d",
+			   &f_s))
+     	  return NULL;
+
+
+     /* Call C function */
+     ihcrp_init(f_s);
+
+     Py_RETURN_NONE;
+}
+
+static PyObject*
+ihcrp_wrap(PyObject* self, PyObject* args)
+{
+     /* Input arrays */
+     PyObject *xBM_arg, *xBM_arr;
+     PyObject *ciliaCouplingGain_arg, *ciliaCouplingGain_arr;
+     double *xBM_data;
+     double *ciliaCouplingGain_data;
+
+
+     /* Output array */
+     PyObject *uIHC_arr;
+     int nd = 2;
+     npy_intp uIHC_dims[2];
+     double *uIHC_data;
+
+     int sample_num, section_num;
+     int i;
+
+     if (!PyArg_ParseTuple(args, "OO",
+			   &xBM_arg,
+			   &ciliaCouplingGain_arg))
+     	  return NULL;
+
+     /* Convert input arguments into Numpy arrays */
+     xBM_arr = PyArray_FROM_OTF(xBM_arg, NPY_DOUBLE, NPY_IN_ARRAY);
+     if (xBM_arr == NULL) return NULL;
+     ciliaCouplingGain_arr = PyArray_FROM_OTF(ciliaCouplingGain_arg, NPY_DOUBLE, NPY_IN_ARRAY);
+     if (ciliaCouplingGain_arr == NULL) return NULL;
+
+
+     /* Collect data about dimensions */
+     sample_num = PyArray_DIMS(xBM_arr)[0];
+     section_num = PyArray_DIMS(xBM_arr)[1];
+
+
+     /* Generate output Numpy array (uIHC) */
+     uIHC_dims[0] = sample_num;
+     uIHC_dims[1] = section_num;
+     uIHC_arr = PyArray_SimpleNew(nd, uIHC_dims, NPY_DOUBLE);
+
+     /* Get data pointers */
+     xBM_data = PyArray_DATA(xBM_arr);
+     uIHC_data = PyArray_DATA(uIHC_arr);
+     ciliaCouplingGain_data = PyArray_DATA(ciliaCouplingGain_arr);
+
+
+     /* Simulation loop:  over time samples */
+     for (i = 0; i < sample_num; i++) {
+	  /* printf("i: %d\n", i); */
+	  ihcrp(&uIHC_data[section_num*i],
+		&xBM_data[section_num*i],
+		ciliaCouplingGain_data);
+     }
+
+     Py_DECREF(xBM_arr);
+     Py_DECREF(ciliaCouplingGain_arr);
+
+     return uIHC_arr;
+}
+
+
+
+
 static PyMethodDef
 BM_Methods[] =
 {
@@ -300,6 +382,8 @@ BM_Methods[] =
      {"bm_wave", bm_wave_wrap, METH_VARARGS, "BM processing."},
      {"LCR4_init", LCR4_init_wrap, METH_VARARGS, "Call before LCR4_wrap()."},
      {"LCR4", LCR4_wrap, METH_VARARGS, "LCR4 module."},
+     {"ihcrp_init", ihcrp_init_wrap, METH_VARARGS, "Call before ihcrp_wrap()."},
+     {"ihcrp", ihcrp_wrap, METH_VARARGS, "ihcrp module."},
      {NULL, NULL, 0, NULL}
 };
 
