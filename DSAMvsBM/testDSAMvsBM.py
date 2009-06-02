@@ -14,7 +14,7 @@ def main():
     tone.set_par("INTENSITY", 50)
     tone.set_par("DT", 1/fs)
 
-
+    # DRNL basilar membrane
     stapes = dsam.EarModule("Util_mathOp")
     stapes.read_pars("stapes.par")
     stapes.print_pars()
@@ -33,16 +33,23 @@ def main():
     bm_dsam_v = bm_drnl.get_signal()
 
     plt.imshow(bm_dsam_v.T, aspect='auto')
+    plt.colorbar()
     plt.show()
 
 
     # BAI basilar membrane
     tone_arr = tone.get_signal()
+    tone_arr = tone_arr * bai_bm.S_ST * bai_bm.S_ED
     bm_bai_v = bai_bm.run_bm(fs, tone_arr, mode='v')
 
     plt.imshow(bm_bai_v.T, aspect='auto')
+    plt.colorbar()
     plt.show()
 
+
+    plt.plot(bm_dsam_v[:,61])
+    plt.plot(bm_bai_v[:,61])
+    plt.show()
 
 
     # plt.imshow(xBM.T, aspect='auto')
@@ -57,7 +64,7 @@ def main():
 
 
 if __name__ == "__main__":
-    import cProfile
+    #import cProfile
     # for i in range(1000):
     #     print i
     #     main()
