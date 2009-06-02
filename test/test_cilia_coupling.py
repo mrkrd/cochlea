@@ -15,7 +15,7 @@ def main():
     ihcrp_target = np.fliplr(ihcrp_target)
 
     bm_v = bai_bm.run_bm(fs, forward, mode='v')
-    # bm_v = bm_v / 2.8
+    bm_v = bm_v / 2.8
 
     dsam_input = dsam.EarModule(fs, bm_v)
     ihcrp = dsam.EarModule("IHCRP_Shamma3StateVelIn")
