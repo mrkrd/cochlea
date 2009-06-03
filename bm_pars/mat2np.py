@@ -5,7 +5,7 @@ mat_lin = scipy.io.loadmat('param_lin.mat')
 mat_res = scipy.io.loadmat('param_res.mat')
 
 lin_names = ['Ls', 'Rs', 'Ct', 'Rbm', 'Cbm', 'Lbm', 'Rh', 'Lh', 'ampl_corr',
-             'Abm', 'Cbm']
+             'Abm', 'Cbm', 'freq_map']
 res_names = ['freq_map_res', 'Qmin', 'Qmax', 'SAT1', 'SAT4', 'ciliaGain']
 
 np.savez('bm_pars.npz',

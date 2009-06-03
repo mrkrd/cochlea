@@ -28,7 +28,6 @@ def plot_mid_ear_filter():
 
     f = np.linspace(0, fs/2.0, len(w))
 
-    # TODO: logscale
 
     plt.semilogx(f, 20*np.log10(abs(h)))
     plt.show()

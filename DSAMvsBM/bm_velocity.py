@@ -47,8 +47,18 @@ def main():
     plt.show()
 
 
-    plt.plot(bm_dsam_v[:,61])
-    plt.plot(bm_bai_v[:,61])
+
+    print "Max indexes:"
+    dsam_idx = np.sum(np.abs(bm_dsam_v), axis=0).argmax()
+    bai_idx = np.sum(np.abs(bm_bai_v), axis=0).argmax()
+    print "DSAM: ", dsam_idx
+    print " BAI: ", bai_idx
+    plt.plot(np.sum(np.abs(bm_dsam_v), axis=0))
+    plt.plot(np.sum(np.abs(bm_bai_v), axis=0))
+    plt.show()
+
+    plt.plot(bm_dsam_v[:,dsam_idx])
+    plt.plot(bm_bai_v[:,bai_idx])
     plt.show()
 
 

@@ -23,16 +23,23 @@ def main():
     bm_drnl.read_pars("bm_drnl_human.par")
     bm_drnl.print_pars()
 
+    ihcrp = dsam.EarModule("IHCRP_Shamma3StateVelIn")
+    ihcrp.read_pars("ihcrp_Meddis2005.par")
+    ihcrp.print_pars()
+
+
     dsam.connect(tone, stapes)
     dsam.connect(stapes, bm_drnl)
+    dsam.connect(bm_drnl, ihcrp)
 
     tone.run()
     stapes.run()
     bm_drnl.run()
+    ihcrp.run()
 
-    bm_dsam_v = bm_drnl.get_signal()
+    ihcrp_dsam = ihcrp.get_signal()
 
-    plt.imshow(bm_dsam_v.T, aspect='auto')
+    plt.imshow(ihcrp_dsam.T, aspect='auto')
     plt.colorbar()
     plt.show()
 
@@ -40,15 +47,19 @@ def main():
     # BAI basilar membrane
     tone_arr = tone.get_signal()
     tone_arr = tone_arr * bai_bm.S_ST * bai_bm.S_ED
-    bm_bai_v = bai_bm.run_bm(fs, tone_arr, mode='v')
+    bm_bai_x = bai_bm.run_bm(fs, tone_arr, mode='x')
+    ihcrp_bai = bai_bm.run_ihcrp(fs, bm_bai_x)
 
-    plt.imshow(bm_bai_v.T, aspect='auto')
+    plt.imshow(ihcrp_bai.T, aspect='auto')
     plt.colorbar()
     plt.show()
 
+    print "Max indexes:"
+    print "DSAM: ", np.sum(ihcrp_dsam, axis=0).argmax()
+    print " BAI: ", np.sum(ihcrp_bai, axis=0).argmax()
 
-    plt.plot(bm_dsam_v[:,61])
-    plt.plot(bm_bai_v[:,61])
+    plt.plot(ihcrp_dsam[:,38])
+    plt.plot(ihcrp_bai[:,38])
     plt.show()
 
 
