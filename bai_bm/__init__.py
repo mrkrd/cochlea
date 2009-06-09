@@ -91,6 +91,15 @@ def run_ihcrp(fs, xBM):
 
 
 
+def run_stapes(s):
+    """
+    TODO: docs
+    """
+
+    # 5.61382474984 is the abs value of the orignal filter's
+    # transferfunction at 1kHz
+    return s * S_ST * S_ED * 5.61382474984
+
 
 def run_mid_ear_filter_orig(fs, signal):
     """

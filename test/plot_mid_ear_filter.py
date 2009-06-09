@@ -28,8 +28,10 @@ def plot_mid_ear_filter():
 
     f = np.linspace(0, fs/2.0, len(w))
 
+    idx = np.abs(f - 1000).argmin()
+    print "@1000Hz: ", np.abs(h)[idx]
 
-    plt.semilogx(f, 20*np.log10(abs(h)))
+    plt.semilogx(f, 20*np.log10(np.abs(h)))
     plt.show()
 
 

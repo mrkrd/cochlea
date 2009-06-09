@@ -11,7 +11,7 @@ def main():
 
     tone = dsam.EarModule("Stim_PureTone_2")
     tone.set_par("FREQUENCY", 1000)
-    tone.set_par("INTENSITY", 50)
+    tone.set_par("INTENSITY", 70)
     tone.set_par("DT", 1/fs)
 
     # DRNL basilar membrane
@@ -39,7 +39,7 @@ def main():
 
     # BAI basilar membrane
     tone_arr = tone.get_signal()
-    tone_arr = tone_arr * bai_bm.S_ST * bai_bm.S_ED
+    tone_arr = bai_bm.run_stapes(tone_arr)
     bm_bai_v = bai_bm.run_bm(fs, tone_arr, mode='v')
 
     plt.imshow(bm_bai_v.T, aspect='auto')
@@ -58,7 +58,7 @@ def main():
     plt.show()
 
     plt.plot(bm_dsam_v[:,dsam_idx])
-    plt.plot(bm_bai_v[:,bai_idx])
+    plt.plot(bm_bai_v[:,bai_idx]) #*32)
     plt.show()
 
 

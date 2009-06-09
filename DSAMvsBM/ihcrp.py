@@ -12,7 +12,7 @@ def main():
     tone = dsam.EarModule("Stim_PureTone_2")
     tone.set_par("FREQUENCY", 1000)
     tone.set_par("INTENSITY", 50)
-    tone.set_par("DT", 1/fs)
+    tone.set_par("DT", 1.0/fs)
 
     # DRNL basilar membrane
     stapes = dsam.EarModule("Util_mathOp")
@@ -46,7 +46,7 @@ def main():
 
     # BAI basilar membrane
     tone_arr = tone.get_signal()
-    tone_arr = tone_arr * bai_bm.S_ST * bai_bm.S_ED
+    tone_arr = bai_bm.run_stapes(tone_arr)
     bm_bai_x = bai_bm.run_bm(fs, tone_arr, mode='x')
     ihcrp_bai = bai_bm.run_ihcrp(fs, bm_bai_x)
 
