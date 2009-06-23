@@ -12,7 +12,7 @@ ihcrp.o : ihcrp.c ihcrp.h
 # TODO: generalize numpy include path
 _bm.o : _bm.c
 	gcc -fPIC `python-config --cflags` \
-	-I /usr/local/lib/python2.5/site-packages/numpy/core/include \
+	-I `python -c "import numpy; print numpy.get_include()"` \
 	-c _bm.c -o _bm.o
 
 _bm.so : _bm.o bm_wave.o LCR4.o ihcrp.o
