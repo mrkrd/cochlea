@@ -1,0 +1,22 @@
+#		IHCRP_Shamma3StateVelIn	< IHCRP_VelIn_GP.par
+
+# Sumner, C,  Lopez-Poveda, E.A.,  O'Mard, L.P. and Ray Meddis (2002),
+# "A revised model of the inner-hair cell and auditory nerve complex"
+
+E_T		100e-3	!Endocochlear potential, Et (V).
+E_K		-70.45E-3	!Reversal potential, Ek (V).
+G0		1.97e-09	!Resting conductance, G0 (S).
+G_K		1.8e-08	!Potassium conductance, Gk (S = Siemens).
+RP_CORRECTION	0.04	!Reversal potential correction, Rp/(Rt+Rp).
+G_MAXC	8e-09		xMaximum mechanical conductance, Gmax (S).
+S0		8.5e-9		Sensitivity constant, S0 (/m).
+U0		7e-9		Offset constant, U0 (m).
+S1		5e-9  	(CJS=5e-7)	Sensitivity constant, S1 (/m).
+U1		7e-9		Offset constant, U1 (m).
+C_TOTAL	6e-12		!Total capacitance, C = Ca + Cb (F).
+T_C		2.13e-3	!Cilia/BM time constant (s).
+GAIN_C	16		xCilia/BM coupling gain, C (dB).
+
+# NB S1 was published as 5e-7 but this was a typing mistake
+
+# O'Mard said that S0 should be 8.5e-9 instead of 85e-9
