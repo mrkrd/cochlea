@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import bai_bm
+import traveling_waves as tw
 
 def main():
 
@@ -16,7 +16,7 @@ def main():
     xBM_bin = np.fromfile("xbm.dat", float)
     xBM_bin = xBM_bin.reshape((len(xBM_bin)/100, 100))
     xBM_bin = np.fliplr(xBM_bin)
-    uIHC = bai_bm.run_ihcrp(fs, xBM_bin)
+    uIHC = tw.run_ihcrp(fs, xBM_bin)
 
 
     plt.imshow(uIHC_target, aspect='auto')

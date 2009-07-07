@@ -21,9 +21,11 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
     with_LCR: if False skips LCR compression stage
 
     return: BM displacement or velocity for 100 frequency sections
-            (freq_map)
+            (real_freq_map)
     """
     assert fs == 48000
+
+    fs = float(fs)
 
     signal = np.squeeze(signal)
     assert signal.ndim == 1
@@ -31,7 +33,7 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
     # uPa -> Pa
     signal = signal * 1e-6
 
-    _bm.bm_init(float(fs),
+    _bm.bm_init(fs,
                 bm_pars.Ls,
                 bm_pars.Rs,
                 bm_pars.Ct,
@@ -49,7 +51,7 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
 
     if with_LCR:
 
-        _bm.LCR4_init(float(fs),
+        _bm.LCR4_init(fs,
                       bm_pars.freq_map,
                       bm_pars.Qmin,
                       bm_pars.SAT1,
@@ -65,7 +67,6 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
         outBM = xBM
     elif mode == 'v':
         outBM = np.diff(xBM, axis=0) * fs
-
 
     return np.fliplr(outBM)
 
@@ -83,7 +84,8 @@ def run_ihcrp(fs, xBM):
 
     uIHC: IHC potential
     """
-    _bm.ihcrp_init(float(fs))
+    fs = float(fs)
+    _bm.ihcrp_init(fs)
 
     uIHC = _bm.ihcrp(np.fliplr(xBM), bm_pars.ciliaGain)
 
