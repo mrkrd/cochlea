@@ -1,0 +1,41 @@
+#		BM_DRNL		< BMdrnlGP1.par
+
+# Parameters are based on
+# Sumner, C,  Lopez-Poveda, E.A.,   and Ray Meddis.
+#"A non-linear filter-bank model of the guinea-pig cochlear nerve"
+
+#nonlinear path
+NL_GT_CASCADE		3	Nonlinear gammatone filter cascade.
+NL_LP_CASCADE		4	Nonlinear low-pass filter cascade.
+
+NONLINBWIDTH_PARAMETER	0:0.8
+NONLINBWIDTH_PARAMETER	1:0.58
+
+COMPRSCALEA_PARAMETER	0:1.87
+COMPRSCALEA_PARAMETER	1:0.45
+
+COMPRSCALEB_PARAMETER	0:-5.65
+COMPRSCALEB_PARAMETER	1:0.875
+
+COMP_N_EXPON		0.1	Compression exponent, n (units).
+
+L_GT_CASCADE		3	Linear gammatone filter cascade.
+L_LP_CASCADE		4	Linear low-pass filter cascade.
+
+
+#linear path
+LINCF_PARAMETER		0:0.339
+LINCF_PARAMETER		1:0.895
+
+LINBWIDTH_PARAMETER	0:1.3
+LINBWIDTH_PARAMETER	1:0.53
+
+LINSCALEG_PARAMETER	0:5.68
+LINSCALEG_PARAMETER	1:-0.97
+
+
+#BF List Parameters:-
+DIAG_MODE			PARAMETERS
+CF_MODE			SINGLE
+SINGLE_CF			1000
+
