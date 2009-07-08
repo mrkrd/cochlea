@@ -2,11 +2,8 @@ import numpy as np
 import scipy.signal as dsp
 import _bm
 import bm_pars
+from bm_pars import real_freq_map, S_ST, S_ED, C_eardrum
 
-
-S_ST = 3.1e-6                          # Area of stapes [m^2]
-S_ED = 55.e-6;                         # Ear drum area in m^2
-C_eardrum = (0.7e-9/20.e-3/S_ED);      # Ear drum compliance nm/dbspl/m^2
 
 # np.fliplr are necessary for compatimility with DSAM
 
