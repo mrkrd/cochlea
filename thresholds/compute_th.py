@@ -87,7 +87,7 @@ def thresholds_Holmberg2008(freq_range):
     tmax = 0.5
     t = np.arange(0, tmax, 1/fs)
     s = np.zeros_like(t)
-    ear.set_freq(tw.bm_pars.real_freq_map[10])
+    ear.set_freq(tw.real_freq_map[10])
     hsr, msr, lsr = ear.run(fs, s)
     all_spikes = np.concatenate(tuple( hsr['spikes'] ))
     hist = np.histogram(all_spikes, bins=np.ceil(tmax*1000))[0]
@@ -151,9 +151,9 @@ def thresholds_Holmberg2008(freq_range):
 
 
 if __name__ == "__main__":
-    freq_range = tw.bm_pars.real_freq_map
+    freq_range = tw.real_freq_map
     # Note: index 38 -> ~1000Hz [990Hz]
-    # freq_range = [tw.bm_pars.real_freq_map[38]]
+    # freq_range = [tw.real_freq_map[38]]
     print freq_range
 
     sumner_th = thresholds_Sumner2002(freq_range)
