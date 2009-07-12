@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import cochlea
 import thorns as th
 import stuff
-import bai_bm
+import traveling_waves as tw
 
 
 def sumner2002_SI(freq_range):
@@ -50,7 +50,7 @@ def holmberg2008_SI():
 
     ear = cochlea.Holmberg2008(hsr=1000, msr=0, lsr=0, animal='human')
 
-    freq_range = bai_bm.bm_pars.freq_map
+    freq_range = tw.real_freq_map
     dBSPL_range = np.arange(10, 100, 5)
 
     scores = np.zeros( (len(freq_range), len(dBSPL_range)) )
@@ -84,8 +84,8 @@ def holmberg2008_SI():
 if __name__ == "__main__":
     # import cProfile
 
-    freq_range = bai_bm.bm_pars.freq_map
-    # freq_range = [bai_bm.bm_pars.freq_map[61]]
+    freq_range = tw.real_freq_map
+    # freq_range = [tw.real_freq_map[61]]
 
     si_sumner = sumner2002_SI(freq_range)
     si_holmberg = holmberg2008_SI()
