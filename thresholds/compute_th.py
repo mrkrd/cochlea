@@ -159,7 +159,7 @@ if __name__ == "__main__":
     sumner_th = thresholds_Sumner2002(freq_range)
     holmberg_th = thresholds_Holmberg2008(freq_range)
 
-    np.savez('thresholds.npz', sumner_th=sumner_th, holmberg_th=holmberg_th)
+    np.savez('th.npz', sumner_th=sumner_th, holmberg_th=holmberg_th)
 
     plt.semilogx(freq_range, sumner_th)
     plt.semilogx(freq_range, holmberg_th)
