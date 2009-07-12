@@ -90,7 +90,7 @@ if __name__ == "__main__":
     si_sumner = sumner2002_SI(freq_range)
     si_holmberg = holmberg2008_SI()
 
-    np.savez("si.npy", freq_range=freq_range, si_sumner=si_sumner, si_holmberg=si_holmberg)
+    np.savez("si.npz", freq_range=freq_range, si_sumner=si_sumner, si_holmberg=si_holmberg)
 
 
     plt.pcolor(si_sumner)
