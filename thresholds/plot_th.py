@@ -22,6 +22,8 @@ def plot_th():
                 human_audiogram['threshold'][relevant_range],
                 label="Jackson")
 
+    ax.set_xlabel("Frequency [Hz]")
+    ax.set_ylabel("Intensity [dB SPL]")
     ax.legend()
 
     plt.savefig("th.eps")
