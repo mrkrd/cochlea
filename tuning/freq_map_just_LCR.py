@@ -1,5 +1,5 @@
 # Author:  Marek Rudnicki
-# Time-stamp: <2009-07-14 23:18:05 marek>
+# Time-stamp: <2009-07-15 00:32:39 marek>
 
 # Description: Compute center frequencies of LCR module.
 
