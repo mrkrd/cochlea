@@ -1,5 +1,5 @@
 # Author:  Marek Rudnicki
-# Time-stamp: <2009-07-14 22:53:19 marek>
+# Time-stamp: <2009-07-14 23:18:05 marek>
 
 # Description: Compute center frequencies of LCR module.
 
@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import traveling_waves as tw
-import tw._bm
+from traveling_waves import bm_pars, _bm
 import stuff
 
 
@@ -16,7 +16,7 @@ def calc_mean_displacement(freq, sec):
     Computes mean displacement of a given section stimulated by tone
     wiht frequency=freq.
 
-    Note: result is inverted (-) in order to have minium at BF.
+    Note: result is negated in order to have minium (instead of max) at BF.
     """
     print sec, ":", freq
 
@@ -26,18 +26,30 @@ def calc_mean_displacement(freq, sec):
     s = np.sin(2 * np.pi * t * freq)
     s = s * np.hanning(len(s))
     s = stuff.set_dB_SPL(0, s)
-
     s = tw.run_stapes(s)
 
-    xBM = tw.run_bm(fs, s, mode='x', with_LCR=False)
+    signal = np.zeros( (s.size, 100) )
+    signal[:,sec] = s
+
+    _bm.LCR4_init(fs,
+                  bm_pars.freq_map,
+                  bm_pars.Qmin,
+                  bm_pars.SAT1,
+                  bm_pars.SAT4)
+
+
+    signal = _bm.LCR4(signal,
+                      bm_pars.Qmax,
+                      bm_pars.Qmin)
 
     # plt.imshow(xBM, aspect='auto')
     # plt.show()
 
-    # plt.plot(np.abs(xBM[sec]))
+    # plt.plot(signal[:,sec])
+    # plt.plot(out[:,sec])
     # plt.show()
 
-    avg = np.mean(np.abs(xBM[:,sec]))
+    avg = np.mean(np.abs(signal[:,sec]))
 
     return -avg
 
@@ -59,21 +71,21 @@ def optimize_freq_map():
                                       args=(sec,),
                                       xtol=0.01)
 
-    np.save('freq_map_without_LCR.npy', freq_map)
+    np.save('freq_map_just_LCR.npy', freq_map)
 
 
 def plot_freq_map():
-    freq_map = np.load('freq_map_without_LCR.npy')
+    freq_map = np.load('freq_map_just_LCR.npy')
 
     ax = plt.gca()
 
-    ax.plot(tw.real_freq_map, label="LCR on")
-    ax.plot(freq_map, label="LCR off")
+    ax.plot(tw.real_freq_map, label="BM with LCR")
+    ax.plot(freq_map, label="Only LCR")
     ax.set_ylabel("Frequency [Hz]")
     ax.set_xlabel("Section number")
     ax.legend(loc='best')
 
-    plt.savefig("freq_map_without_LCR.eps")
+    plt.savefig("freq_map_just_LCR.eps")
     plt.show()
 
 
