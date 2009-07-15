@@ -1,5 +1,5 @@
 # Author:  Marek Rudnicki
-# Time-stamp: <2009-07-15 00:32:39 marek>
+# Time-stamp: <2009-07-15 10:52:50 marek>
 
 # Description: Compute center frequencies of LCR module.
 
@@ -89,9 +89,26 @@ def plot_freq_map():
     plt.show()
 
 
+def plot_single_sec_characteristic():
+
+    sec = 20
+
+    characteristic = []
+    for freq in tw.real_freq_map:
+        characteristic.append(calc_mean_displacement(freq, sec))
+
+    ax = plt.gca()
+    ax.semilogx(tw.real_freq_map, characteristic,
+                label=str(tw.real_freq_map[99-sec]))
+    ax.legend(loc='best')
+
+    plt.show()
+
 if __name__ == "__main__":
     # find_real_freq_map()
 
-    optimize_freq_map()
+    # optimize_freq_map()
 
-    plot_freq_map()
+    # plot_freq_map()
+
+    plot_single_sec_characteristic()
