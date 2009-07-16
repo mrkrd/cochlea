@@ -135,9 +135,10 @@ class Sumner2002(object):
 
     def _run_anf(self, anf, fs, times, output_format):
         """
-        Run spike generator several times and format the output
-        according to output_format variable.
+        Run spike generator several times and format the output.
         """
+        anf.set_par("PULSE_DURATION", 1.1/fs)
+
         if output_format == 'spikes':
             anf_db = []
             for run_idx in range(times):
@@ -195,26 +196,19 @@ class Sumner2002(object):
         self.ihcrp.run()
 
         if self.hsr > 0:
-            self.anf_hsr.set_par("PULSE_DURATION", 1.1/fs)
             self.ihc_hsr.run()
-
             hsr_db = self._run_anf(self.anf_hsr, fs, times, output_format)
         else:
             hsr_db = None
 
         if self.msr > 0:
-            self.anf_msr.set_par("PULSE_DURATION", 1.1/fs)
             self.ihc_msr.run()
-
             msr_db = self._run_anf(self.anf_msr, fs, times, output_format)
         else:
             msr_db = None
 
-
         if self.lsr > 0:
-            self.anf_lsr.set_par("PULSE_DURATION", 1.1/fs)
             self.ihc_lsr.run()
-
             lsr_db = self._run_anf(self.anf_lsr, fs, times, output_format)
         else:
             lsr_db = None
@@ -308,9 +302,10 @@ class Holmberg2008(object):
 
     def _run_anf(self, anf, fs, times, output_format):
         """
-        Run spike generator several times and format the output
-        according to output_format variable.
+        Run spike generator several times and format the output.
         """
+        anf.set_par("PULSE_DURATION", 1.1/fs)
+
         if output_format == 'spikes':
             anf_db = []
             for run_idx in range(times):
@@ -373,26 +368,19 @@ class Holmberg2008(object):
 
 
         if self.hsr > 0:
-            self.anf_hsr.set_par("PULSE_DURATION", 1.1/fs)
             self.ihc_hsr.run()
-
             hsr_db = self._run_anf(self.anf_hsr, fs, times, output_format)
         else:
             hsr_db = None
 
         if self.msr > 0:
-            self.anf_msr.set_par("PULSE_DURATION", 1.1/fs)
             self.ihc_msr.run()
-
             msr_db = self._run_anf(self.anf_msr, fs, times, output_format)
         else:
             msr_db = None
 
-
         if self.lsr > 0:
-            self.anf_lsr.set_par("PULSE_DURATION", 1.1/fs)
             self.ihc_lsr.run()
-
             lsr_db = self._run_anf(self.anf_lsr, fs, times, output_format)
         else:
             lsr_db = None
@@ -404,13 +392,15 @@ class Holmberg2008(object):
 
 
 def main():
+    import cochlea
+
     import cProfile
     import matplotlib.pyplot as plt
     import stuff
 
     print "start:"
-    ear = Sumner2002(freq=(50,20000,100), animal='human')
-    earH = Holmberg2008()
+    ear = cochlea.Sumner2002(freq=(50,20000,100), animal='human')
+    earH = cochlea.Holmberg2008()
 
     fs = 48000.0
     fstim = tw.bm_pars.real_freq_map[38]
