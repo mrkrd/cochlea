@@ -23,7 +23,14 @@ def _pars(par_file):
 
 class Sumner2002(object):
     def __init__(self, hsr=100, msr=100, lsr=100, freq=1000.0, animal='gp'):
+        """
+        hsr, msr, lsr: number of HSR/MSR/LSR fibers
 
+        freq: int => single CF
+        tuple => (min_freq, max_freq, how_many_channels)
+
+        animal: gp, human
+        """
         self.hsr = hsr
         self.msr = msr
         self.lsr = lsr
@@ -170,8 +177,11 @@ class Sumner2002(object):
         Run auditory periphery model.
 
         sound: audio signal
+
         fs: sampling frequency
+
         times: how many many trials
+
         output_format: format of the output 'spikes' (for spiking
         times), 'signals' (for time function)
         """
