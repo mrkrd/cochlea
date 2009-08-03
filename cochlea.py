@@ -5,6 +5,8 @@ import os
 import thorns as th
 import dsam
 
+from dsam import set_dB_SPL
+
 # TODO: move import bai_bm into Holmberg2008 class
 import traveling_waves as tw
 
@@ -605,7 +607,7 @@ def main():
                                    tw.real_freq_map[99],
                                    100),
                              animal='human')
-    earH = cochlea.Holmberg2008()
+    # earH = cochlea.Holmberg2008()
 
     fs = 48000.0
     fstim = tw.bm_pars.real_freq_map[38]
@@ -618,17 +620,17 @@ def main():
     print "Sumner2002 running..."
     hsr, msr, lsr = ear.run(fs, s, output_format='signals')
     print "done"
-    print "Holmberg2008 running..."
-    hsrH, msrH, lsrH = earH.run(fs, s, output_format='signals')
-    print "done"
+    # print "Holmberg2008 running..."
+    # hsrH, msrH, lsrH = earH.run(fs, s, output_format='signals')
+    # print "done"
 
     plt.imshow(hsr.T, aspect='auto', interpolation=None)
     plt.colorbar()
     plt.show()
 
-    plt.imshow(hsrH.T, aspect='auto', interpolation=None)
-    plt.colorbar()
-    plt.show()
+    # plt.imshow(hsrH.T, aspect='auto', interpolation=None)
+    # plt.colorbar()
+    # plt.show()
 
     print "done."
 
