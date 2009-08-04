@@ -4,7 +4,6 @@ import os
 import thorns as th
 import dsam
 
-from dsam import set_dB_SPL
 from auditory_periphery import par_dir, AuditoryPeriphery
 
 import traveling_waves as tw

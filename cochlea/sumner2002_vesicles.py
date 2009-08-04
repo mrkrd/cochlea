@@ -1,8 +1,8 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-08-04 14:47:22 marek>
+# Time-stamp: <2009-08-04 15:12:12 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
-# al. (2002)
+# al. (2002) returning vesicles timings instead of ANF spikes.
 
 import numpy as np
 import os
@@ -12,8 +12,9 @@ import dsam
 
 from auditory_periphery import AuditoryPeriphery, par_dir
 
-class Sumner2002(AuditoryPeriphery):
-    def __init__(self, hsr=100, msr=100, lsr=100, freq=1000.0, animal='gp'):
+
+class Sumner2002_Vesicles(AuditoryPeriphery):
+    def __init__(self, hsr=1, msr=1, lsr=1, freq=1000.0, animal='gp'):
         """
         hsr, msr, lsr: number of HSR/MSR/LSR fibers
 
@@ -22,6 +23,8 @@ class Sumner2002(AuditoryPeriphery):
 
         animal: gp, human
         """
+        assert (hsr in (0,1)) and (msr in (0,1)) and (lsr in (0,1))
+
         self.hsr = hsr
         self.msr = msr
         self.lsr = lsr
@@ -77,34 +80,18 @@ class Sumner2002(AuditoryPeriphery):
 
         if self.hsr != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
+            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002_spike.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
-
-            self.anf_hsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_hsr.read_pars(par_dir("anf_binomial.par"))
-            self.anf_hsr.set_par("NUM_FIBRES", hsr)
-            dsam.connect(self.ihc_hsr, self.anf_hsr)
 
         if self.msr != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
+            self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002_spike.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
-
-            self.anf_msr = dsam.EarModule("An_SG_Binomial")
-            self.anf_msr.read_pars(par_dir("anf_binomial.par"))
-            self.anf_msr.set_par("NUM_FIBRES", msr)
-            dsam.connect(self.ihc_msr, self.anf_msr)
-
 
         if self.lsr != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
+            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002_spike.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
-
-            self.anf_lsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_lsr.read_pars(par_dir("anf_binomial.par"))
-            self.anf_lsr.set_par("NUM_FIBRES", lsr)
-            dsam.connect(self.ihc_lsr, self.anf_lsr)
 
 
 
@@ -168,23 +155,46 @@ class Sumner2002(AuditoryPeriphery):
         self.ihcrp.run()
 
         if self.hsr > 0:
-            self.ihc_hsr.run()
-            hsr_db = self._run_anf(self.anf_hsr, fs, times, output_format)
+            hsr_db = self._run_ihc(self.ihc_hsr, fs, times, output_format)
         else:
             hsr_db = None
 
         if self.msr > 0:
-            self.ihc_msr.run()
-            msr_db = self._run_anf(self.anf_msr, fs, times, output_format)
+            msr_db = self._run_ihc(self.ihc_msr, fs, times, output_format)
         else:
             msr_db = None
 
         if self.lsr > 0:
-            self.ihc_lsr.run()
-            lsr_db = self._run_anf(self.anf_lsr, fs, times, output_format)
+            lsr_db = self._run_ihc(self.ihc_lsr, fs, times, output_format)
         else:
             lsr_db = None
 
-
         return hsr_db, msr_db, lsr_db
 
+
+
+    def _run_ihc(self, ihc, fs, times, output_format):
+        """
+        Run vesicles releace several times.
+        """
+        if output_format == 'spikes':
+            ihc_db = []
+            for run_idx in range(times):
+                ihc.run()
+                ihc_signal = ihc.get_signal()
+                ihc_spikes = th.signal_to_spikes(fs, ihc_signal)
+
+                for freq_idx,each_freq in enumerate(ihc_spikes):
+                    ihc_db.append( (freq_idx, run_idx, each_freq) )
+
+            ihc_output = np.array(ihc_db, dtype=[ ('freq', int),
+                                                  ('trial', int),
+                                                  ('spikes', np.ndarray) ])
+        elif output_format == 'signals':
+            ihc.run()
+            ihc_output = ihc.get_signal()
+        else:
+            assert False
+
+
+        return ihc_output
