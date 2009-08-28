@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-08-04 14:47:22 marek>
+# Time-stamp: <2009-08-28 16:47:15 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -156,7 +156,7 @@ class Sumner2002(AuditoryPeriphery):
         if self.animal == 'gp':
             self.outer_middle_ear.run()
             self.outer_middle_ear_B.run()
-        elif self.animal == 'gp':
+        elif self.animal == 'human':
             self.outer_middle_ear.run()
         else:
             self.outer_middle_ear.run()

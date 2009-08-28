@@ -176,7 +176,7 @@ class LopezPoveda2006(object):
         if self.animal == 'gp':
             self.outer_middle_ear.run()
             self.outer_middle_ear_B.run()
-        elif self.animal == 'gp':
+        elif self.animal == 'human':
             self.outer_middle_ear.run()
         else:
             self.outer_middle_ear.run()
