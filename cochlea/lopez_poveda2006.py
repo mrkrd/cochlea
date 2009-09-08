@@ -113,15 +113,15 @@ class LopezPoveda2006(object):
             self.bm.set_par("CF_MODE", "single")
             self.bm.set_par("SINGLE_CF", freq)
         elif isinstance(freq, tuple):
-            self.bm.set_par("MIN_CF", freq[0])
-            self.bm.set_par("MAX_CF", freq[1])
-            self.bm.set_par("CHANNELS", freq[2])
             if self.animal == 'gp':
                 self.bm.set_par("CF_MODE", "guinea_pig")
             elif self.animal == 'human':
                 self.bm.set_par("CF_MODE", "human")
             else:
                 assert False
+            self.bm.set_par("MIN_CF", freq[0])
+            self.bm.set_par("MAX_CF", freq[1])
+            self.bm.set_par("CHANNELS", freq[2])
 
 
 
