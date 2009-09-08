@@ -53,6 +53,17 @@ class AuditoryPeriphery(object):
         return anf_output
 
 
+    def get_spike_prob():
+        """
+        Returns spiking probabilities.  Requires that run() is called first.
+        """
+        return (self.ihc_hsr.get_signal(),
+                self.ihc_msr.get_signal(),
+                self.ihc_lsr.get_signal())
+
 
     def run(self):
+        """
+        Run the model;  Run each DSAM module in the proper sequence.
+        """
         pass
