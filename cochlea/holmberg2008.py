@@ -24,7 +24,7 @@ class Holmberg2008(AuditoryPeriphery):
 
         # Outer/middle ear filter
         self.outer_middle_ear = dsam.EarModule("Filt_MultiBPass")
-        self.outer_middle_ear.read_pars(_pars("filt_Human.par"))
+        self.outer_middle_ear.read_pars(par_dir("filt_Human.par"))
 
 
         # Stapes velocity [Pa -> m/s]
@@ -40,37 +40,37 @@ class Holmberg2008(AuditoryPeriphery):
 
         # IHC receptor potential
         self.ihcrp = dsam.EarModule("IHCRP_Shamma3StateVelIn")
-        self.ihcrp.read_pars(_pars("ihcrp_Meddis2005_modified.par"))
+        self.ihcrp.read_pars(par_dir("ihcrp_Meddis2005_modified.par"))
 
 
         if self.hsr != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr.read_pars(_pars("ihc_hsr_Meddis2002.par"))
+            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
 
             self.anf_hsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_hsr.read_pars(_pars("anf_binomial.par"))
+            self.anf_hsr.read_pars(par_dir("anf_binomial.par"))
             self.anf_hsr.set_par("NUM_FIBRES", hsr)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
         if self.msr != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr.read_pars(_pars("ihc_msr_Meddis2002.par"))
+            self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
 
             self.anf_msr = dsam.EarModule("An_SG_Binomial")
-            self.anf_msr.read_pars(_pars("anf_binomial.par"))
+            self.anf_msr.read_pars(par_dir("anf_binomial.par"))
             self.anf_msr.set_par("NUM_FIBRES", msr)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
 
         if self.lsr != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr.read_pars(_pars("ihc_lsr_Meddis2002.par"))
+            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
             self.anf_lsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_lsr.read_pars(_pars("anf_binomial.par"))
+            self.anf_lsr.read_pars(par_dir("anf_binomial.par"))
             self.anf_lsr.set_par("NUM_FIBRES", lsr)
             dsam.connect(self.ihc_lsr, self.anf_lsr)
 

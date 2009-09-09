@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-08-28 16:47:15 marek>
+# Time-stamp: <2009-09-08 11:33:33 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -121,15 +121,15 @@ class Sumner2002(AuditoryPeriphery):
             self.bm.set_par("CF_MODE", "single")
             self.bm.set_par("SINGLE_CF", freq)
         elif isinstance(freq, tuple):
-            self.bm.set_par("MIN_CF", freq[0])
-            self.bm.set_par("MAX_CF", freq[1])
-            self.bm.set_par("CHANNELS", freq[2])
             if self.animal == 'gp':
                 self.bm.set_par("CF_MODE", "guinea_pig")
             elif self.animal == 'human':
                 self.bm.set_par("CF_MODE", "human")
             else:
                 assert False
+            self.bm.set_par("MIN_CF", freq[0])
+            self.bm.set_par("MAX_CF", freq[1])
+            self.bm.set_par("CHANNELS", freq[2])
 
 
     def run(self, fs, sound, times=1, output_format='spikes'):
