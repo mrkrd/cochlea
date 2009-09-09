@@ -28,7 +28,7 @@ class AuditoryPeriphery(object):
         """
         Run spike generator several times and format the output.
         """
-        anf.set_par("PULSE_DURATION", 1.1/fs)
+#        anf.set_par("PULSE_DURATION", 1.1/fs)
 
         if output_format == 'spikes':
             anf_db = []

@@ -48,8 +48,8 @@ class Holmberg2008(AuditoryPeriphery):
             self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
 
-            self.anf_hsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_hsr.read_pars(par_dir("anf_binomial.par"))
+            self.anf_hsr = dsam.EarModule("An_SG_Carney")
+            self.anf_hsr.read_pars(par_dir("anf_carney.par"))
             self.anf_hsr.set_par("NUM_FIBRES", hsr)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
@@ -58,8 +58,8 @@ class Holmberg2008(AuditoryPeriphery):
             self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
 
-            self.anf_msr = dsam.EarModule("An_SG_Binomial")
-            self.anf_msr.read_pars(par_dir("anf_binomial.par"))
+            self.anf_msr = dsam.EarModule("An_SG_Carney")
+            self.anf_msr.read_pars(par_dir("anf_carney.par"))
             self.anf_msr.set_par("NUM_FIBRES", msr)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
@@ -69,8 +69,8 @@ class Holmberg2008(AuditoryPeriphery):
             self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
-            self.anf_lsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_lsr.read_pars(par_dir("anf_binomial.par"))
+            self.anf_lsr = dsam.EarModule("An_SG_Carney")
+            self.anf_lsr.read_pars(par_dir("anf_carney.par"))
             self.anf_lsr.set_par("NUM_FIBRES", lsr)
             dsam.connect(self.ihc_lsr, self.anf_lsr)
 

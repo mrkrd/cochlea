@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-08 11:33:33 marek>
+# Time-stamp: <2009-09-09 14:18:25 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -80,8 +80,8 @@ class Sumner2002(AuditoryPeriphery):
             self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
 
-            self.anf_hsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_hsr.read_pars(par_dir("anf_binomial.par"))
+            self.anf_hsr = dsam.EarModule("An_SG_Carney")
+            self.anf_hsr.read_pars(par_dir("anf_carney.par"))
             self.anf_hsr.set_par("NUM_FIBRES", hsr)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
@@ -90,8 +90,8 @@ class Sumner2002(AuditoryPeriphery):
             self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
 
-            self.anf_msr = dsam.EarModule("An_SG_Binomial")
-            self.anf_msr.read_pars(par_dir("anf_binomial.par"))
+            self.anf_msr = dsam.EarModule("An_SG_Carney")
+            self.anf_msr.read_pars(par_dir("anf_carney.par"))
             self.anf_msr.set_par("NUM_FIBRES", msr)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
@@ -101,8 +101,8 @@ class Sumner2002(AuditoryPeriphery):
             self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
-            self.anf_lsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_lsr.read_pars(par_dir("anf_binomial.par"))
+            self.anf_lsr = dsam.EarModule("An_SG_Carney")
+            self.anf_lsr.read_pars(par_dir("anf_carney.par"))
             self.anf_lsr.set_par("NUM_FIBRES", lsr)
             dsam.connect(self.ihc_lsr, self.anf_lsr)
 
