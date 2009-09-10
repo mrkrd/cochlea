@@ -86,10 +86,22 @@ class Holmberg2008(AuditoryPeriphery):
 
         if isinstance(freq, float):
             real_freq_map = tw.bm_pars.real_freq_map
+            assert freq in real_freq_map
             self._freq_idx = int(np.where(real_freq_map == freq)[0])
         elif freq == None:
             self._freq_idx = None
 
+
+    def get_freq_map(self):
+        """
+        Returns frequency map of the model.
+        """
+        if isinstance(self._freq_idx, int):
+            freq_map = tw.bm_pars.real_freq_map[self._freq_idx]
+        else:
+            freq_map = tw.bm_pars.real_freq_map
+
+        return freq_map
 
 
     def run(self, fs, sound, times=1, output_format='spikes'):
