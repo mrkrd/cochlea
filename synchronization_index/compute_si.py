@@ -8,10 +8,10 @@ import traveling_waves as tw
 
 
 def sumner2002_SI(freq_range):
-    fs = 100000.0               # Hz
+    fs = 50000.0               # Hz
     t = np.arange(0, 0.5, 1.0/fs)
 
-    ear = cochlea.Sumner2002(hsr=1000, msr=0, lsr=0, animal='human')
+    ear = cochlea.Sumner2002(hsr=100, msr=0, lsr=0, animal='human')
 
     dBSPL_range = np.arange(10, 100, 5)
 
@@ -28,7 +28,7 @@ def sumner2002_SI(freq_range):
             # plt.show()
             #stim = stim * 3000
 
-            ear.bm.set_par("SINGLE_CF", freq)
+            ear.set_freq(freq)
 
             # Run ear
             hsr, msr, lsr = ear.run(fs, stim)
@@ -44,13 +44,12 @@ def sumner2002_SI(freq_range):
 
 
 
-def holmberg2008_SI():
+def holmberg2008_SI(freq_range):
     fs = 48000.0               # Hz
     t = np.arange(0, 0.5, 1.0/fs) # s
 
-    ear = cochlea.Holmberg2008(hsr=1000, msr=0, lsr=0, animal='human')
+    ear = cochlea.Holmberg2008(hsr=100, msr=0, lsr=0, animal='human')
 
-    freq_range = tw.real_freq_map
     dBSPL_range = np.arange(10, 100, 5)
 
     scores = np.zeros( (len(freq_range), len(dBSPL_range)) )
@@ -66,8 +65,10 @@ def holmberg2008_SI():
             # plt.show()
             #stim = stim * 3000
 
+            ear.set_freq(freq)
+
             # Run ear
-            hsr, msr, lsr = ear.run(fs, stim, freq_idx=i)
+            hsr, msr, lsr = ear.run(fs, stim)
 
             # Compute SI
             si = th.synchronization_index(freq, hsr['spikes'])
@@ -85,10 +86,10 @@ if __name__ == "__main__":
     # import cProfile
 
     freq_range = tw.real_freq_map
-    # freq_range = [tw.real_freq_map[61]]
+    #freq_range = [tw.real_freq_map[61]]
 
     si_sumner = sumner2002_SI(freq_range)
-    si_holmberg = holmberg2008_SI()
+    si_holmberg = holmberg2008_SI(freq_range)
 
     np.savez("si.npz", freq_range=freq_range, si_sumner=si_sumner, si_holmberg=si_holmberg)
 
