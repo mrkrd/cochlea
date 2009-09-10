@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-08 12:47:02 marek>
+# Time-stamp: <2009-09-10 14:55:46 marek>
 #
 # Description: Plot output bitmaps
 
@@ -18,7 +18,7 @@ def main():
                              freq=(50, 15000, 100),
                              animal='human')
 
-    hsr, msr, lsr = ear.run(fs, s, output_format='signals')
+    hsr, msr, lsr = ear.run(fs, s, times=1, output_format='signals')
 
     plt.imshow(hsr.T, aspect='auto')
     plt.show()
