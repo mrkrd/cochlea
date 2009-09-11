@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-09 14:18:25 marek>
+# Time-stamp: <2009-09-11 14:18:25 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -130,6 +130,16 @@ class Sumner2002(AuditoryPeriphery):
             self.bm.set_par("MIN_CF", freq[0])
             self.bm.set_par("MAX_CF", freq[1])
             self.bm.set_par("CHANNELS", freq[2])
+
+
+    def get_freq_map(self):
+        """
+        Returns curretn frequancy map.
+
+        Note: since frequency map is created during simulation, this
+        function can be called after run()
+        """
+        return self.bm.get_labels()
 
 
     def run(self, fs, sound, times=1, output_format='spikes'):
