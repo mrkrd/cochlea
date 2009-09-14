@@ -128,15 +128,15 @@ class Holmberg2008(AuditoryPeriphery):
 
         ### Basilar membrane
         filtered_signal = self.stapes_velocity.get_signal()
-        bm_signal = tw.run_bm(fs, filtered_signal, mode='v')
+        self.bm_signal = tw.run_bm(fs, filtered_signal, mode='v')
         if self._freq_idx != None:
-            bm_signal = bm_signal[:,self._freq_idx]
+            self.bm_signal = self.bm_signal[:,self._freq_idx]
 
 
         ### IHCRP
-        self.ihcrp.run(fs, bm_signal)
+        self.ihcrp.run(fs, self.bm_signal)
 
-        # ihcrp_signal = tw.run_ihcrp(fs, bm_signal)
+        # ihcrp_signal = tw.run_ihcrp(fs, self.bm_signal)
         # if self._freq_idx != None:
         #     ihcrp_signal = ihcrp_signal[:,self._freq_idx]
         # ihcrp_mod = dsam.EarModule(fs, ihcrp_signal)
