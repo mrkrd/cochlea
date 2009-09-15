@@ -1,5 +1,5 @@
 # Author:  Marek Rudnicki
-# Time-stamp: <2009-07-15 10:52:50 marek>
+# Time-stamp: <2009-09-15 15:37:01 marek>
 
 # Description: Compute center frequencies of LCR module.
 
@@ -79,8 +79,10 @@ def plot_freq_map():
 
     ax = plt.gca()
 
-    ax.plot(tw.real_freq_map, label="BM with LCR")
+    ax.plot(tw.real_freq_map[::-1], label="real_freq_map: BM with LCR")
     ax.plot(freq_map, label="Only LCR")
+    ax.plot(tw.bm_pars.freq_map, label="freq_map: LCR4 input parameter")
+    ax.plot(1/tw.bm_pars.delay_time[::-1], label="1 / delay")
     ax.set_ylabel("Frequency [Hz]")
     ax.set_xlabel("Section number")
     ax.legend(loc='best')
@@ -109,6 +111,6 @@ if __name__ == "__main__":
 
     # optimize_freq_map()
 
-    # plot_freq_map()
+    plot_freq_map()
 
-    plot_single_sec_characteristic()
+    # plot_single_sec_characteristic()
