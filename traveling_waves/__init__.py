@@ -30,6 +30,13 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
     # uPa -> Pa
     signal = signal * 1e-6
 
+    if with_LCR:
+        # pad signal with max delay
+        orig_signal_len = len(signal)
+        delays = np.round(bm_pars.delay_time * fs)
+        signal = np.append(signal,
+                           np.zeros(delays.max()))
+
     _bm.bm_init(fs,
                 bm_pars.Ls,
                 bm_pars.Rs,
@@ -58,6 +65,16 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
         xBM = _bm.LCR4(xBM,
                        bm_pars.Qmax,
                        bm_pars.Qmin);
+
+
+        # Compensate for LCR4 delays
+        i = np.tile(np.arange(orig_signal_len), 100).reshape( (100, orig_signal_len) ).T
+        i = i + delays
+        i = i.astype(int)
+
+        j = np.arange(100)
+
+        xBM = xBM[i,j]
 
 
     if mode == 'x':
