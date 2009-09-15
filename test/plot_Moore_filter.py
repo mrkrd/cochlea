@@ -4,7 +4,6 @@ import scipy.signal.filter_design as filt
 import matplotlib.pyplot as plt
 import sys
 
-sys.path.append("../pyDSAM")
 import dsam
 
 # def dBfactor(dB, signal):
