@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-15 21:29:32 marek>
+# Time-stamp: <2009-09-15 21:39:08 marek>
 #
 # Description: Rate-intensity function
 
@@ -50,7 +50,7 @@ def rate_intensity_sumner2002():
 
     dbspl_list=range(0,80,2)
 
-    ear = cochlea.Sumner2002(hsr=10, msr=0, lsr=0)
+    ear = cochlea.Sumner2002(hsr=20, msr=0, lsr=0)
 
     hsr_rate, msr_rate, lsr_rate = rate_intensity(ear, 100000,
                                                   cf_list=[10000, 30000],
