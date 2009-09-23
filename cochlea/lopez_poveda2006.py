@@ -4,11 +4,11 @@ import os
 import thorns as th
 import dsam
 
-from dsam import set_dB_SPL
-from common import _pars
+from auditory_periphery import AuditoryPeriphery, par_dir
 
 
-class LopezPoveda2006(object):
+
+class LopezPoveda2006(AuditoryPeriphery):
     """
     Sumner2002 auditory periphery model with Lopez-Poveda2006 IHCRP model.
     """
@@ -22,14 +22,14 @@ class LopezPoveda2006(object):
         # Outer/middle ear filter
         if self.animal == 'gp':
             self.outer_middle_ear = dsam.EarModule("Filt_MultiBPass")
-            self.outer_middle_ear.read_pars(_pars("filt_GP_A.par"))
+            self.outer_middle_ear.read_pars(par_dir("filt_GP_A.par"))
 
             self.outer_middle_ear_B = dsam.EarModule("Filt_MultiBPass")
-            self.outer_middle_ear_B.read_pars(_pars("filt_GP_B.par"))
+            self.outer_middle_ear_B.read_pars(par_dir("filt_GP_B.par"))
             dsam.connect(self.outer_middle_ear, self.outer_middle_ear_B)
         elif self.animal == 'human':
             self.outer_middle_ear = dsam.EarModule("Filt_MultiBPass")
-            self.outer_middle_ear.read_pars(_pars("filt_Human.par"))
+            self.outer_middle_ear.read_pars(par_dir("filt_Human.par"))
         else:
             assert False
 
@@ -37,7 +37,8 @@ class LopezPoveda2006(object):
         # Stapes velocity [Pa -> m/s]
         self.stapes_velocity = dsam.EarModule("Util_mathOp")
         if self.animal == 'gp':
-            self.stapes_velocity.read_pars(_pars("stapes_Meddis2005.par"))
+            self.stapes_velocity.set_par("OPERATOR", "SCALE")
+            self.stapes_velocity.set_par("OPERAND", 1.7e-9)
             dsam.connect(self.outer_middle_ear_B, self.stapes_velocity)
         elif self.animal == 'human':
             self.stapes_velocity.set_par("OPERATOR", "SCALE")
@@ -50,12 +51,12 @@ class LopezPoveda2006(object):
         # Basilar membrane
         if self.animal == 'gp':
             self.bm = dsam.EarModule("BM_DRNL")
-            self.bm.read_pars(_pars("bm_drnl_gp.par"))
+            self.bm.read_pars(par_dir("bm_drnl_gp.par"))
             self.set_freq(freq)
             dsam.connect(self.stapes_velocity, self.bm)
         elif self.animal == 'human':
             self.bm = dsam.EarModule("BM_DRNL")
-            self.bm.read_pars(_pars("drnl_human_Lopez-Poveda2001.par"))
+            self.bm.read_pars(par_dir("drnl_human_Lopez-Poveda2001.par"))
             self.set_freq(freq)
             dsam.connect(self.stapes_velocity, self.bm)
         else:
@@ -64,37 +65,37 @@ class LopezPoveda2006(object):
 
         # IHC receptor potential
         self.ihcrp = dsam.EarModule("IHCRP_LopezPoveda")
-        # self.ihcrp.read_pars(_pars("ihcrp_Meddis2005_modified.par"))
+        self.ihcrp.read_pars(par_dir("ihcrp_LopezPoveda2006.par"))
         dsam.connect(self.bm, self.ihcrp)
 
         if self.hsr != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr.read_pars(_pars("ihc_hsr_for_LopezPoveda2006.par"))
+            self.ihc_hsr.read_pars(par_dir("ihc_hsr_for_LopezPoveda2006.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
 
             self.anf_hsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_hsr.read_pars(_pars("anf_binomial.par"))
+            self.anf_hsr.read_pars(par_dir("anf_binomial.par"))
             self.anf_hsr.set_par("NUM_FIBRES", hsr)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
         if self.msr != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr.read_pars(_pars("ihc_msr_Meddis2002.par"))
+            self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
 
             self.anf_msr = dsam.EarModule("An_SG_Binomial")
-            self.anf_msr.read_pars(_pars("anf_binomial.par"))
+            self.anf_msr.read_pars(par_dir("anf_binomial.par"))
             self.anf_msr.set_par("NUM_FIBRES", msr)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
 
         if self.lsr != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr.read_pars(_pars("ihc_lsr_Meddis2002.par"))
+            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
             self.anf_lsr = dsam.EarModule("An_SG_Binomial")
-            self.anf_lsr.read_pars(_pars("anf_binomial.par"))
+            self.anf_lsr.read_pars(par_dir("anf_binomial.par"))
             self.anf_lsr.set_par("NUM_FIBRES", lsr)
             dsam.connect(self.ihc_lsr, self.anf_lsr)
 

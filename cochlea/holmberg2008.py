@@ -11,15 +11,16 @@ import traveling_waves as tw
 
 
 class Holmberg2008(AuditoryPeriphery):
-    def __init__(self, hsr=100, msr=100, lsr=100, freq=None, animal='human'):
+    def __init__(self, hsr=100, msr=100, lsr=100,
+                 freq=None, animal='human', sg_type='carney'):
 
         assert animal == 'human'
 
         self.set_freq(freq)
 
-        self.hsr = hsr
-        self.msr = msr
-        self.lsr = lsr
+        self.hsr_num = hsr
+        self.msr_num = msr
+        self.lsr_num = lsr
         self.animal = animal
 
         # Outer/middle ear filter
@@ -43,36 +44,30 @@ class Holmberg2008(AuditoryPeriphery):
         self.ihcrp.read_pars(par_dir("ihcrp_Meddis2005_modified.par"))
 
 
-        if self.hsr != 0:
+        if self.hsr_num != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
 
-            self.anf_hsr = dsam.EarModule("An_SG_Carney")
-            self.anf_hsr.read_pars(par_dir("anf_carney.par"))
-            self.anf_hsr.set_par("NUM_FIBRES", hsr)
+            self.anf_hsr = self._generate_anf(sg_type, self.hsr_num)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
-        if self.msr != 0:
+        if self.msr_num != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
 
-            self.anf_msr = dsam.EarModule("An_SG_Carney")
-            self.anf_msr.read_pars(par_dir("anf_carney.par"))
-            self.anf_msr.set_par("NUM_FIBRES", msr)
+            self.anf_msr = self._generate_anf(sg_type, self.msr_num)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
 
-        if self.lsr != 0:
+        if self.lsr_num != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
-            self.anf_lsr = dsam.EarModule("An_SG_Carney")
-            self.anf_lsr.read_pars(par_dir("anf_carney.par"))
-            self.anf_lsr.set_par("NUM_FIBRES", lsr)
-            dsam.connect(self.ihc_lsr, self.anf_lsr)
+            self.anf_lsr = self._generate_anf(sg_type, self.lsr_num)
+            dsam.connect(self.ihc_hsr, self.anf_lsr)
 
 
     def set_freq(self, freq):
@@ -142,19 +137,19 @@ class Holmberg2008(AuditoryPeriphery):
         # ihcrp_mod = dsam.EarModule(fs, ihcrp_signal)
 
 
-        if self.hsr > 0:
+        if self.hsr_num > 0:
             self.ihc_hsr.run()
             hsr_db = self._run_anf(self.anf_hsr, fs, times, output_format)
         else:
             hsr_db = None
 
-        if self.msr > 0:
+        if self.msr_num > 0:
             self.ihc_msr.run()
             msr_db = self._run_anf(self.anf_msr, fs, times, output_format)
         else:
             msr_db = None
 
-        if self.lsr > 0:
+        if self.lsr_num > 0:
             self.ihc_lsr.run()
             lsr_db = self._run_anf(self.anf_lsr, fs, times, output_format)
         else:

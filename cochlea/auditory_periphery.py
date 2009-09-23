@@ -1,9 +1,8 @@
 import numpy as np
-
 import os
 
 import thorns as th
-
+import dsam
 
 def par_dir(par_file):
     """
@@ -24,11 +23,36 @@ class AuditoryPeriphery(object):
         pass
 
 
+    def _generate_anf(self, sg_type=None, anf_num=0):
+        """
+        Returns ANF ear module.
+        """
+        assert sg_type
+
+        if sg_type == 'carney':
+            anf = dsam.EarModule("An_SG_Carney")
+            anf.read_pars(par_dir("anf_carney.par"))
+        elif sg_type == 'binomial':
+            anf = dsam.EarModule("An_SG_Binomial")
+            anf.read_pars(par_dir("anf_binomial.par"))
+        else:
+            assert False
+
+        anf.set_par("NUM_FIBRES", anf_num)
+
+        return anf
+
+
+
+
     def _run_anf(self, anf, fs, times, output_format):
         """
         Run spike generator several times and format the output.
         """
-#        anf.set_par("PULSE_DURATION", 1.1/fs)
+
+        # Explicit set of dt is required by some modules
+        if anf.module_type.lower() == 'an_sg_binomial':
+            anf.set_par("PULSE_DURATION", 1.1/fs)
 
         if output_format == 'spikes':
             anf_db = []
