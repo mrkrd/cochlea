@@ -25,8 +25,8 @@ POWER_CA	3	Calcium transmitter release exponent (power).
 
 # These parameters used to set fiber type
 # based on MSR in Sumner table II
-GMAX_CA		4.5E-9	Maximum calcium conductance (Siemens).
-CONC_THRESH_CA	3.2e-11	Calcium threshold Concentration.
-MAX_FREE_POOL_M	10	Max. no. of transmitter packets in free pool (integer).
+GMAX_CA		4.5E-9		Maximum calcium conductance (Siemens).
+CONC_THRESH_CA	3.2e-11		Calcium threshold Concentration.
+MAX_FREE_POOL_M	10		Max. no. of transmitter packets in free pool (integer).
 
 

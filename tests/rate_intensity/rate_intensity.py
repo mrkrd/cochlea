@@ -1,8 +1,9 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-15 21:39:08 marek>
+# Time-stamp: <2009-09-23 17:10:41 marek>
 #
 # Description: Rate-intensity function
 
+from __future__ import division
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,6 +16,8 @@ def rate_intensity(ear, fs, cf_list, dbspl_list):
 
     tmax = 0.1
     t = np.arange(0, tmax, 1./fs)
+
+    thalf = tmax * 1000 / 2        # ms
 
     hsr_rate = np.zeros( (len(cf_list), len(dbspl_list)) )
     msr_rate = np.zeros( (len(cf_list), len(dbspl_list)) )
@@ -32,13 +35,18 @@ def rate_intensity(ear, fs, cf_list, dbspl_list):
 
             if hsr != None:
                 all_spikes = np.concatenate(tuple(hsr['spikes']))
-                hsr_rate[cf_idx,dbspl_idx] = len(all_spikes) / tmax
+                all_spikes = all_spikes[all_spikes > thalf]
+                hsr_rate[cf_idx,dbspl_idx] = len(all_spikes) / tmax / ear.hsr_num * 2
             if msr != None:
                 all_spikes = np.concatenate(tuple(msr['spikes']))
-                msr_rate[cf_idx,dbspl_idx] = len(all_spikes) / tmax
+                all_spikes = all_spikes[all_spikes > thalf]
+                msr_rate[cf_idx,dbspl_idx] = len(all_spikes) / tmax / ear.msr_num * 2
             if lsr != None:
                 all_spikes = np.concatenate(tuple(lsr['spikes']))
-                lsr_rate[cf_idx,dbspl_idx] = len(all_spikes) / tmax
+                print len(all_spikes),
+                all_spikes = all_spikes[all_spikes > thalf]
+                print len(all_spikes)
+                lsr_rate[cf_idx,dbspl_idx] = len(all_spikes) / tmax / ear.lsr_num * 2
 
 
     return hsr_rate, msr_rate, lsr_rate
@@ -49,14 +57,17 @@ def rate_intensity(ear, fs, cf_list, dbspl_list):
 def rate_intensity_sumner2002():
 
     dbspl_list=range(0,80,2)
+    cf_list = [10000]
 
-    ear = cochlea.Sumner2002(hsr=20, msr=0, lsr=0)
+    ear = cochlea.Sumner2002(hsr=20, msr=20, lsr=20)
 
     hsr_rate, msr_rate, lsr_rate = rate_intensity(ear, 100000,
-                                                  cf_list=[10000, 30000],
+                                                  cf_list=cf_list,
                                                   dbspl_list=dbspl_list)
     np.save('hsr_rate.npy', hsr_rate)
-    plt.plot(dbspl_list, hsr_rate.T)
+    plt.plot(dbspl_list, hsr_rate[0])
+    plt.plot(dbspl_list, msr_rate[0])
+    plt.plot(dbspl_list, lsr_rate[0])
     plt.show()
 
 
