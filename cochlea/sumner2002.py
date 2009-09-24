@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-22 15:20:21 marek>
+# Time-stamp: <2009-09-24 11:26:32 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -90,7 +90,7 @@ class Sumner2002(AuditoryPeriphery):
             dsam.connect(self.ihcrp, self.ihc_msr)
 
             self.anf_msr = self._generate_anf(sg_type, self.msr_num)
-            dsam.connect(self.ihc_hsr, self.anf_msr)
+            dsam.connect(self.ihc_msr, self.anf_msr)
 
 
         if self.lsr_num != 0:
@@ -99,7 +99,7 @@ class Sumner2002(AuditoryPeriphery):
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
             self.anf_lsr = self._generate_anf(sg_type, self.lsr_num)
-            dsam.connect(self.ihc_hsr, self.anf_lsr)
+            dsam.connect(self.ihc_lsr, self.anf_lsr)
 
 
 
