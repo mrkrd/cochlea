@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-09-28 14:07:34 marek>
+/* Time-stamp: <2009-09-28 20:12:34 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -191,7 +191,6 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
 	  if (1/tauc1<0.0) {
 	       /* mexErrMsgTxt("The poles are in the right-half plane; system is unstable.\n"); */
 	       printf("The poles are in the right-half plane; system is unstable.\n");
-	       return -1;
 	  }
 
 	  tauwb = TauWBMax+(tauc1-bmTaumax[0])*(TauWBMax-TauWBMin)/(bmTaumax[0]-bmTaumin[0]);

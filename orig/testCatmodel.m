@@ -1,5 +1,5 @@
 % model fiber parameters
-CF    = 1e3;  % CF in Hz;   
+CF    = 1e3;  % CF in Hz;
 cohc  = 1.0;  % normal ohc function
 cihc  = 1.0;  % normal ihc function
 fiberType = 3; % spontaneous rate (in spikes/s) of the fiber BEFORE refractory effects; "1" = Low; "2" = Medium; "3" = High
@@ -19,18 +19,18 @@ mxpts = length(t);
 irpts = rt*Fs;
 
 pin = sqrt(2)*20e-6*10^(stimdb/20)*sin(2*pi*F0*t); % unramped stimulus
-pin(1:irpts)=pin(1:irpts).*(0:(irpts-1))/irpts; 
-pin((mxpts-irpts):mxpts)=pin((mxpts-irpts):mxpts).*(irpts:-1:0)/irpts;
+% pin(1:irpts)=pin(1:irpts).*(0:(irpts-1))/irpts;
+% pin((mxpts-irpts):mxpts)=pin((mxpts-irpts):mxpts).*(irpts:-1:0)/irpts;
 
-vihc = catmodel_IHC(pin,CF,nrep,1/Fs,T*1.5,cohc,cihc);
-[synout,psth] = catmodel_Synapse(vihc,CF,nrep,1/Fs,T*1.5,fiberType,implnt); 
+vihc = catmodel_IHC(pin,CF,nrep,1/Fs,T*1,cohc,cihc);
+[synout,psth] = catmodel_Synapse(vihc,CF,nrep,1/Fs,T*1,fiberType,implnt);
 
 timeout = (1:length(psth))*1/Fs;
 psthbins = round(psthbinwidth*Fs);  % number of psth500k bins per psth bin
 psthtime = timeout(1:psthbins:end); % time vector for psth
 pr = sum(reshape(psth,psthbins,length(psth)/psthbins))/nrep; % pr of spike in each bin
 psth = pr/psthbinwidth; % psth in units of spikes/s
- 
+
 figure
 subplot(3,1,1)
 plot(timeout,[pin zeros(1,length(timeout)-length(pin))])

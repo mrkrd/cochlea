@@ -10,35 +10,42 @@ catmodel_IHC_wrap(PyObject* self, PyObject* args)
 {
 
      PyObject *signal_arr, *signal_arg;
-     double cf, nrep, binwidth, reptime, cohc, cihc;
+     double *signal_data;
+     double cf, fs, cohc, cihc;
 
-     double *px;
-     double totalstim;
      PyObject *ihcout_arr;
      npy_intp dims[1];
-     double *ihcout;
+     int signal_len;
+     double *ihcout_data;
 
+     int i;
 
-     if (!PyArg_ParseTuple(args, "Odddddd", \
-     			   &signal_arg, &cf, &nrep, &binwidth, \
-     			   &reptime, &cohc, &cihc))
+     if (!PyArg_ParseTuple(args, "Odddd", \
+     			   &signal_arg, &cf, &fs, \
+     			   &cohc, &cihc))
      	  return NULL;
 
-     /* Input sound */
+
+     /* Input: sound OR px */
      signal_arr = PyArray_FROM_OTF(signal_arg, NPY_DOUBLE, NPY_IN_ARRAY);
-     px = PyArray_DATA(signal_arr);
+     signal_data = PyArray_DATA(signal_arr);
+     signal_len = PyArray_DIM(signal_arr, 0);
 
-     /* Input: totalstim */
-     totalstim = (npy_intp)floor((reptime*1e3)/(binwidth*1e3));
 
-     /* Output: ihcout / ihcout_arr */
-     dims[0] = totalstim;
+     /* Output: ihcout OR ihcout_arr */
+     dims[0] = signal_len;
      ihcout_arr = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-     ihcout = PyArray_DATA(ihcout_arr);
+     ihcout_data = PyArray_DATA(ihcout_arr);
+     /* TODO: use PyArray_Zeros instead */
+     for (i=0; i<signal_len; i++) {
+	  ihcout_data[i] = 0.0;
+     }
 
      /* Run IHC function */
-     SingleAN(px, cf, nrep, binwidth, totalstim, cohc, cihc, ihcout);
+     SingleAN(signal_data, cf, 1, 1.0/fs, signal_len, cohc, cihc, ihcout_data);
 
+
+     Py_DECREF(signal_arr);
      return ihcout_arr;
 }
 
