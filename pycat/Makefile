@@ -1,4 +1,4 @@
-all : _pycat_ihc.so
+all : _pycat.so
 
 catmodel_IHC.o : catmodel_IHC.c
 	gcc -fPIC -c catmodel_IHC.c -o catmodel_IHC.o
