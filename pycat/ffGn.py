@@ -5,7 +5,8 @@ from numpy.random import randn
 from scipy.signal import resample
 from numpy.fft import fft, ifft
 
-def ffGn(N, Hinput, mu, sigma):
+def ffGn(N, Hinput, mu):
+
 
     # TODO: assert proper input
 
@@ -69,6 +70,8 @@ def ffGn(N, Hinput, mu, sigma):
 
 
         y = y*sigma
+
+        print y[0:nop]
 
         return y[0:nop]
 

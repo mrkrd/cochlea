@@ -3,3 +3,4 @@ syntax: glob
 *.pyc
 *.mex
 *.so
+ffGn_test
