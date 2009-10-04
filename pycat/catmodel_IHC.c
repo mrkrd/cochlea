@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-09-28 20:12:34 marek>
+/* Time-stamp: <2009-10-04 20:41:53 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -74,8 +74,8 @@ double ControlSignal(double, double, double, double, double);
 double NLogarithm(double, double, double, double);
 
 
-void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
-	      double cohc, double cihc, double *ihcout)
+void SingleAN_IHC(double *px, double cf, int nrep, double binwidth, int totalstim,
+		  double cohc, double cihc, double *ihcout)
 {
 
      /*variables for middle-ear model */
