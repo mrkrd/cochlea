@@ -42,7 +42,7 @@ catmodel_IHC_wrap(PyObject* self, PyObject* args)
      }
 
      /* Run IHC function */
-     SingleAN(signal_data, cf, 1, 1.0/fs, signal_len, cohc, cihc, ihcout_data);
+     SingleAN_IHC(signal_data, cf, 1, 1.0/fs, signal_len, cohc, cihc, ihcout_data);
 
 
      Py_DECREF(signal_arr);
