@@ -5,7 +5,7 @@ int main(void)
 {
 
      /* ffGn args */
-     int N = 10;
+     int N = 1000;
      double Hinput = 0.9;
      double mu = 1.0;
 
@@ -16,8 +16,14 @@ int main(void)
      /* pyResample args */
      int old_len = 3;
      double x[old_len];
-     int new_len = 6;
+     int p = 3;
+     int q = 2;
      double *y;
+
+
+     /* pyRand args */
+     int len = 5;
+     double *z;
 
 
      printf("*********** ffGn ************\n");
@@ -27,6 +33,8 @@ int main(void)
      	  printf("%f\n", randNums[i]);
      }
 
+
+     printf("\n");
 
      randNums = ffGn(N, Hinput, mu);
 
@@ -39,9 +47,16 @@ int main(void)
      for (i=0; i<old_len; i++) {
 	  x[i] = i;
      }
-     y = pyResample(x, old_len, new_len);
-     for (i=0; i<new_len; i++) {
+     y = pyResample(x, old_len, p, q);
+     for (i=0; i<ceil(old_len*p/q); i++) {
 	  printf("%f\n", y[i]);
+     }
+
+
+     printf("*********** pyRand ************\n");
+     z = pyRand(len);
+     for (i=0; i<len; i++) {
+	  printf("%f\n", z[i]);
      }
 
      return 0;

@@ -44,7 +44,7 @@ double* ffGn(int N, double Hinput, double mu)
 }
 
 
-double* pyResample(double *x, int old_len, int new_len)
+double* pyResample(double *x, int len, int p, int q)
 {
      PyObject *modname, *mod, *mdict, *func, *result, *args;
      PyObject *input_arr;
@@ -55,6 +55,7 @@ double* pyResample(double *x, int old_len, int new_len)
 
      PyObject *output_arr;
      double *output_data;
+     int new_len;
 
      Py_Initialize();
      import_array();
@@ -66,14 +67,16 @@ double* pyResample(double *x, int old_len, int new_len)
 
 
 
-     dims[0] = old_len;
+     dims[0] = len;
      input_arr = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
      input_data = PyArray_DATA(input_arr);
      /* TODO: protect against buffer overflow */
-     memcpy(input_data, x, old_len*sizeof(double));
+     memcpy(input_data, x, len*sizeof(double));
 
 
 
+     new_len = ceil(len * p / q);
+     printf("%d %d\n", len, new_len);
      args = PyTuple_New(2);
      PyTuple_SetItem(args, 0, input_arr);
      PyTuple_SetItem(args, 1, PyInt_FromLong(new_len));
@@ -102,3 +105,48 @@ double* pyResample(double *x, int old_len, int new_len)
 
      return y;
 }
+
+
+double* pyRand(int len)
+{
+     PyObject *modname, *mod, *mdict, *func, *result, *args;
+     double *y;
+
+     PyObject *output_arr;
+     double *output_data;
+
+     Py_Initialize();
+     import_array();
+
+     mod = PyImport_ImportModule("numpy.random");
+
+     mdict = PyModule_GetDict(mod);
+     func = PyDict_GetItemString(mdict, "rand"); /* borrowed reference */
+
+
+     args = PyTuple_New(1);
+     PyTuple_SetItem(args, 0, PyInt_FromLong(len));
+
+     result = PyObject_CallObject(func, args);
+     output_arr = PyArray_FROM_OTF(result, NPY_DOUBLE, NPY_IN_ARRAY);
+
+     output_data = PyArray_DATA(output_arr);
+     y = malloc( len*sizeof(double) );
+     memcpy(y, output_data, len*sizeof(double));
+
+
+     Py_XDECREF(output_arr);
+     Py_XDECREF(result);
+     Py_XDECREF(args);
+     Py_XDECREF(func);
+     Py_XDECREF(mdict);
+     Py_XDECREF(mod);
+     Py_XDECREF(modname);
+
+     /* Py_Finalize(); */
+
+
+     return y;
+}
+
+

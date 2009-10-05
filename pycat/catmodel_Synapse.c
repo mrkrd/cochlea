@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-04 21:11:25 marek>
+/* Time-stamp: <2009-10-05 21:16:48 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -25,7 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>      /* Added for MS Visual C++ compatability, by Ian Bruce, 1999 */
-#include <mex.h>
 #include <time.h>
 //#include <iostream.h>
 
@@ -47,7 +46,7 @@
 /* Declarations of the functions used in the program */
 double Synapse(double *, double, double, int, int, double, double, double, double *);
 int    SpikeGenerator(double *, double, int, int, double *);
-double delay_cat(double cf);
+double delay_cat_Synapse(double cf);
 
 
 void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
@@ -68,12 +67,13 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
      sptime  = (double*)calloc((long) ceil(totalstim*binwidth*nrep/0.00075),sizeof(double));
 
      /*====== Latency of the model ======*/
-     delay      = delay_cat(cf);
+     delay      = delay_cat_Synapse(cf);
      delaypoint =__max(0,(int) ceil(delay/binwidth));
 
      if (fibertype==1) spont = 0.1;
      if (fibertype==2) spont = 5.0;
      if (fibertype==3) spont = 100.0;
+
 
      /*====== Run the synapse model ======*/
      I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, tmpsyntmp);
@@ -105,7 +105,7 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
 /* -------------------------------------------------------------------------------------------- */
 /** Calculate the delay (basilar membrane, synapse, etc. for cat) */
 
-double delay_cat(double cf)
+double delay_cat_Synapse(double cf)
 {
      /* DELAY THE WAVEFORM (delay buf1, tauf, ihc for display purposes)  */
      /* Note: Latency vs. CF for click responses is available for Cat only (not human) */
@@ -169,6 +169,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /* Generating a random sequence*/
 
      randNums = ffGn( ceil(totalstim*nrep*tdres/binwidth), 0.9, spont);
+     printf("XXX\n");
 
      /*----------------------------------------------------------*/
      /*----------------------------------------------------------*/
@@ -243,20 +244,12 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      }
      /*----------------------------------------------------------*/
      /* Down sampling to 10 kHz*/
-     IhcInputArray[0] = mxCreateDoubleMatrix(1, k, mxREAL);
+     printf("%d\n", nrep);
 
-     ihcDims = mxGetPr(IhcInputArray[0]);
-     for (i=0;i<k;++i)
-	  ihcDims[i] = powerLawIn[i];
-
-     IhcInputArray[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *mxGetPr(IhcInputArray[1])= 1;
-
-     IhcInputArray[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *mxGetPr(IhcInputArray[2])= ceil(binwidth/tdres);
-
-     mexCallMATLAB(1, IhcOutputArray, 3, IhcInputArray, "resample");
-     sampIHC = mxGetPr(IhcOutputArray[0]);
+     for (j=0; j<k; j++) {
+	  printf("%d: %f\n", j, powerLawIn[j]);
+     }
+     sampIHC = pyResample(powerLawIn, k, 1, ceil(binwidth/tdres));
 
      free(powerLawIn);
      /*----------------------------------------------------------*/
@@ -330,24 +323,17 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      free(m1); free(m2); free(m3); free(m4); free(m5);   free(n1); free(n2); free(n3);
      /*----------------------------------------------------------*/
      /* Up-sampling to 10 kHz*/
-     SynInputArray[0] = mxCreateDoubleMatrix(1, (long) ceil(totalstim*nrep*tdres*sampFreq), mxREAL);
-     synDims = mxGetPr(SynInputArray[0]);
-     for (i=0; i<(long) floor(totalstim*nrep*tdres*sampFreq); ++i)
-	  synDims[i] = synSampOut[i];
-     SynInputArray[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *mxGetPr(SynInputArray[1])= ceil(binwidth/tdres);
-     SynInputArray[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
-     *mxGetPr(SynInputArray[2])= 1;
-     mexCallMATLAB(1, SynOutputArray, 3, SynInputArray, "resample");
-     TmpSyn = mxGetPr(SynOutputArray[0]);
+
+     TmpSyn = pyResample(synSampOut, ceil(totalstim*nrep*tdres*sampFreq), \
+			 ceil(binwidth/tdres), 1);
+
      /*----------------------------------------------------------*/
      for (i=0;i<totalstim*nrep;++i)
 	  synouttmp[i] = TmpSyn[i];
 
      free(synSampOut);
-     mxDestroyArray(IhcInputArray[0]); mxDestroyArray(IhcOutputArray[0]); mxDestroyArray(IhcInputArray[1]);
-     mxDestroyArray(SynInputArray[0]); mxDestroyArray(SynOutputArray[0]); mxDestroyArray(SynInputArray[1]); mxDestroyArray(SynInputArray[2]);
-     mxDestroyArray(randInputArray[0]); mxDestroyArray(randOutputArray[0]); mxDestroyArray(randInputArray[1]);mxDestroyArray(randInputArray[2]);
+     free(sampIHC);
+     free(TmpSyn);
 
      free(randNums);
 
@@ -369,7 +355,6 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
      double	deadtimeRnd, endOfLastDeadtime, refracMult0, refracMult1, refracValue0, refracValue1;
      double	Xsum, unitRateIntrvl, countTime, DT;
 
-     mxArray	*randInputArray[1], *randOutputArray[1];
      double *randNums, *randDims;
 
      c0      = 0.5;
@@ -382,12 +367,8 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
      Nout = 0;
      NoutMax = (long) ceil(totalstim*nrep*tdres/dead);
 
-     randInputArray[0] = mxCreateDoubleMatrix(1, 2, mxREAL);
-     randDims = mxGetPr(randInputArray[0]);
-     randDims[0] = 1;
-     randDims[1] = NoutMax+1;
-     mexCallMATLAB(1, randOutputArray, 1, randInputArray, "rand");
-     randNums = mxGetPr(randOutputArray[0]);
+     randNums = pyRand(NoutMax+1);
+
      randBufIndex = 0;
 
      /* Calculate useful constants */
@@ -433,7 +414,7 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
 	  }
      } /* End of rate vector loop */
 
-     mxDestroyArray(randInputArray[0]); mxDestroyArray(randOutputArray[0]);
+     free(randNums);
      nspikes = Nout;  /* Number of spikes that occurred. */
      return(nspikes);
 }

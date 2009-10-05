@@ -58,7 +58,7 @@ def ffGn(N, Hinput, mu):
 
 
         # Resampling to match with the AN model
-        y = resample(y, 1e-1/tdres)
+        y = resample(y, np.ceil(len(y) * 1e-1/tdres))
 
 
         if mu < 0.5:

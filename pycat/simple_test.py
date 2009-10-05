@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-28 20:25:14 marek>
+# Time-stamp: <2009-10-05 21:18:58 marek>
 #
 # Description: Some simple internal tests
 
@@ -18,17 +18,20 @@ def main():
     cohc = 1
     cihc = 1
     nrep = 1
-    t = np.arange(0, 0.1, 1/fs)
+    t = np.arange(0, 0.01, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = np.sqrt(2) * 20e-6 * 10**(stimdb/20) * np.sin(2*np.pi*cf*t)
 
-    vich = _pycat.ihc(s, cf, fs, cohc, cihc)
+    vihc = _pycat.ihc(s, cf, fs, cohc, cihc)
 
-    plt.plot(s)
-    plt.plot(vich)
+    # plt.plot(s)
+    # plt.plot(vihc)
+    # plt.show()
+
+
+    synout = _pycat.synapse(vihc, cf, nrep, fs, 1, 1);
+    plt.plot(synout)
     plt.show()
-
-
 
 
 def set_dB_SPL(dB, signal):

@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-04 20:41:53 marek>
+/* Time-stamp: <2009-10-05 18:06:54 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -63,7 +63,7 @@ double WbGammaTone(double, double, double, int, double, double, int);
 double Get_tauwb(double, int, double *, double *);
 double Get_taubm(double, double, double *, double *, double *);
 double gain_groupdelay(double, double, double, double, int *);
-double delay_cat(double cf);
+double delay_cat_IHC(double cf);
 
 double OhcLowPass(double, double, double, int, double, int);
 double IhcLowPass(double, double, double, int, double, int);
@@ -228,7 +228,7 @@ void SingleAN_IHC(double *px, double cf, int nrep, double binwidth, int totalsti
 
      /* Adjust total path delay to all signals after BM */
 
-     delay      = delay_cat(cf);
+     delay      = delay_cat_IHC(cf);
      delaypoint =__max(0,(int) ceil(delay/binwidth));
 
      for(i=delaypoint;i<totalstim;i++)
@@ -660,7 +660,7 @@ double gain_groupdelay(double binwidth,double centerfreq, double cf, double tau,
 /* -------------------------------------------------------------------------------------------- */
 /** Calculate the delay (basilar membrane, synapse, etc. for cat) */
 
-double delay_cat(double cf)
+double delay_cat_IHC(double cf)
 {
      double A0,A1,x,delay;
 

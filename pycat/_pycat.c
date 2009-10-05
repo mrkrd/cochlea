@@ -51,10 +51,69 @@ catmodel_IHC_wrap(PyObject* self, PyObject* args)
 
 
 
+static PyObject*
+catmodel_Synapse_wrap(PyObject* self, PyObject* args)
+{
+
+     PyObject *signal_arr, *signal_arg;
+     double *signal_data;
+     double cf, fs, cohc, cihc;
+     int nrep, fibertype, implnt;
+
+     PyObject *synout_arr, *psth_arr;
+     npy_intp dims[1];
+     int signal_len;
+     double *synout_data, *psth_data;
+
+     int i;
+
+     if (!PyArg_ParseTuple(args, "Odiddi", \
+     			   &signal_arg, &cf, &nrep, &fs, \
+			   &fibertype, &implnt))
+     	  return NULL;
+
+
+     /* Input: sound | px */
+     signal_arr = PyArray_FROM_OTF(signal_arg, NPY_DOUBLE, NPY_IN_ARRAY);
+     signal_data = PyArray_DATA(signal_arr);
+     signal_len = PyArray_DIM(signal_arr, 0);
+
+
+     /* Output: synout | synout_arr */
+     dims[0] = signal_len;
+     synout_arr = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+     synout_data = PyArray_DATA(synout_arr);
+     /* TODO: use PyArray_Zeros instead */
+     for (i=0; i<signal_len; i++) {
+	  synout_data[i] = 0.0;
+     }
+
+     /* Output: psth */
+     dims[0] = signal_len;
+     psth_arr = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+     psth_data = PyArray_DATA(psth_arr);
+     /* TODO: use PyArray_Zeros instead */
+     for (i=0; i<signal_len; i++) {
+	  psth_data[i] = 0.0;
+     }
+
+     /* Run IHC function */
+     SingleAN_Synapse(signal_data, cf, nrep, 1.0/fs, signal_len, \
+		      fibertype, implnt, synout_data, psth_data);
+
+
+     Py_DECREF(signal_arr);
+     Py_DECREF(psth_arr);
+     return synout_arr;
+}
+
+
+
 static PyMethodDef
 PyCat_Methods[] =
 {
      {"ihc", catmodel_IHC_wrap, METH_VARARGS, "IHC module."},
+     {"synapse", catmodel_Synapse_wrap, METH_VARARGS, "Synapse module."},
      {NULL, NULL, 0, NULL}
 };
 
