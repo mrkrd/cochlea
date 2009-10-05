@@ -51,67 +51,87 @@ double* ffGn(int N, double Hinput, double mu)
 }
 
 
-double* pyResample(double *x, int len, int p, int q)
+void pyResample(double *x, int len, int p, int q, double *y)
 {
-     PyObject *modname, *mod, *mdict, *func, *result, *args;
-     PyObject *input_arr;
-     double *input_data;
-     double *y;
+     /* PyObject *modname, *mod, *mdict, *func, *result, *args; */
+     /* PyObject *input_arr; */
+     /* double *input_data; */
+     /* double *y; */
 
-     npy_intp dims[1];
+     /* npy_intp dims[1]; */
 
-     PyObject *output_arr;
-     double *output_data;
+     /* PyObject *output_arr; */
+     /* double *output_data; */
      int new_len;
 
-     Py_Initialize();
-     import_array();
+     int i;
 
-     mod = PyImport_ImportModule("scipy.signal");
-
-     mdict = PyModule_GetDict(mod);
-     func = PyDict_GetItemString(mdict, "resample"); /* borrowed reference */
+     /* Py_Initialize(); */
+     /* import_array(); */
 
 
+     /* mod = PyImport_ImportModule("scipy.signal"); */
+     /* if (!mod) { */
+     /* 	  printf("Module not loaded.\n"); */
+     /* 	  exit(-1); */
+     /* } */
 
-     dims[0] = len;
-     input_arr = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-     input_data = PyArray_DATA(input_arr);
-     /* TODO: protect against buffer overflow */
-     memcpy(input_data, x, len*sizeof(double));
+     /* mdict = PyModule_GetDict(mod); */
+     /* if (!mdict) { */
+     /* 	  printf("Dict not loaded.\n"); */
+     /* 	  exit(-1); */
+     /* } */
+
+     /* func = PyDict_GetItemString(mdict, "resample"); /\* borrowed reference *\/ */
+     /* if (!func) { */
+     /* 	  printf("Function not found.\n"); */
+     /* 	  exit(-1); */
+     /* } */
+
+
+
+     /* dims[0] = len; */
+     /* input_arr = PyArray_SimpleNew(1, dims, NPY_DOUBLE); */
+     /* input_data = PyArray_DATA(input_arr); */
+     /* /\* TODO: protect against buffer overflow *\/ */
+     /* memcpy(input_data, x, len*sizeof(double)); */
 
 
 
      new_len = (int)ceil(len * p / q);
 
-     args = PyTuple_New(2);
-     PyTuple_SetItem(args, 0, input_arr);
-     PyTuple_SetItem(args, 1, PyInt_FromLong(new_len));
+     /* args = PyTuple_New(2); */
+     /* PyTuple_SetItem(args, 0, input_arr); */
+     /* PyTuple_SetItem(args, 1, PyInt_FromLong(new_len)); */
 
 
-     result = PyObject_CallObject(func, args);
+     /* result = PyObject_CallObject(func, args); */
 
-     output_arr = PyArray_FROM_OTF(result, NPY_DOUBLE, NPY_IN_ARRAY);
+     /* output_arr = PyArray_FROM_OTF(result, NPY_DOUBLE, NPY_IN_ARRAY); */
+     /* output_data = PyArray_DATA(output_arr); */
 
-
-     output_data = PyArray_DATA(output_arr);
      y = malloc( new_len*sizeof(double) );
-     memcpy(y, output_data, new_len*sizeof(double));
+     /* memcpy(y, output_data, new_len*sizeof(double)); */
 
 
-
-     Py_XDECREF(input_arr);
-     Py_XDECREF(output_arr);
-     Py_XDECREF(result);
-     Py_XDECREF(args);
-     /* Py_XDECREF(func); */
-     /* Py_XDECREF(mdict); */
-     Py_XDECREF(mod);
+     /* Py_XDECREF(input_arr); */
+     /* Py_XDECREF(output_arr); */
+     /* Py_XDECREF(result); */
+     /* Py_XDECREF(args); */
+     /* /\* Py_XDECREF(func); *\/ */
+     /* /\* Py_XDECREF(mdict); *\/ */
+     /* Py_XDECREF(mod); */
 
      /* Py_Finalize(); */
 
+     for (i=0; i<new_len; i++) {
+	  y[i] = i;
+	  printf("%d: %f\n", i, y[i]);
+     }
 
-     return y;
+     printf("XXX %x\n", y);
+
+     /* return y; */
 }
 
 

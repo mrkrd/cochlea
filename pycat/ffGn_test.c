@@ -16,7 +16,7 @@ int main(void)
      /* pyResample args */
      int old_len = 3;
      double x[old_len];
-     int p = 3;
+     int p = 6;
      int q = 2;
      double *y;
 
@@ -44,6 +44,16 @@ int main(void)
 
 
      printf("*********** pyResample ************\n");
+     for (i=0; i<old_len; i++) {
+	  x[i] = i;
+     }
+     y = pyResample(x, old_len, p, q);
+     for (i=0; i<ceil(old_len*p/q); i++) {
+	  printf("%f\n", y[i]);
+     }
+
+     printf("\n");
+
      for (i=0; i<old_len; i++) {
 	  x[i] = i;
      }
