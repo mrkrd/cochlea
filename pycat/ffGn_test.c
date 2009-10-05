@@ -24,7 +24,14 @@ int main(void)
      randNums = ffGn(N, Hinput, mu);
 
      for (i=0; i<N; i++) {
-	  printf("%f\n", randNums[i]);
+     	  printf("%f\n", randNums[i]);
+     }
+
+
+     randNums = ffGn(N, Hinput, mu);
+
+     for (i=0; i<N; i++) {
+     	  printf("%f\n", randNums[i]);
      }
 
 

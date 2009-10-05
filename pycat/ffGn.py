@@ -71,8 +71,6 @@ def ffGn(N, Hinput, mu):
 
         y = y*sigma
 
-        print y[0:nop]
-
         return y[0:nop]
 
 
