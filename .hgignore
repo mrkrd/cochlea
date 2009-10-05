@@ -2,5 +2,7 @@ syntax: glob
 *.o
 *.pyc
 *.mex
+*.mexa64
 *.so
+*.orig
 ffGn_test

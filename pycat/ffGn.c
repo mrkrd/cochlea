@@ -6,11 +6,15 @@ double* ffGn(int N, double Hinput, double mu)
 {
 
      double *data, *randNums;
-     PyObject *modname, *mod, *mdict, *func, *result, *args;
+     PyObject *mod, *mdict, *func, *result, *args;
+     PyObject *output_arr;
 
      Py_Initialize();
+     import_array();
 
      mod = PyImport_ImportModule("ffGn");
+
+     /* if (mod) printf("success\n"); else printf("failure\n"); */
 
      mdict = PyModule_GetDict(mod);
      func = PyDict_GetItemString(mdict, "ffGn"); /* borrowed reference */
@@ -26,15 +30,18 @@ double* ffGn(int N, double Hinput, double mu)
 
      result = PyObject_CallObject(func, args);
 
-     data = PyArray_DATA(result);
+     output_arr = PyArray_FROM_OTF(result, NPY_DOUBLE, NPY_IN_ARRAY);
+
+     data = PyArray_DATA(output_arr);
      randNums = malloc( N*sizeof(double) );
      memcpy(randNums, data, N*sizeof(double));
 
 
+     Py_DECREF(output_arr);
      Py_XDECREF(result);
      Py_XDECREF(args);
-     Py_XDECREF(func);
-     Py_XDECREF(mdict);
+     /* Py_XDECREF(func); */
+     /* Py_XDECREF(mdict); */
      Py_XDECREF(mod);
 
      /* Py_Finalize(); */
@@ -48,7 +55,7 @@ double* pyResample(double *x, int len, int p, int q)
 {
      PyObject *modname, *mod, *mdict, *func, *result, *args;
      PyObject *input_arr;
-     double *input_data, *result_data;
+     double *input_data;
      double *y;
 
      npy_intp dims[1];
@@ -75,15 +82,17 @@ double* pyResample(double *x, int len, int p, int q)
 
 
 
-     new_len = ceil(len * p / q);
-     printf("%d %d\n", len, new_len);
+     new_len = (int)ceil(len * p / q);
+
      args = PyTuple_New(2);
      PyTuple_SetItem(args, 0, input_arr);
      PyTuple_SetItem(args, 1, PyInt_FromLong(new_len));
 
 
      result = PyObject_CallObject(func, args);
+
      output_arr = PyArray_FROM_OTF(result, NPY_DOUBLE, NPY_IN_ARRAY);
+
 
      output_data = PyArray_DATA(output_arr);
      y = malloc( new_len*sizeof(double) );
@@ -95,10 +104,9 @@ double* pyResample(double *x, int len, int p, int q)
      Py_XDECREF(output_arr);
      Py_XDECREF(result);
      Py_XDECREF(args);
-     Py_XDECREF(func);
-     Py_XDECREF(mdict);
+     /* Py_XDECREF(func); */
+     /* Py_XDECREF(mdict); */
      Py_XDECREF(mod);
-     Py_XDECREF(modname);
 
      /* Py_Finalize(); */
 
@@ -138,10 +146,9 @@ double* pyRand(int len)
      Py_XDECREF(output_arr);
      Py_XDECREF(result);
      Py_XDECREF(args);
-     Py_XDECREF(func);
-     Py_XDECREF(mdict);
+     /* Py_XDECREF(func); */
+     /* Py_XDECREF(mdict); */
      Py_XDECREF(mod);
-     Py_XDECREF(modname);
 
      /* Py_Finalize(); */
 

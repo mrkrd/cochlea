@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-05 21:18:58 marek>
+# Time-stamp: <2009-10-06 00:50:08 marek>
 #
 # Description: Some simple internal tests
 
@@ -27,7 +27,6 @@ def main():
     # plt.plot(s)
     # plt.plot(vihc)
     # plt.show()
-
 
     synout = _pycat.synapse(vihc, cf, nrep, fs, 1, 1);
     plt.plot(synout)

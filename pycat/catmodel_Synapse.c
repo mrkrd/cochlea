@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-05 21:16:48 marek>
+/* Time-stamp: <2009-10-06 00:20:18 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -61,14 +61,17 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
      double I,delay,spont;
      double sampFreq = 10e3;
 
+
      /* Allocate dynamic memory for the temporary variables */
      tmpsyntmp  = (double*)calloc(totalstim*nrep,sizeof(double));
      synouttmp  = (double*)calloc(totalstim*nrep,sizeof(double));
      sptime  = (double*)calloc((long) ceil(totalstim*binwidth*nrep/0.00075),sizeof(double));
 
+
      /*====== Latency of the model ======*/
      delay      = delay_cat_Synapse(cf);
      delaypoint =__max(0,(int) ceil(delay/binwidth));
+
 
      if (fibertype==1) spont = 0.1;
      if (fibertype==2) spont = 5.0;
@@ -167,9 +170,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      alpha2 = 1e-2*100e3; beta2 = 1e-1; I2 =0;
      /*----------------------------------------------------------*/
      /* Generating a random sequence*/
-
-     randNums = ffGn( ceil(totalstim*nrep*tdres/binwidth), 0.9, spont);
-     printf("XXX\n");
+     randNums = ffGn( (int)ceil(totalstim*nrep*tdres/binwidth), 0.9, spont);
 
      /*----------------------------------------------------------*/
      /*----------------------------------------------------------*/
@@ -244,12 +245,8 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      }
      /*----------------------------------------------------------*/
      /* Down sampling to 10 kHz*/
-     printf("%d\n", nrep);
 
-     for (j=0; j<k; j++) {
-	  printf("%d: %f\n", j, powerLawIn[j]);
-     }
-     sampIHC = pyResample(powerLawIn, k, 1, ceil(binwidth/tdres));
+     sampIHC = pyResample(powerLawIn, k, 1, (int)ceil(binwidth/tdres));
 
      free(powerLawIn);
      /*----------------------------------------------------------*/
@@ -323,9 +320,10 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      free(m1); free(m2); free(m3); free(m4); free(m5);   free(n1); free(n2); free(n3);
      /*----------------------------------------------------------*/
      /* Up-sampling to 10 kHz*/
+     printf("xxx %d\n", (int)ceil(totalstim*nrep*tdres*sampFreq));
 
-     TmpSyn = pyResample(synSampOut, ceil(totalstim*nrep*tdres*sampFreq), \
-			 ceil(binwidth/tdres), 1);
+     TmpSyn = pyResample(synSampOut, (int)ceil(totalstim*nrep*tdres*sampFreq), \
+			 (int)ceil(binwidth/tdres), 1);
 
      /*----------------------------------------------------------*/
      for (i=0;i<totalstim*nrep;++i)

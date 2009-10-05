@@ -20,7 +20,7 @@ _pycat.so : _pycat.c catmodel_IHC.o complex.o ffGn.o catmodel_Synapse.o
 	-I `python -c "import numpy; print numpy.get_include()"` \
 	-c _pycat.c -o _pycat.o
 
-	gcc -shared `python-config --ldflags` `dsam-config --libs` -o _pycat.so \
+	gcc -shared `python-config --ldflags` -o _pycat.so \
 	_pycat.o catmodel_IHC.o complex.o ffGn.o catmodel_Synapse.o
 
 
