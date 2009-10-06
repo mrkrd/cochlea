@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-05 18:06:54 marek>
+/* Time-stamp: <2009-10-06 14:51:17 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.

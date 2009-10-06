@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-06 13:24:05 marek>
+# Time-stamp: <2009-10-06 15:22:37 marek>
 #
 # Description: Some simple internal tests
 
@@ -14,7 +14,7 @@ def main():
 
     fs = 100000.0
     stimdb = 50
-    cf = 1000
+    cf = 10000
     cohc = 1
     cihc = 1
     nrep = 100
@@ -22,17 +22,19 @@ def main():
     s = np.sin(2 * np.pi * t * cf)
     s = np.sqrt(2) * 20e-6 * 10**(stimdb/20) * np.sin(2*np.pi*cf*t)
 
-    s[0:np.floor(len(s)/2)] = 0
+    # s[0:np.floor(len(s)/2)] = 0
+    # s[:] = 0
 
     vihc = _pycat.ihc(s, cf, fs, cohc, cihc)
 
-    plt.plot(s)
-    plt.plot(vihc)
+    # plt.plot(s/s.max()/2)
+    # plt.plot(vihc/vihc.max()/2)
     # plt.show()
 
     synout, psth = _pycat.synapse(vihc, cf, nrep, fs, 3, 0);
 
-    plt.plot(synout)
+    # plt.plot(synout)
+    plt.plot(psth)
     plt.show()
 
 

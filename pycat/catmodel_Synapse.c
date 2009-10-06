@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-06 13:54:00 marek>
+/* Time-stamp: <2009-10-06 20:20:33 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -83,13 +83,16 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
      /*====== Run the synapse model ======*/
      I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, tmpsyntmp);
 
+     /* delaypoint = 0; */
 
      /* Wrapping up the unfolded (due to no. of repetitions) Synapse Output */
      for(i = 0; i <I ; i++)
      {
-	  if (i<delaypoint) synouttmp[i] = spont;
-	  else synouttmp[i] = tmpsyntmp[i-delaypoint];
+	  synouttmp[i] = tmpsyntmp[i];
 	  ipst = (int) (fmod(i,totalstim));
+	  /* if (ipst<delaypoint) synouttmp[i] = spont; */
+	  /* else synouttmp[i] = tmpsyntmp[i-delaypoint]; */
+	  /* synout[ipst] = synout[ipst] + synouttmp[i]/nrep; */
 	  synout[ipst] = synout[ipst] + synouttmp[i]/nrep;
      };
      free(tmpsyntmp);
@@ -104,7 +107,7 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
 
 /* Freeing dynamic memory allocated earlier */
 
-     free(sptime); free(synouttmp); //free(tmpsyntmp);
+     free(sptime); free(synouttmp);
 
 } /* End of the SingleAN function */
 /* -------------------------------------------------------------------------------------------- */
