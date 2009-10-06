@@ -32,6 +32,7 @@ int main(void)
      for (i=0; i<N; i++) {
      	  printf("%f\n", randNums[i]);
      }
+     free(randNums);
 
 
      printf("\n");
@@ -41,6 +42,14 @@ int main(void)
      for (i=0; i<N; i++) {
      	  printf("%f\n", randNums[i]);
      }
+     free(randNums);
+
+     /* printf("Testing for memory leaks...\n"); */
+
+     /* for (i=0; i<1000000; i++) { */
+     /* 	  randNums = ffGn(N*10, Hinput, mu); */
+     /* 	  free(randNums); */
+     /* } */
 
 
      printf("*********** pyResample ************\n");

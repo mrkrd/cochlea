@@ -65,6 +65,8 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
      int signal_len;
      double *synout_data, *psth_data;
 
+     PyObject *return_tuple;
+
      int i;
 
      if (!PyArg_ParseTuple(args, "Odiddd", \
@@ -103,8 +105,14 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
 
 
      Py_DECREF(signal_arr);
-     Py_DECREF(psth_arr);
-     return synout_arr;
+     /* Py_DECREF(psth_arr); */
+     /* Py_DECREF(synout_arr); */
+
+
+     return_tuple = Py_BuildValue( "(O,O)", synout_arr, psth_arr);
+     printf("asdf\n");
+
+     return return_tuple;
 }
 
 

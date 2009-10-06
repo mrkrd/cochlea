@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-06 01:52:16 marek>
+/* Time-stamp: <2009-10-06 13:54:00 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -29,6 +29,8 @@
 //#include <iostream.h>
 
 #include "complex.hpp"
+
+#include "ffGn.h"
 
 #define MAXSPIKES 1000000
 #ifndef TWOPI
@@ -81,7 +83,6 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
      /*====== Run the synapse model ======*/
      I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, tmpsyntmp);
 
-     printf("XXX\n");
 
      /* Wrapping up the unfolded (due to no. of repetitions) Synapse Output */
      for(i = 0; i <I ; i++)
@@ -249,14 +250,12 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /* Down sampling to 10 kHz*/
 
      sampIHC = pyResample(powerLawIn, k, 1, (int)ceil(binwidth/tdres));
-     printf("XXX %x\n", sampIHC);
 
      free(powerLawIn);
      /*----------------------------------------------------------*/
      k = 0;
      for (indx=0; indx<ceil(totalstim*nrep*tdres/binwidth); ++indx)
      {
-	  printf("XXX %d\n", (int)ceil(totalstim*nrep*tdres/binwidth));
 
           sout1[k]  = __max( 0, sampIHC[indx] + randNums[indx]- alpha1*I1);
           sout2[k]  = __max( 0, sampIHC[indx] - alpha2*I2);
@@ -325,7 +324,6 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      free(m1); free(m2); free(m3); free(m4); free(m5);   free(n1); free(n2); free(n3);
      /*----------------------------------------------------------*/
      /* Up-sampling to 10 kHz*/
-     printf("xxx %d\n", (int)ceil(totalstim*nrep*tdres*sampFreq));
 
      TmpSyn = pyResample(synSampOut, (int)ceil(totalstim*nrep*tdres*sampFreq), \
 			 (int)ceil(binwidth/tdres), 1);
