@@ -110,7 +110,6 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
 
 
      return_tuple = Py_BuildValue( "(O,O)", synout_arr, psth_arr);
-     printf("asdf\n");
 
      return return_tuple;
 }
@@ -120,8 +119,8 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
 static PyMethodDef
 PyCat_Methods[] =
 {
-     {"ihc", catmodel_IHC_wrap, METH_VARARGS, "IHC module."},
-     {"synapse", catmodel_Synapse_wrap, METH_VARARGS, "Synapse module."},
+     {"run_ihc", catmodel_IHC_wrap, METH_VARARGS, "IHC module."},
+     {"run_synapse", catmodel_Synapse_wrap, METH_VARARGS, "Synapse module."},
      {NULL, NULL, 0, NULL}
 };
 

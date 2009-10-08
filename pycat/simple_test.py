@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-06 15:22:37 marek>
+# Time-stamp: <2009-10-07 18:53:41 marek>
 #
 # Description: Some simple internal tests
 
@@ -25,13 +25,13 @@ def main():
     # s[0:np.floor(len(s)/2)] = 0
     # s[:] = 0
 
-    vihc = _pycat.ihc(s, cf, fs, cohc, cihc)
+    vihc = _pycat.run_ihc(s, cf, fs, cohc, cihc)
 
     # plt.plot(s/s.max()/2)
     # plt.plot(vihc/vihc.max()/2)
     # plt.show()
 
-    synout, psth = _pycat.synapse(vihc, cf, nrep, fs, 3, 0);
+    synout, psth = _pycat.run_synapse(vihc, cf, nrep, fs, 3, 0);
 
     # plt.plot(synout)
     plt.plot(psth)
