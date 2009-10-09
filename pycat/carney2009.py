@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 14:49:39 marek>
+# Time-stamp: <2009-10-09 19:27:23 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -9,7 +9,7 @@ from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
 
-import pycat
+import catmodel
 import thorns as th
 
 class Carney2009(object):
@@ -73,9 +73,9 @@ class Carney2009(object):
     def _run_anf(self, fs, sound, times, ihc_pars, synapse_pars):
         anf_db = []
         for freq_idx,cf in enumerate(self._freq_map):
-            vihc = pycat.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
+            vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
             for run_idx in range(times):
-                psth = pycat.run_synapse(fs=fs,
+                psth = catmodel.run_synapse(fs=fs,
                                          vihc=vihc,
                                          cf=cf,
                                          **synapse_pars);
@@ -119,25 +119,17 @@ class Carney2009(object):
 def main():
     ear = Carney2009(hsr=1, msr=0, lsr=0)
 
-    ear.set_freq( (1000, 5000, 10) )
-
-    print "Cat's freq map test:"
-    print ear.get_freq_map()
-
-
     fs = 100000.0
     cf = 1000
     stimdb = 50
-    t = np.arange(0, 0.5, 1/fs)
+    t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
-    # s = np.sqrt(2) * 20e-6 * 10**(stimdb/20) * np.sin(2*np.pi*cf*t)
-    # s = s * 1e+6
-    s = pycat.set_dB_SPL(50, s)
+    s = catmodel.set_dB_SPL(50, s)
 
     ear.set_freq( cf )
 
     hsr, msr, lsr = ear.run(fs, s, times=250)
-    # th.plot_raster(hsr['spikes'])
+    th.plot_raster(hsr['spikes'])
 
 
 if __name__ == "__main__":

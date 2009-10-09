@@ -127,9 +127,9 @@ PyCat_Methods[] =
 
 
 PyMODINIT_FUNC
-init_pycat(void)
+init_catmodel(void)
 {
-     (void)Py_InitModule("_pycat", PyCat_Methods);
+     (void)Py_InitModule("_catmodel", PyCat_Methods);
      import_array();
 }
 

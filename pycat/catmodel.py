@@ -1,7 +1,7 @@
 from __future__ import division
 
 import numpy as np
-import _pycat
+import _catmodel
 
 def run_ihc(sound, cf, fs, cohc=1, cihc=1):
     # TODO: test input parameters; refere to mex files
@@ -9,7 +9,7 @@ def run_ihc(sound, cf, fs, cohc=1, cihc=1):
     # uPa -> Pa
     sound = sound * 1e-6
 
-    vihc = _pycat.run_ihc(sound, cf, fs, cohc, cihc)
+    vihc = _catmodel.run_ihc(sound, cf, fs, cohc, cihc)
 
     return vihc
 
@@ -25,7 +25,7 @@ def run_synapse(vihc, cf, nrep, fs, anf_type='hsr', implnt='actual'):
     implnt_map = {'actual': 1,
                   'approx': 0}
 
-    psth = _pycat.run_synapse(vihc, cf, nrep, fs,
+    psth = _catmodel.run_synapse(vihc, cf, nrep, fs,
                               anf_map[anf_type], implnt_map[implnt]);
     return psth
 
