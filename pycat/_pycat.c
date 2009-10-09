@@ -103,15 +103,15 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
      SingleAN_Synapse(signal_data, cf, nrep, 1.0/fs, signal_len, \
 		      fibertype, implnt, synout_data, psth_data);
 
-
      Py_DECREF(signal_arr);
      /* Py_DECREF(psth_arr); */
-     /* Py_DECREF(synout_arr); */
+     Py_DECREF(synout_arr);
 
-     return_tuple = Py_BuildValue( "(O,O)", synout_arr, psth_arr);
+     /* return_tuple = Py_BuildValue( "(O,O)", synout_arr, psth_arr); */
      /* Py_DECREF(return_tuple); */
 
-     return return_tuple;
+     /* return return_tuple; */
+     return psth_arr;
 }
 
 

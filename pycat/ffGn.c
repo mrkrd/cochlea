@@ -12,7 +12,11 @@ double* ffGn(int N, double Hinput, double mu)
      Py_Initialize();
      import_array();
 
-     mod = PyImport_ImportModule("ffGn");
+     mod = PyImport_ImportModule("pycat.ffGn");
+     if (!mod) {
+     	  printf("ffGn: Module not loaded.\n");
+     	  exit(-1);
+     }
 
      /* if (mod) printf("success\n"); else printf("failure\n"); */
 

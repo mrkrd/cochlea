@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 12:29:02 marek>
+# Time-stamp: <2009-10-09 14:49:39 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -75,10 +75,10 @@ class Carney2009(object):
         for freq_idx,cf in enumerate(self._freq_map):
             vihc = pycat.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
             for run_idx in range(times):
-                synout, psth = pycat.run_synapse(fs=fs,
-                                                 vihc=vihc,
-                                                 cf=cf,
-                                                 **synapse_pars);
+                psth = pycat.run_synapse(fs=fs,
+                                         vihc=vihc,
+                                         cf=cf,
+                                         **synapse_pars);
 
                 train = th.signal_to_spikes(fs, psth)
                 train = train[0] # there is only one train per run
@@ -87,7 +87,6 @@ class Carney2009(object):
                                            ('trial', int),
                                            ('spikes', np.ndarray) ])
         return anf_out
-
 
     def set_freq(self, freq):
         if isinstance(freq, int):

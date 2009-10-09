@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-09 12:19:15 marek>
+/* Time-stamp: <2009-10-09 14:40:41 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -78,7 +78,6 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth,
      if (fibertype==1) spont = 0.1;
      if (fibertype==2) spont = 5.0;
      if (fibertype==3) spont = 100.0;
-
 
      /*====== Run the synapse model ======*/
      I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, tmpsyntmp);

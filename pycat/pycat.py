@@ -25,11 +25,9 @@ def run_synapse(vihc, cf, nrep, fs, anf_type='hsr', implnt='actual'):
     implnt_map = {'actual': 1,
                   'approx': 0}
 
-
-    synout, psth = _pycat.run_synapse(vihc, cf, nrep, fs,
-                                      anf_map[anf_type], implnt_map[implnt]);
-
-    return synout, psth
+    psth = _pycat.run_synapse(vihc, cf, nrep, fs,
+                              anf_map[anf_type], implnt_map[implnt]);
+    return psth
 
 def set_dB_SPL(dB, signal):
     p0 = 2e-5                   # Pa
