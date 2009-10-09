@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-07 18:53:41 marek>
+# Time-stamp: <2009-10-09 12:30:48 marek>
 #
 # Description: Some simple internal tests
 
@@ -34,8 +34,8 @@ def main():
     synout, psth = _pycat.run_synapse(vihc, cf, nrep, fs, 3, 0);
 
     # plt.plot(synout)
-    plt.plot(psth)
-    plt.show()
+    # plt.plot(psth)
+    # plt.show()
 
 
 def set_dB_SPL(dB, signal):

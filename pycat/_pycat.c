@@ -105,11 +105,11 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
 
 
      Py_DECREF(signal_arr);
-     Py_DECREF(psth_arr);
-     Py_DECREF(synout_arr);
+     /* Py_DECREF(psth_arr); */
+     /* Py_DECREF(synout_arr); */
 
      return_tuple = Py_BuildValue( "(O,O)", synout_arr, psth_arr);
-     Py_DECREF(return_tuple);
+     /* Py_DECREF(return_tuple); */
 
      return return_tuple;
 }
