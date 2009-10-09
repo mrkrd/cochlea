@@ -36,7 +36,6 @@ double* ffGn(int N, double Hinput, double mu)
      randNums = malloc( N*sizeof(double) );
      memcpy(randNums, data, N*sizeof(double));
 
-
      Py_DECREF(output_arr);
      Py_XDECREF(result);
      Py_XDECREF(args);

@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-06 20:22:40 marek>
+/* Time-stamp: <2009-10-09 12:19:15 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -177,6 +177,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /* Generating a random sequence*/
      randNums = ffGn( (int)ceil(totalstim*nrep*tdres/binwidth), 0.9, spont);
+
 
      /*----------------------------------------------------------*/
      /*----------------------------------------------------------*/
