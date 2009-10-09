@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 14:57:31 marek>
+# Time-stamp: <2009-10-09 16:04:42 marek>
 #
 # Description: Rate-intensity function
 
@@ -68,9 +68,9 @@ def rate_intensity_sumner2002():
 def rate_intensity_carney2009():
 
     dbspl_list=range(-20,80,5)
-    cf_list = [10000]
+    cf_list = [500]
 
-    ear = cochlea.Carney2009(hsr=10, msr=10, lsr=10)
+    ear = cochlea.Carney2009(hsr=20, msr=20, lsr=20)
 
     hsr_rate, msr_rate, lsr_rate = rate_intensity(ear, 100000,
                                                   cf_list=cf_list,
