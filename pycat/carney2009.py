@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 19:27:23 marek>
+# Time-stamp: <2009-10-09 19:58:26 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -42,27 +42,29 @@ class Carney2009(object):
 
         # TODO: implement output_format='signals'
         if output_format == 'signals':
-            assert False
             assert times == 1
 
         if self.hsr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
             synapse_pars = {'nrep':self.hsr_num, 'anf_type':'hsr', 'implnt':'actual'}
-            hsr_out = self._run_anf(fs, sound, times, ihc_pars, synapse_pars)
+            hsr_out = self._run_anf(fs, sound, times, output_format,
+                                    ihc_pars, synapse_pars)
         else:
             hsr_out = None
 
         if self.msr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
             synapse_pars = {'nrep':self.msr_num, 'anf_type':'msr', 'implnt':'actual'}
-            msr_out = self._run_anf(fs, sound, times, ihc_pars, synapse_pars)
+            msr_out = self._run_anf(fs, sound, times, output_format,
+                                    ihc_pars, synapse_pars)
         else:
             msr_out = None
 
         if self.lsr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
             synapse_pars = {'nrep':self.lsr_num, 'anf_type':'lsr', 'implnt':'actual'}
-            lsr_out = self._run_anf(fs, sound, times, ihc_pars, synapse_pars)
+            lsr_out = self._run_anf(fs, sound, times, output_format,
+                                    ihc_pars, synapse_pars)
         else:
             lsr_out = None
 
@@ -70,22 +72,32 @@ class Carney2009(object):
 
 
 
-    def _run_anf(self, fs, sound, times, ihc_pars, synapse_pars):
-        anf_db = []
-        for freq_idx,cf in enumerate(self._freq_map):
-            vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
-            for run_idx in range(times):
+    def _run_anf(self, fs, sound, times, output_format, ihc_pars, synapse_pars):
+        if output_format == 'spikes':
+            anf_db = []
+            for freq_idx,cf in enumerate(self._freq_map):
+                vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
+                for run_idx in range(times):
+                    psth = catmodel.run_synapse(fs=fs,
+                                                vihc=vihc,
+                                                cf=cf,
+                                                **synapse_pars);
+                    train = th.signal_to_spikes(fs, psth)
+                    train = train[0] # there is only one train per run
+                    anf_db.append( (freq_idx, run_idx, train) )
+            anf_out = np.array(anf_db, dtype=[ ('freq', int),
+                                               ('trial', int),
+                                               ('spikes', np.ndarray) ])
+        elif output_format == 'signals':
+            anf_out = np.zeros( (len(sound), len(self._freq_map)) )
+            for freq_idx,cf in enumerate(self._freq_map):
+                print cf
+                vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
                 psth = catmodel.run_synapse(fs=fs,
-                                         vihc=vihc,
-                                         cf=cf,
-                                         **synapse_pars);
-
-                train = th.signal_to_spikes(fs, psth)
-                train = train[0] # there is only one train per run
-                anf_db.append( (freq_idx, run_idx, train) )
-        anf_out = np.array(anf_db, dtype=[ ('freq', int),
-                                           ('trial', int),
-                                           ('spikes', np.ndarray) ])
+                                            vihc=vihc,
+                                            cf=cf,
+                                            **synapse_pars);
+                anf_out[:,freq_idx] = psth
         return anf_out
 
     def set_freq(self, freq):
