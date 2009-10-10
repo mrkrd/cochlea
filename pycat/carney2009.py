@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 19:58:26 marek>
+# Time-stamp: <2009-10-09 20:44:38 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -40,7 +40,8 @@ class Carney2009(object):
 
     def run(self, fs, sound, times=1, output_format='spikes'):
 
-        # TODO: implement output_format='signals'
+        # TODO: implement storing the spikes in a file and reloading them automaticly
+
         if output_format == 'signals':
             assert times == 1
 
