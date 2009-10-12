@@ -2,7 +2,7 @@
 #include "numpy/arrayobject.h"
 
 #include "catmodel_IHC.h"
-
+#include "catmodel_Synapse.h"
 
 
 static PyObject*
