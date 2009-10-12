@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 20:44:38 marek>
+# Time-stamp: <2009-10-12 21:58:07 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -141,7 +141,7 @@ def main():
 
     ear.set_freq( cf )
 
-    hsr, msr, lsr = ear.run(fs, s, times=250)
+    hsr, msr, lsr = ear.run(fs, s, times=100)
     th.plot_raster(hsr['spikes'])
 
 

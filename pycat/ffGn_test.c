@@ -1,8 +1,11 @@
+#include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "ffGn.h"
 
 int main(void)
 {
+     int times = 10000;
 
      /* ffGn args */
      int N = 1000;
@@ -14,7 +17,7 @@ int main(void)
 
 
      /* pyResample args */
-     int old_len = 3;
+     int old_len = 300;
      double x[old_len];
      int p = 6;
      int q = 2;
@@ -22,13 +25,17 @@ int main(void)
 
 
      /* pyRand args */
-     int len = 5;
+     int len = 5000;
      double *z;
 
 
      printf("*********** ffGn ************\n");
-     randNums = ffGn(N, Hinput, mu);
+     for (i=0; i<times; i++) {
+	  randNums = ffGn(N, Hinput, mu);
+	  free(randNums);
+     }
 
+     randNums = ffGn(N, Hinput, mu);
      for (i=0; i<N; i++) {
      	  printf("%f\n", randNums[i]);
      }
@@ -56,6 +63,11 @@ int main(void)
      for (i=0; i<old_len; i++) {
 	  x[i] = i;
      }
+     for (i=0; i<times; i++) {
+	  y = pyResample(x, old_len, p, q);
+	  free(y);
+     }
+
      y = pyResample(x, old_len, p, q);
      for (i=0; i<ceil(old_len*p/q); i++) {
 	  printf("%f\n", y[i]);
@@ -73,6 +85,11 @@ int main(void)
 
 
      printf("*********** pyRand ************\n");
+     for (i=0; i<times; i++) {
+	  z = pyRand(len);
+	  free(z);
+     }
+
      z = pyRand(len);
      for (i=0; i<len; i++) {
 	  printf("%f\n", z[i]);

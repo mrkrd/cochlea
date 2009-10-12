@@ -41,11 +41,11 @@ double* ffGn(int N, double Hinput, double mu)
      memcpy(randNums, data, N*sizeof(double));
 
      Py_DECREF(output_arr);
-     Py_XDECREF(result);
-     Py_XDECREF(args);
+     Py_DECREF(result);
+     Py_DECREF(args);
      /* Py_XDECREF(func); */
      /* Py_XDECREF(mdict); */
-     Py_XDECREF(mod);
+     /* Py_XDECREF(mod); */
 
      /* Py_Finalize(); */
 
@@ -117,13 +117,13 @@ double* pyResample(double *x, int len, int p, int q)
      memcpy(y, output_data, new_len*sizeof(double));
 
 
-     Py_XDECREF(input_arr);
-     Py_XDECREF(output_arr);
-     Py_XDECREF(result);
+     /* Py_DECREF(input_arr); */
+     Py_DECREF(output_arr);
+     Py_DECREF(result);
      Py_XDECREF(args);
      /* Py_XDECREF(func); */
      /* Py_XDECREF(mdict); */
-     Py_XDECREF(mod);
+     /* Py_XDECREF(mod); */
 
      /* Py_Finalize(); */
 
@@ -166,12 +166,12 @@ double* pyRand(int len)
      memcpy(y, output_data, len*sizeof(double));
 
 
-     Py_XDECREF(output_arr);
-     Py_XDECREF(result);
+     Py_DECREF(output_arr);
+     Py_DECREF(result);
      Py_XDECREF(args);
      /* Py_XDECREF(func); */
      /* Py_XDECREF(mdict); */
-     Py_XDECREF(mod);
+     /* Py_XDECREF(mod); */
 
      /* Py_Finalize(); */
 
