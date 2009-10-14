@@ -26,7 +26,7 @@
 #include <math.h>      /* Added for MS Visual C++ compatability, by Ian Bruce, 1999 */
 #include <mex.h>
 #include <time.h>
-//#include <iostream.h>
+#include <iostream.h>
 
 #include "complex.hpp"
 
