@@ -15,7 +15,7 @@ def run_ihc(sound, cf, fs, cohc=1, cihc=1):
 
 
 
-def run_synapse(vihc, cf, nrep, fs, anf_type='hsr', implnt='actual'):
+def run_synapse(vihc, cf, fs, anf_type='hsr', implnt='actual', anf_num=1):
     # TODO: test input pars; refere to mex files
 
     anf_map = {'hsr': 3,
@@ -25,9 +25,14 @@ def run_synapse(vihc, cf, nrep, fs, anf_type='hsr', implnt='actual'):
     implnt_map = {'actual': 1,
                   'approx': 0}
 
-    psth = _catmodel.run_synapse(vihc, cf, nrep, fs,
-                              anf_map[anf_type], implnt_map[implnt]);
-    return psth
+    spike_signal = np.zeros_like( vihc )
+    for anf_idx in range(anf_num):
+        psth = _catmodel.run_synapse(vihc, cf, fs,
+                                     anf_map[anf_type], implnt_map[implnt]);
+
+        spike_signal = spike_signal + psth
+
+    return spike_signal
 
 def set_dB_SPL(dB, signal):
     p0 = 2e-5                   # Pa

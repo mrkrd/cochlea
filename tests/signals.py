@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 19:57:25 marek>
+# Time-stamp: <2009-10-19 17:31:01 marek>
 #
 # Description: Plot output bitmaps
 
@@ -16,7 +16,7 @@ def main():
 
     ear = pycat.Carney2009(hsr=50, msr=0, lsr=0,
                            freq=(50, 10000, 80),
-                           implnt='approx')
+                           implnt='actual')
     hsr, msr, lsr = ear.run(fs, s, times=1, output_format='signals')
 
     ax = plt.gca()

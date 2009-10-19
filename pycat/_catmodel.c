@@ -58,7 +58,7 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
      PyObject *signal_arr, *signal_arg;
      double *signal_data;
      double cf, fs, implnt, fibertype;
-     int nrep;
+     int nrep = 1;
 
      PyObject *synout_arr, *psth_arr;
      npy_intp dims[1];
@@ -69,8 +69,8 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
 
      int i;
 
-     if (!PyArg_ParseTuple(args, "Odiddd", \
-     			   &signal_arg, &cf, &nrep, &fs, \
+     if (!PyArg_ParseTuple(args, "Odddd", \
+     			   &signal_arg, &cf, &fs, \
 			   &fibertype, &implnt))
      	  return NULL;
 

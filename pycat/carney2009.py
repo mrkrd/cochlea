@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-12 22:10:49 marek>
+# Time-stamp: <2009-10-19 17:33:25 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -22,7 +22,7 @@ class Carney2009(object):
 
         animal: must be cat
 
-        implnt: 'approx'/'acctual' implementation of the power-law
+        implnt: approx. or acctual implementation of the power-law
         """
         assert animal == 'cat'
 
@@ -47,25 +47,25 @@ class Carney2009(object):
 
         if self.hsr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
-            synapse_pars = {'nrep':self.hsr_num, 'anf_type':'hsr', 'implnt':'actual'}
-            hsr_out = self._run_anf(fs, sound, times, output_format,
-                                    ihc_pars, synapse_pars)
+            synapse_pars = {'anf_type':'hsr', 'implnt':'actual'}
+            hsr_out = self._run_anf(fs, sound, times, self.hsr_num,
+                                    output_format, ihc_pars, synapse_pars)
         else:
             hsr_out = None
 
         if self.msr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
-            synapse_pars = {'nrep':self.msr_num, 'anf_type':'msr', 'implnt':'actual'}
-            msr_out = self._run_anf(fs, sound, times, output_format,
-                                    ihc_pars, synapse_pars)
+            synapse_pars = {'anf_type':'msr', 'implnt':'actual'}
+            msr_out = self._run_anf(fs, sound, times, self.msr_num,
+                                    output_format, ihc_pars, synapse_pars)
         else:
             msr_out = None
 
         if self.lsr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
-            synapse_pars = {'nrep':self.lsr_num, 'anf_type':'lsr', 'implnt':'actual'}
-            lsr_out = self._run_anf(fs, sound, times, output_format,
-                                    ihc_pars, synapse_pars)
+            synapse_pars = {'anf_type':'lsr', 'implnt':'actual'}
+            lsr_out = self._run_anf(fs, sound, times, self.lsr_num,
+                                    output_format, ihc_pars, synapse_pars)
         else:
             lsr_out = None
 
@@ -73,15 +73,18 @@ class Carney2009(object):
 
 
 
-    def _run_anf(self, fs, sound, times, output_format, ihc_pars, synapse_pars):
+    def _run_anf(self, fs, sound, times, anf_num,
+                 output_format, ihc_pars, synapse_pars):
         if output_format == 'spikes':
             anf_db = []
             for freq_idx,cf in enumerate(self._freq_map):
                 vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
                 for run_idx in range(times):
+                    train = np.array([])
                     psth = catmodel.run_synapse(fs=fs,
                                                 vihc=vihc,
                                                 cf=cf,
+                                                anf_num=anf_num,
                                                 **synapse_pars);
                     train = th.signal_to_spikes(fs, psth)
                     train = train[0] # there is only one train per run
@@ -92,11 +95,11 @@ class Carney2009(object):
         elif output_format == 'signals':
             anf_out = np.zeros( (len(sound), len(self._freq_map)) )
             for freq_idx,cf in enumerate(self._freq_map):
-                print cf
                 vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
                 psth = catmodel.run_synapse(fs=fs,
                                             vihc=vihc,
                                             cf=cf,
+                                            anf_num=anf_num,
                                             **synapse_pars);
                 anf_out[:,freq_idx] = psth
         return anf_out
@@ -130,19 +133,21 @@ class Carney2009(object):
 
 
 def main():
-    ear = Carney2009(hsr=1, msr=0, lsr=0)
+    ear = Carney2009(hsr=2, msr=0, lsr=0)
 
     fs = 100000.0
     cf = 1000
     stimdb = 50
-    t = np.arange(0, 0.05, 1/fs)
+    t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = catmodel.set_dB_SPL(stimdb, s)
+    s = np.concatenate( (s, np.zeros(np.ceil(0.05*fs))) )
 
     ear.set_freq( cf )
 
     hsr, msr, lsr = ear.run(fs, s, times=250)
     th.plot_raster(hsr['spikes'])
+    th.plot_psth(hsr['spikes'])
 
 
 if __name__ == "__main__":
