@@ -41,9 +41,9 @@ def rasters_carney2009():
     stimpad = np.zeros(tpad.shape)
     stim = np.r_[stimpad, stim, stimpad]
 
-    ear = cochlea.Carney2009(hsr=1, msr=0, lsr=0, freq=bf)
+    ear = cochlea.Carney2009(hsr=2, msr=0, lsr=0, freq=bf)
 
-    hsr, msr, lsr = ear.run(fs, stim, times=250)
+    hsr, msr, lsr = ear.run(fs, stim, times=100)
 
     spikes = hsr['spikes']
 
@@ -52,4 +52,4 @@ def rasters_carney2009():
 
 
 if __name__ == "__main__":
-    rasters()
+    rasters_carney2009()

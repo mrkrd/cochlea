@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-09 16:04:42 marek>
+# Time-stamp: <2009-10-19 17:59:06 marek>
 #
 # Description: Rate-intensity function
 
@@ -68,17 +68,27 @@ def rate_intensity_sumner2002():
 def rate_intensity_carney2009():
 
     dbspl_list=range(-20,80,5)
-    cf_list = [500]
+    cf_list = [1000]
 
-    ear = cochlea.Carney2009(hsr=20, msr=20, lsr=20)
+    ear = cochlea.Carney2009(hsr=50, msr=50, lsr=50)
 
     hsr_rate, msr_rate, lsr_rate = rate_intensity(ear, 100000,
                                                   cf_list=cf_list,
                                                   dbspl_list=dbspl_list)
     np.save('hsr_rate.npy', hsr_rate)
-    plt.plot(dbspl_list, hsr_rate[0])
-    plt.plot(dbspl_list, msr_rate[0])
-    plt.plot(dbspl_list, lsr_rate[0])
+
+    fig = plt.gcf()
+    ax = fig.add_subplot(111)
+
+    ax.plot(dbspl_list, hsr_rate[0])
+    ax.plot(dbspl_list, msr_rate[0])
+    ax.plot(dbspl_list, lsr_rate[0])
+
+    ax.set_xlabel("Intensity (dB SPL)")
+    ax.set_ylabel("Rate (spikes / sec)")
+
+    fig.savefig('carney2009-rate-intensity.eps')
+
     plt.show()
 
 
