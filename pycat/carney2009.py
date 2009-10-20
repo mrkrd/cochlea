@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-19 17:33:25 marek>
+# Time-stamp: <2009-10-20 16:30:00 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -133,19 +133,19 @@ class Carney2009(object):
 
 
 def main():
-    ear = Carney2009(hsr=2, msr=0, lsr=0)
+    ear = Carney2009(hsr=1, msr=0, lsr=0)
 
     fs = 100000.0
     cf = 1000
     stimdb = 50
-    t = np.arange(0, 0.1, 1/fs)
+    t = np.arange(0, 1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = catmodel.set_dB_SPL(stimdb, s)
     s = np.concatenate( (s, np.zeros(np.ceil(0.05*fs))) )
 
     ear.set_freq( cf )
 
-    hsr, msr, lsr = ear.run(fs, s, times=250)
+    hsr, msr, lsr = ear.run(fs, s, times=1)
     th.plot_raster(hsr['spikes'])
     th.plot_psth(hsr['spikes'])
 
