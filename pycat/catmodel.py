@@ -15,7 +15,7 @@ def run_ihc(sound, cf, fs, cohc=1, cihc=1):
 
 
 
-def run_synapse(vihc, cf, fs, anf_type='hsr', implnt='actual', anf_num=1):
+def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=1):
     # TODO: test input pars; refere to mex files
 
     anf_map = {'hsr': 3,
@@ -28,8 +28,7 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', implnt='actual', anf_num=1):
     spike_signal = np.zeros_like( vihc )
     for anf_idx in range(anf_num):
         psth = _catmodel.run_synapse(vihc, cf, fs,
-                                     anf_map[anf_type], implnt_map[implnt]);
-
+                                     anf_map[anf_type], implnt_map[powerlaw_implnt]);
         spike_signal = spike_signal + psth
 
     return spike_signal

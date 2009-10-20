@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-19 22:18:11 marek>
+# Time-stamp: <2009-10-21 01:21:25 marek>
 #
 # Description: Plot output bitmaps
 
@@ -14,14 +14,14 @@ def main():
     s = np.sin(2 * np.pi * t * 1000)
     s = pycat.set_dB_SPL(60, s)
 
-    ear = pycat.Carney2009(hsr=10, msr=0, lsr=0,
-                           freq=(50, 10000, 80),
-                           implnt='actual')
+    ear = pycat.Carney2009(hsr=50, msr=0, lsr=0,
+                           freq=(50, 10000, 100),
+                           powerlaw_implnt='approx')
     hsr, msr, lsr = ear.run(fs, s, times=1, output_format='signals')
 
-    # ax = plt.gca()
-    # ax.imshow(hsr.T, aspect='auto')
-    # plt.show()
+    ax = plt.gca()
+    ax.imshow(hsr.T, aspect='auto')
+    plt.show()
 
 if __name__ == "__main__":
     main()

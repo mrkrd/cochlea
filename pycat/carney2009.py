@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-20 23:10:03 marek>
+# Time-stamp: <2009-10-21 01:15:23 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -7,14 +7,13 @@
 from __future__ import division
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 import catmodel
 import thorns as th
 
 class Carney2009(object):
     def __init__(self, hsr=1, msr=1, lsr=1,
-                 freq=1000, animal='cat', implnt='approx'):
+                 freq=1000, animal='cat', powerlaw_implnt='actual'):
         """
         hsr, msr, lsr: number of HSR/MSR/LSR fibers
 
@@ -22,7 +21,7 @@ class Carney2009(object):
 
         animal: must be cat
 
-        implnt: approx. or acctual implementation of the power-law
+        powerlaw_implnt: approx. or acctual implementation of the power-law
         """
         assert animal == 'cat'
 
@@ -30,7 +29,7 @@ class Carney2009(object):
         self.msr_num = msr
         self.lsr_num = lsr
 
-        self._implnt = implnt
+        self._powerlaw_implnt = powerlaw_implnt
 
         self._cohc = 1
         self._cihc = 1
@@ -47,7 +46,7 @@ class Carney2009(object):
 
         if self.hsr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
-            synapse_pars = {'anf_type':'hsr', 'implnt':'actual'}
+            synapse_pars = {'anf_type':'hsr', 'powerlaw_implnt':self._powerlaw_implnt}
             hsr_out = self._run_anf(fs, sound, times, self.hsr_num,
                                     output_format, ihc_pars, synapse_pars)
         else:
@@ -55,7 +54,7 @@ class Carney2009(object):
 
         if self.msr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
-            synapse_pars = {'anf_type':'msr', 'implnt':'actual'}
+            synapse_pars = {'anf_type':'msr', 'powerlaw_implnt':self._powerlaw_implnt}
             msr_out = self._run_anf(fs, sound, times, self.msr_num,
                                     output_format, ihc_pars, synapse_pars)
         else:
@@ -63,7 +62,7 @@ class Carney2009(object):
 
         if self.lsr_num > 0:
             ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
-            synapse_pars = {'anf_type':'lsr', 'implnt':'actual'}
+            synapse_pars = {'anf_type':'lsr', 'powerlaw_implnt':self._powerlaw_implnt}
             lsr_out = self._run_anf(fs, sound, times, self.lsr_num,
                                     output_format, ihc_pars, synapse_pars)
         else:
