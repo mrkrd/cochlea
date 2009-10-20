@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-19 15:16:38 marek>
+/* Time-stamp: <2009-10-20 23:04:54 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -49,6 +49,7 @@
 /* Declarations of the functions used in the program */
 double Synapse(double *, double, double, int, int, double, double, double, double *);
 int    SpikeGenerator(double *, double, int, int, double *);
+double delay_cat(double cf);
 
 
 void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth, int totalstim, double fibertype, double implnt, double *synout, double *psth)
@@ -72,6 +73,7 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth, int tota
 
      /*====== Run the synapse model ======*/
      I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, synouttmp);
+
 
      /* Wrapping up the unfolded (due to no. of repetitions) Synapse Output */
      for(i = 0; i <I ; i++)
@@ -172,7 +174,8 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /*------- Generating a random sequence ---------------------*/
      /*----------------------------------------------------------*/
-     randNums = ffGn( (int)ceil(totalstim*nrep*tdres/binwidth), 0.9, spont);
+     randNums = ffGn( (int)ceil(totalstim*nrep*tdres*sampFreq), 1/sampFreq, 0.9);
+     /* randNums = ffGn( (int)ceil(totalstim*nrep*tdres*sampFreq), 1/sampFreq, 0.9, spont); */
 
 
      /*----------------------------------------------------------*/
@@ -332,7 +335,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /*----- Upsampling to original (High) sampling rate --------*/
      /*----------------------------------------------------------*/
-     for(z=0; z<k; ++z)
+     for(z=0; z<k-1; ++z)
      {
 	  incr = (synSampOut[z+1]-synSampOut[z])/resamp;
 	  for(b=0; b<resamp; ++b)
@@ -423,6 +426,7 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
 	       }
 	  }
      } /* End of rate vector loop */
+
 
      free(randNums);
      nspikes = Nout;  /* Number of spikes that occurred. */

@@ -437,7 +437,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /*----- Upsampling to original (High) sampling rate --------*/
      /*----------------------------------------------------------*/
-     for(z=0; z<k; ++z)
+     for(z=0; z<k-1; ++z)
      {
 	  incr = (synSampOut[z+1]-synSampOut[z])/resamp;
 	  for(b=0; b<resamp; ++b)

@@ -30,6 +30,7 @@ double* ffGn(int N, double Hinput, double mu)
      /* PyTuple_SetItem(args, 1, Hinput); */
      /* PyTuple_SetItem(args, 2, mu); */
 
+
      args = Py_BuildValue( "(i,d,d)", N, Hinput, mu);
 
      result = PyObject_CallObject(func, args);
@@ -56,7 +57,7 @@ double* ffGn(int N, double Hinput, double mu)
 
 double* pyResample(double *x, int len, int p, int q)
 {
-     PyObject *modname, *mod, *mdict, *func, *result, *args;
+     PyObject *mod, *mdict, *func, *result, *args;
      PyObject *input_arr;
      double *input_data;
      double *y;
@@ -66,8 +67,6 @@ double* pyResample(double *x, int len, int p, int q)
      PyObject *output_arr;
      double *output_data;
      int new_len;
-
-     int i;
 
      Py_Initialize();
      import_array();
@@ -101,7 +100,8 @@ double* pyResample(double *x, int len, int p, int q)
 
 
 
-     new_len = (int)ceil(len * p / q);
+     new_len = (int)ceil((double)len * (double)p / (double)q);
+
 
      args = PyTuple_New(2);
      PyTuple_SetItem(args, 0, input_arr);
@@ -120,7 +120,7 @@ double* pyResample(double *x, int len, int p, int q)
      /* Py_DECREF(input_arr); */
      Py_DECREF(output_arr);
      Py_DECREF(result);
-     Py_XDECREF(args);
+     Py_DECREF(args);
      /* Py_XDECREF(func); */
      /* Py_XDECREF(mdict); */
      /* Py_XDECREF(mod); */
@@ -140,7 +140,7 @@ double* pyResample(double *x, int len, int p, int q)
 
 double* pyRand(int len)
 {
-     PyObject *modname, *mod, *mdict, *func, *result, *args;
+     PyObject *mod, *mdict, *func, *result, *args;
      double *y;
 
      PyObject *output_arr;

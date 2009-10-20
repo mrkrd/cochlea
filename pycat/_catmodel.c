@@ -65,8 +65,6 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
      int signal_len;
      double *synout_data, *psth_data;
 
-     PyObject *return_tuple;
-
      int i;
 
      if (!PyArg_ParseTuple(args, "Odddd", \
