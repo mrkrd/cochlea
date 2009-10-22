@@ -4,9 +4,22 @@ import numpy as np
 import _catmodel
 
 def run_ihc(sound, cf, fs, cohc=1, cihc=1):
-    # TODO: test input parameters; refere to mex files
+    """
+    sound: input sound in uPa
+    cf: characteristic frequency
+    fs: sampling frequency
+    cohc, cihc: degeneration parameters for IHC and OHC cells
+
+    return: IHC receptor potential
+    """
+    assert isinstance(sound, np.ndarray) and (sound.ndim == 1)
+    assert (cf > 80) and (cf < 40e3)
+    assert (fs >= 100e3) and (fs <= 500e3)
+    assert (cohc >= 0) and (cohc <= 1)
+    assert (cihc >= 0) and (cihc <= 1)
 
     # uPa -> Pa
+    # Compatibility with DSAM
     sound = sound * 1e-6
 
     vihc = _catmodel.run_ihc(sound, cf, fs, cohc, cihc)
@@ -16,7 +29,21 @@ def run_ihc(sound, cf, fs, cohc=1, cihc=1):
 
 
 def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=1):
-    # TODO: test input pars; refere to mex files
+    """
+    vihc: IHC receptor potential
+    cf: characteristic frequency
+    anf_type: auditory nerve fiber type ('hsr', 'msr' or 'lsr')
+    powerlaw_implnt: implementation of the powerlaw ('actual', 'approx')
+    anf_num: number of ANF
+
+    return: PSTH from ANF
+    """
+    assert isinstance(vihc, np.ndarray) and (vihc.ndim == 1)
+    assert (cf > 80) and (cf < 40e3)
+    assert (fs >= 100e3) and (fs <= 500e3)
+    assert anf_type in ['hsr', 'msr', 'lsr']
+    assert powerlaw_implnt in ['actual', 'approx']
+    assert isinstance(anf_num, int) and (anf_num > 0)
 
     anf_map = {'hsr': 3,
                'msr': 2,

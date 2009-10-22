@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-21 01:15:23 marek>
+# Time-stamp: <2009-10-22 15:16:47 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -44,27 +44,30 @@ class Carney2009(object):
         if output_format == 'signals':
             assert times == 1
 
+        # TODO: place run_ihc() here
+        vihc_list = []
+        for cf in self._freq_map:
+            vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, cohc=self._cohc, cihc=self._cihc)
+            vihc_list.append( vihc )
+
         if self.hsr_num > 0:
-            ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
             synapse_pars = {'anf_type':'hsr', 'powerlaw_implnt':self._powerlaw_implnt}
-            hsr_out = self._run_anf(fs, sound, times, self.hsr_num,
-                                    output_format, ihc_pars, synapse_pars)
+            hsr_out = self._run_anf(fs, vihc_list, times, self.hsr_num,
+                                    output_format, synapse_pars)
         else:
             hsr_out = None
 
         if self.msr_num > 0:
-            ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
             synapse_pars = {'anf_type':'msr', 'powerlaw_implnt':self._powerlaw_implnt}
-            msr_out = self._run_anf(fs, sound, times, self.msr_num,
-                                    output_format, ihc_pars, synapse_pars)
+            msr_out = self._run_anf(fs, vihc_list, times, self.msr_num,
+                                    output_format, synapse_pars)
         else:
             msr_out = None
 
         if self.lsr_num > 0:
-            ihc_pars = {'cohc':self._cohc, 'cihc':self._cihc}
             synapse_pars = {'anf_type':'lsr', 'powerlaw_implnt':self._powerlaw_implnt}
-            lsr_out = self._run_anf(fs, sound, times, self.lsr_num,
-                                    output_format, ihc_pars, synapse_pars)
+            lsr_out = self._run_anf(fs, vihc_list, times, self.lsr_num,
+                                    output_format, synapse_pars)
         else:
             lsr_out = None
 
@@ -72,16 +75,15 @@ class Carney2009(object):
 
 
 
-    def _run_anf(self, fs, sound, times, anf_num,
-                 output_format, ihc_pars, synapse_pars):
+    def _run_anf(self, fs, vihc_list, times, anf_num,
+                 output_format, synapse_pars):
         if output_format == 'spikes':
             anf_db = []
             for freq_idx,cf in enumerate(self._freq_map):
-                vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
                 for run_idx in range(times):
                     train = np.array([])
                     psth = catmodel.run_synapse(fs=fs,
-                                                vihc=vihc,
+                                                vihc=vihc_list[freq_idx],
                                                 cf=cf,
                                                 anf_num=anf_num,
                                                 **synapse_pars);
@@ -92,11 +94,10 @@ class Carney2009(object):
                                                ('trial', int),
                                                ('spikes', np.ndarray) ])
         elif output_format == 'signals':
-            anf_out = np.zeros( (len(sound), len(self._freq_map)) )
+            anf_out = np.zeros( (len(vihc_list[0]), len(self._freq_map)) )
             for freq_idx,cf in enumerate(self._freq_map):
-                vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, **ihc_pars)
                 psth = catmodel.run_synapse(fs=fs,
-                                            vihc=vihc,
+                                            vihc=vihc_list[freq_idx],
                                             cf=cf,
                                             anf_num=anf_num,
                                             **synapse_pars);
@@ -132,15 +133,16 @@ class Carney2009(object):
 
 
 def main():
-    ear = Carney2009(hsr=1, msr=0, lsr=0)
+    ear = Carney2009(hsr=1, msr=0, lsr=0, powerlaw_implnt='approx')
 
     fs = 100000.0
     cf = 1000
-    stimdb = 90
+    stimdb = 50
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = catmodel.set_dB_SPL(stimdb, s)
-    s = np.concatenate( (s, np.zeros(np.ceil(0.05*fs))) )
+    z = np.zeros( np.ceil(len(t)) )
+    s = np.concatenate( (z, s, z) )
 
     ear.set_freq( cf )
 

@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-21 01:16:47 marek>
+/* Time-stamp: <2009-10-22 13:23:53 marek>
 
    Modification of the original code from Laurel Carney in order to
    remove Matlab dependancy.
@@ -74,7 +74,6 @@ void SingleAN_Synapse(double *px, double cf, int nrep, double binwidth, int tota
      /*====== Run the synapse model ======*/
      I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, synouttmp);
 
-
      /* Wrapping up the unfolded (due to no. of repetitions) Synapse Output */
      for(i = 0; i <I ; i++)
      {
@@ -115,7 +114,6 @@ double delay_cat(double cf)
 
      return(delay);
 }
-
 /* -------------------------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------- */
@@ -146,7 +144,6 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
 
      delay      = delay_cat(cf);
      delaypoint =__max(0,(int) ceil(delay/tdres)*5);
-     delaypoint = 0;
 
      exponOut = (double*)calloc((long) ceil(totalstim*nrep),sizeof(double));
      powerLawIn = (double*)calloc((long) ceil(totalstim*nrep+5*delaypoint),sizeof(double));
@@ -174,8 +171,8 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /*------- Generating a random sequence ---------------------*/
      /*----------------------------------------------------------*/
-     randNums = ffGn( (int)ceil(totalstim*nrep*tdres*sampFreq), 1/sampFreq, 0.9);
-     /* randNums = ffGn( (int)ceil(totalstim*nrep*tdres*sampFreq), 1/sampFreq, 0.9, spont); */
+     randNums = ffGn( (int)ceil((totalstim*nrep+5*delaypoint)*tdres*sampFreq), 1/sampFreq, 0.9);
+     /* randNums = ffGn( (int)ceil((totalstim*nrep+5*delaypoint)*tdres*sampFreq), 1/sampFreq, 0.9, spont); */
 
 
      /*----------------------------------------------------------*/
