@@ -8,7 +8,7 @@ import traveling_waves as tw
 
 def sumner2002_SI(freq_range):
     fs = 50000.0               # Hz
-    t = np.arange(0, 0.5, 1.0/fs)
+    t = np.arange(0, 0.1, 1.0/fs)
 
     ear = cochlea.Sumner2002(hsr=100, msr=0, lsr=0, animal='human')
 
@@ -44,10 +44,10 @@ def sumner2002_SI(freq_range):
 
 
 def holmberg2008_SI(freq_range):
-    fs = 50000.0               # Hz
+    fs = 48000.0               # Hz
     t = np.arange(0, 0.5, 1.0/fs) # s
 
-    ear = cochlea.Carney2009(hsr=100, msr=0, lsr=0, animal='cat')
+    ear = cochlea.Holmberg2008(hsr=100, msr=0, lsr=0, animal='cat')
 
     dBSPL_range = np.arange(10, 100, 5)
 
@@ -81,10 +81,10 @@ def holmberg2008_SI(freq_range):
 
 
 def carney2009_SI(freq_range):
-    fs = 48000.0               # Hz
-    t = np.arange(0, 0.5, 1.0/fs) # s
+    fs = 50000.0               # Hz
+    t = np.arange(0, 0.1, 1.0/fs) # s
 
-    ear = cochlea.Holmberg2008(hsr=100, msr=0, lsr=0, animal='human')
+    ear = cochlea.Carney2009(hsr=100, msr=0, lsr=0, animal='cat')
 
     dBSPL_range = np.arange(10, 100, 5)
 
@@ -121,8 +121,6 @@ def carney2009_SI(freq_range):
 if __name__ == "__main__":
 
     freq_range = tw.real_freq_map
-    # freq_range = [tw.real_freq_map[30]]
-
 
     si_sumner = sumner2002_SI(freq_range)
     # si_holmberg = holmberg2008_SI(freq_range)
@@ -135,14 +133,23 @@ if __name__ == "__main__":
     # plt.show()
     # plt.pcolor(si_holmberg)
     # plt.show()
-    plt.pcolor(si_carney)
-    plt.show()
+    # plt.pcolor(si_carney)
+    # plt.show()
 
-    scores_max_sumner = np.max(si_sumner, axis=1)
-    plt.semilogx(freq_range, scores_max_sumner)
-    # scores_max_holmberg = np.max(si_holmberg, axis=1)
-    # plt.semilogx(freq_range, scores_max_holmberg)
-    scores_max_carney = np.max(si_carney, axis=1)
-    plt.semilogx(freq_range, scores_max_carney)
-    plt.show()
+    # fig = plt.gcf()
+    # ax = fig.add_subplot(111)
+
+    # scores_max_sumner = np.max(si_sumner, axis=1)
+    # ax.semilogx(freq_range, scores_max_sumner)
+    # # scores_max_holmberg = np.max(si_holmberg, axis=1)
+    # # plt.semilogx(freq_range, scores_max_holmberg)
+    # scores_max_carney = np.max(si_carney, axis=1)
+    # ax.semilogx(freq_range, scores_max_carney)
+
+    # ax.set_xlabel("Frequency (Hz)")
+    # ax.set_ylabel("Vector Strength")
+
+    # fig.savefig('carney2009_si.eps')
+
+    # plt.close()
 
