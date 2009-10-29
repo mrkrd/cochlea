@@ -5,12 +5,17 @@ from numpy.random import randn
 from scipy.signal import resample
 from numpy.fft import fft, ifft
 
-def ffGn(N, tdres, Hinput, mu, sigma=None):
+def ffGn(N, tdres, Hinput, mu, sigma=None, debug=False):
 
     assert (N > 0)
     assert (tdres < 1)
     assert (Hinput >= 0) and (Hinput <= 2)
 
+    if debug:
+        print "Warning: Running in debuging mode (randn = ones)."
+        print "Compare the output with Matlab result:"
+        print "ffGn_norand(10, 1e-1, 0.2, 1, 1)"
+        randn = np.ones
 
     # Downsampling No. of points to match with those of Scott jackson (tau 1e-1)
     resamp = np.ceil(1e-1 / tdres)
@@ -78,7 +83,7 @@ def ffGn(N, tdres, Hinput, mu, sigma=None):
 
 
 def main():
-    y = ffGn(100, 1e-4, 0.2, 1, 1)
+    y = ffGn(10, 1e-1, 0.2, 1, debug=True)
     print y
 
 
