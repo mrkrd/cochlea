@@ -2,7 +2,7 @@
 #include "numpy/arrayobject.h"
 
 
-double* ffGn(int N, double Hinput, double mu, double sigma)
+double* ffGn(int N, double tdres, double Hinput, double mu, double sigma)
 {
 
      double *data, *randNums;
@@ -21,7 +21,16 @@ double* ffGn(int N, double Hinput, double mu, double sigma)
      /* if (mod) printf("success\n"); else printf("failure\n"); */
 
      mdict = PyModule_GetDict(mod);
+     if (!mdict) {
+     	  printf("ffGn: Dict not loaded.\n");
+     	  exit(-1);
+     }
+
      func = PyDict_GetItemString(mdict, "ffGn"); /* borrowed reference */
+     if (!func) {
+     	  printf("ffGn: Function not found.\n");
+     	  exit(-1);
+     }
 
      /* if (func) { */
      /*      if (PyCallable_Check(func)) */
@@ -31,9 +40,13 @@ double* ffGn(int N, double Hinput, double mu, double sigma)
      /* PyTuple_SetItem(args, 2, mu); */
 
 
-     args = Py_BuildValue( "(i,d,d,d)", N, Hinput, mu, sigma);
+     args = Py_BuildValue( "(i,d,d,d,d)", N, tdres, Hinput, mu, sigma);
 
      result = PyObject_CallObject(func, args);
+     if (!result) {
+     	  printf("ffGn: Result not generated.\n");
+     	  exit(-1);
+     }
 
      output_arr = PyArray_FROM_OTF(result, NPY_DOUBLE, NPY_IN_ARRAY);
 

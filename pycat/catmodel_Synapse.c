@@ -1,7 +1,7 @@
-/* Time-stamp: <2009-10-29 19:37:39 marek>
+/* Time-stamp: <2009-10-29 20:52:07 marek>
 
-   Modification of the original code from Laurel Carney in order to
-   remove Matlab dependancy.
+   Modification of the original code from Zilany and Laurel Carney.
+   Matlab dependency has been removed.  Suitable for Python.
 
    Marek Rudnicki
 
