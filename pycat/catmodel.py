@@ -21,9 +21,9 @@ def run_ihc(sound, cf, fs, cohc=1, cihc=1):
     # uPa -> Pa
     # Compatibility with DSAM
     sound = sound * 1e-6
-
+    print "IHC run..."
     vihc = _catmodel.run_ihc(sound, cf, fs, cohc, cihc)
-
+    print "IHC done."
     return vihc
 
 
@@ -54,8 +54,10 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=
 
     spike_signal = np.zeros_like( vihc )
     for anf_idx in range(anf_num):
+        print "Synapse run..."
         psth = _catmodel.run_synapse(vihc, cf, fs,
                                      anf_map[anf_type], implnt_map[powerlaw_implnt])
+        print "Synapse done."
         spike_signal = spike_signal + psth
 
     return spike_signal

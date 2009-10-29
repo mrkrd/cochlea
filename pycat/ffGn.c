@@ -2,7 +2,7 @@
 #include "numpy/arrayobject.h"
 
 
-double* ffGn(int N, double Hinput, double mu)
+double* ffGn(int N, double Hinput, double mu, double sigma)
 {
 
      double *data, *randNums;
@@ -31,7 +31,7 @@ double* ffGn(int N, double Hinput, double mu)
      /* PyTuple_SetItem(args, 2, mu); */
 
 
-     args = Py_BuildValue( "(i,d,d)", N, Hinput, mu);
+     args = Py_BuildValue( "(i,d,d,d)", N, Hinput, mu, sigma);
 
      result = PyObject_CallObject(func, args);
 
