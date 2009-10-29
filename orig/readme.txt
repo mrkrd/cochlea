@@ -3,7 +3,10 @@
 This is Version 3 of the public distribution of the code for the cat auditory
 periphery model with power-law adaptation of:
 
-Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (submitted to JASA)        
+Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (). "A phenomenological 
+model of the synapse between the inner hair cell and auditory nerve: Long-term 
+adaptation with power-law dynamics," accepted for publication in the Journal 
+of the Acoustical Society of America.            
  
 Zilany, M. S. A. and Bruce, I. C. (2007). "Representation of the vowel
         /eh/ in normal and impaired auditory nerve fibers: Model predictions of
@@ -123,4 +126,4 @@ and by Qing Tan and Laurel Carney for the model of:
     responses of auditory nerve fibers. II. Nonlinear tuning with a
     frequency glide,” J. Acoust. Soc. Am. 114, 2007–2020.
 
-%%% © Ian C. Bruce (ibruce@ieee.org), M. S. Arefeen Zilany, Rasha Ibrahim, Paul C. Nelson, and Laurel H. Carney June 2006 - February 2009 %%%
+%%% © Ian C. Bruce (ibruce@ieee.org), M. S. Arefeen Zilany, Rasha Ibrahim, Paul C. Nelson, and Laurel H. Carney June 2006 - December 2008 %%%

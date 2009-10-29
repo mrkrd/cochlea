@@ -40,7 +40,7 @@ typedef struct __COMPLEX COMPLEX;
 ///assign
 #define CLET(to,from) {(to).x=(from).x;(to).y=(from).y;}
 ///abstract value(magnitude)
-//#define cabs(X) sqrt((X).y*(X).y+(X).x*(X).x)
+#define cabs(X) sqrt((X).y*(X).y+(X).x*(X).x)
 ///real to complex
 #define CMPLX(X,real,imag) {(X).x=(real);(X).y=(imag);}
 ///multiply with real

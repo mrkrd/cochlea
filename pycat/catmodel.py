@@ -55,10 +55,11 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=
     spike_signal = np.zeros_like( vihc )
     for anf_idx in range(anf_num):
         psth = _catmodel.run_synapse(vihc, cf, fs,
-                                     anf_map[anf_type], implnt_map[powerlaw_implnt]);
+                                     anf_map[anf_type], implnt_map[powerlaw_implnt])
         spike_signal = spike_signal + psth
 
     return spike_signal
+
 
 def set_dB_SPL(dB, signal):
     p0 = 2e-5                   # Pa
@@ -68,7 +69,7 @@ def set_dB_SPL(dB, signal):
     if rms == 0:
         r = 0
     else:
-        r = 10**(dB / 20.0) * p0 / rms;
+        r = 10**(dB / 20.0) * p0 / rms
 
     return signal * r * 1e6     # uPa
 
