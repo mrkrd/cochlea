@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-29 20:52:17 marek>
+/* Time-stamp: <2009-10-29 20:54:44 marek>
 
    Modification of the original code from Zilany and Laurel Carney.
    Matlab dependency has been removed.  Suitable for Python.
@@ -183,7 +183,10 @@ void SingleAN_IHC(double *px, double cf, int nrep, double binwidth, int totalsti
 		tauc1    = cohc*(tmptauc1-bmTaumin[0])+bmTaumin[0];  /* time -constant for the signal-path C1 filter */
 		rsigma   = 1/tauc1-1/bmTaumax[0]; /* shift of the location of poles of the C1 filter from the initial positions */
 
-		if (1/tauc1<0.0) printf("The poles are in the right-half plane; system is unstable.\n");
+		if (1/tauc1<0.0) {
+		     printf("The poles are in the right-half plane; system is unstable.\n");
+		     exit(-1);
+		}
 
 		tauwb = TauWBMax+(tauc1-bmTaumax[0])*(TauWBMax-TauWBMin)/(bmTaumax[0]-bmTaumin[0]);
 
@@ -364,7 +367,10 @@ double C1ChirpFilt(double x, double binwidth,double cf, int n, double taumax, do
 
 	p[1].x = -sigma0 - rsigma;
 
-	if (p[1].x>0.0) printf("The system becomes unstable.\n");
+	if (p[1].x>0.0) {
+	     printf("The system becomes unstable.\n");
+	     exit(-1);
+	}
 
 	p[1].y = ipw;
 
@@ -386,7 +392,10 @@ double C1ChirpFilt(double x, double binwidth,double cf, int n, double taumax, do
 
 	rzero = -CF/tan((C1initphase-phase)/order_of_zero);
 
-    if (rzero>0.0) printf("The zeros are in the right-half plane.\n");
+	if (rzero>0.0) {
+	     printf("The zeros are in the right-half plane.\n");
+	     exit(-1);
+	}
 
    /*%==================================================  */
 	/*each loop below is for a pair of poles and one zero */
@@ -509,7 +518,10 @@ double C2ChirpFilt(double xx, double binwidth,double cf, int n, double taumax, d
 
 	p[1].x = -sigma0*fcohc;
 
-	if (p[1].x>0.0) printf("The system becomes unstable.\n");
+	if (p[1].x>0.0) {
+	     printf("The system becomes unstable.\n");
+	     exit(-1);
+	}
 
 	p[1].y = ipw;
 
@@ -530,7 +542,10 @@ double C2ChirpFilt(double xx, double binwidth,double cf, int n, double taumax, d
 	};
 
 	rzero = -CF/tan((C2initphase-phase)/order_of_zero);
-    if (rzero>0.0) printf("The zeros are in the right-hand plane.\n");
+	if (rzero>0.0) {
+	     printf("The zeros are in the right-hand plane.\n");
+	     exit(-1);
+	}
    /*%==================================================  */
    /*%      time loop begins here                         */
    /*%==================================================  */
