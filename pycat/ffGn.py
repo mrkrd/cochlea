@@ -5,15 +5,17 @@ from numpy.random import randn
 from scipy.signal import resample
 from numpy.fft import fft, ifft
 
-def ffGn(N, Hinput, mu):
+def ffGn(N, tdres, Hinput, mu, sigma=None):
 
+    assert (N > 0)
+    assert (tdres < 1)
+    assert (Hinput >= 0) and (Hinput <= 2)
 
-    # TODO: assert proper input
 
     # Downsampling No. of points to match with those of Scott jackson (tau 1e-1)
-    tdres = 1e-4
+    resamp = np.ceil(1e-1 / tdres)
     nop = N
-    N = np.ceil(N * tdres / 1e-1)
+    N = np.ceil(N / resamp) + 1
     if N < 10:
         N = 10
 
@@ -26,7 +28,6 @@ def ffGn(N, Hinput, mu):
         fBn = 1
 
 
-    # TODO: check randn('state')
 
     # Calculate the fGn.
     if H == 0.5:
@@ -58,7 +59,7 @@ def ffGn(N, Hinput, mu):
 
 
         # Resampling to match with the AN model
-        y = resample(y, np.ceil(len(y) * 1e-1/tdres))
+        y = resample(y, resamp*len(y))
 
 
         if mu < 0.5:
@@ -77,7 +78,7 @@ def ffGn(N, Hinput, mu):
 
 
 def main():
-    y = ffGn(10, 0.2, 1, 1)
+    y = ffGn(100, 1e-4, 0.2, 1, 1)
     print y
 
 
