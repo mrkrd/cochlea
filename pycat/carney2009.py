@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-22 15:16:47 marek>
+# Time-stamp: <2009-11-02 14:50:50 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -44,7 +44,6 @@ class Carney2009(object):
         if output_format == 'signals':
             assert times == 1
 
-        # TODO: place run_ihc() here
         vihc_list = []
         for cf in self._freq_map:
             vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, cohc=self._cohc, cihc=self._cihc)
