@@ -3,4 +3,6 @@ from catmodel import run_synapse
 from catmodel import set_dB_SPL
 
 from carney2009 import Carney2009
+from carney2009 import Carney2009 as Zilany2009
+
 
