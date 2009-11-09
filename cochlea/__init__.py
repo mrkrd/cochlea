@@ -4,6 +4,7 @@ from sumner2002_vesicles import Sumner2002_Vesicles
 from lopez_poveda2006 import LopezPoveda2006
 from dsam import set_dB_SPL
 from pycat import Carney2009
+from pycat import Zilany2009
 
 
 # TODO: (re)move main
