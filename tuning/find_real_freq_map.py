@@ -1,5 +1,5 @@
 # Author:  Marek Rudnicki
-# Time-stamp: <2009-07-06 12:52:35 marek>
+# Time-stamp: <2009-11-25 21:25:37 marek>
 
 # Description: Compute the real frequency map of the BM model.
 
@@ -7,47 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import traveling_waves as tw
-import stuff
-
-def find_real_freq_map():
-    """
-    Finds real freq map of BM by scanning range of freq and fining
-    which section responds with max displacement.
-    """
-    fs = 48000.0
-    t = np.arange(0, 0.1, 1.0/fs)
-
-    # freq_range = range(1, 22000, 5)
-    freq_range = 10**(np.arange(0.1, 4.5, 1e-4))
-    # freq_range = [40, 15000]
-
-    scores = np.zeros( (len(freq_range), 100) )
-
-    for freq_idx,freq in enumerate(freq_range):
-        print freq
-
-        s = np.sin(2 * np.pi * t * freq)
-        s = s * np.hanning(len(s))
-        s = stuff.set_dB_SPL(0, s)
-
-        s = tw.run_stapes(s)
-
-        xBM = tw.run_bm(fs, s, mode='x')
-
-        # plt.imshow(xBM, aspect='auto')
-        # plt.show()
-
-        avg = np.mean(np.abs(xBM), axis=0)
-
-        # plt.plot(avg)
-        # plt.show()
-
-        scores[freq_idx] = avg
-
-
-    real_freq_map = freq_range[np.argmax(scores, axis=0)]
-    np.savez('real_freq_map.npz', scores=scores, freq_range=freq_range, real_freq_map=real_freq_map)
-
+import thorns.waves as w
 
 
 def calc_mean_displacement(freq, sec):
@@ -64,10 +24,10 @@ def calc_mean_displacement(freq, sec):
 
     s = np.sin(2 * np.pi * t * freq)
     s = s * np.hanning(len(s))
-    s = stuff.set_dB_SPL(0, s)
+    s = w.set_dB_SPL(80, s)
 
     s = tw.run_stapes(s)
-
+    s = tw.run_mid_ear_filter(fs, s)
     xBM = tw.run_bm(fs, s, mode='x')
 
     # plt.imshow(xBM, aspect='auto')
@@ -76,7 +36,7 @@ def calc_mean_displacement(freq, sec):
     # plt.plot(np.abs(xBM[sec]))
     # plt.show()
 
-    avg = np.mean(np.abs(xBM[:,sec]))
+    avg = np.max(np.abs(xBM[:,sec]))
 
     return -avg
 
@@ -98,6 +58,8 @@ def optimize_real_freq_map():
                                            xtol=0.01)
 
     np.save('real_freq_map.npy', real_freq_map)
+    plt.plot(real_freq_map)
+    plt.show()
 
 
 if __name__ == "__main__":
