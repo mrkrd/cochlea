@@ -81,10 +81,11 @@ def holmberg2008_SI(freq_range):
 
 
 def carney2009_SI(freq_range):
-    fs = 50000.0               # Hz
+    fs = 100000.0               # Hz
     t = np.arange(0, 0.1, 1.0/fs) # s
 
-    ear = cochlea.Carney2009(hsr=100, msr=0, lsr=0, animal='cat')
+    ear = cochlea.Carney2009(hsr=100, msr=0, lsr=0, animal='cat',
+                             powerlaw_implnt='approx')
 
     dBSPL_range = np.arange(10, 100, 5)
 
@@ -121,6 +122,8 @@ def carney2009_SI(freq_range):
 if __name__ == "__main__":
 
     freq_range = tw.real_freq_map
+
+    freq_range = freq_range[freq_range > 80]
 
     si_sumner = sumner2002_SI(freq_range)
     # si_holmberg = holmberg2008_SI(freq_range)

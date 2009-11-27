@@ -17,20 +17,26 @@ def main():
     # plt.pcolor(si_carney)
     # plt.show()
 
+    # data = plt.imread('si.png')
+
     fig = plt.gcf()
     ax = fig.add_subplot(111)
 
-    scores_max_sumner = np.max(si_sumner, axis=1)
-    ax.semilogx(freq_range, scores_max_sumner)
+    # bg = ax.twinx()
+    # bg.imshow(data)
+
+    # scores_max_sumner = np.max(si_sumner, axis=1)
+    # ax.semilogx(freq_range, scores_max_sumner)
     # scores_max_holmberg = np.max(si_holmberg, axis=1)
     # plt.semilogx(freq_range, scores_max_holmberg)
     scores_max_carney = np.max(si_carney, axis=1)
     ax.semilogx(freq_range, scores_max_carney)
 
+
     ax.set_xlabel("Frequency (Hz)")
     ax.set_ylabel("Vector Strength")
 
-    fig.savefig('carney2009_si.eps')
+    fig.savefig('carney2009_si.pdf')
 
     plt.close()
 
