@@ -2,3 +2,6 @@ syntax: glob
 *.pyc
 *.npz
 *.npy
+*.eps
+*.png
+*.pdf
