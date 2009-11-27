@@ -1,12 +1,10 @@
-import numpy as np
-import os
+from __future__ import division
 
-import thorns as th
-import dsam
+import numpy as np
 
 from auditory_periphery import par_dir, AuditoryPeriphery
-
 import traveling_waves as tw
+import dsam
 
 
 
@@ -29,25 +27,13 @@ class Holmberg2008(AuditoryPeriphery):
 
 
         # Stapes velocity [Pa -> m/s]
-        self.stapes_velocity = dsam.EarModule("Util_mathOp")
-        self.stapes_velocity.set_par("OPERATOR", "SCALE")
-        # For Holmberg IHCRP module: OPERAND =  tw.S_ED * tw.S_ST * 13.5
-        self.stapes_velocity.set_par("OPERAND", tw.S_ST * tw.S_ED * 3.3)
-        dsam.connect(self.outer_middle_ear, self.stapes_velocity)
-
-
         # BM module is in run()
-
-
         # IHC receptor potential
-        self.ihcrp = dsam.EarModule("IHCRP_Shamma3StateVelIn")
-        self.ihcrp.read_pars(par_dir("ihcrp_Meddis2005_modified.par"))
 
 
         if self.hsr_num != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
-            dsam.connect(self.ihcrp, self.ihc_hsr)
 
             self.anf_hsr = self._generate_anf(sg_type, self.hsr_num)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
@@ -55,7 +41,6 @@ class Holmberg2008(AuditoryPeriphery):
         if self.msr_num != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
-            dsam.connect(self.ihcrp, self.ihc_msr)
 
             self.anf_msr = self._generate_anf(sg_type, self.msr_num)
             dsam.connect(self.ihc_msr, self.anf_msr)
@@ -64,7 +49,6 @@ class Holmberg2008(AuditoryPeriphery):
         if self.lsr_num != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
-            dsam.connect(self.ihcrp, self.ihc_lsr)
 
             self.anf_lsr = self._generate_anf(sg_type, self.lsr_num)
             dsam.connect(self.ihc_hsr, self.anf_lsr)
@@ -112,49 +96,67 @@ class Holmberg2008(AuditoryPeriphery):
         if output_format == 'signals':
             assert times == 1
 
-        fs = float(fs)
-        input_module = dsam.EarModule(fs, sound)
+        self.outer_middle_ear.run(fs, sound)
 
-        dsam.connect(input_module, self.outer_middle_ear)
-        self.outer_middle_ear.run()
-        dsam.disconnect(input_module, self.outer_middle_ear)
+        s = self.outer_middle_ear.get_signal()
 
-        self.stapes_velocity.run()
+        ### Stapes
+        stapes_velocity = tw.run_stapes(s)
 
         ### Basilar membrane
-        filtered_signal = self.stapes_velocity.get_signal()
-        self.bm_signal = tw.run_bm(fs, filtered_signal, mode='v')
-        if self._freq_idx != None:
-            self.bm_signal = self.bm_signal[:,self._freq_idx]
-
+        xBM = tw.run_bm(fs, stapes_velocity, mode='x')
 
         ### IHCRP
-        self.ihcrp.run(fs, self.bm_signal)
-
-        # ihcrp_signal = tw.run_ihcrp(fs, self.bm_signal)
-        # if self._freq_idx != None:
-        #     ihcrp_signal = ihcrp_signal[:,self._freq_idx]
-        # ihcrp_mod = dsam.EarModule(fs, ihcrp_signal)
+        ihcrp = tw.run_ihcrp(fs, xBM)
+        if self._freq_idx != None:
+            ihcrp = ihcrp[:,self._freq_idx]
 
 
         if self.hsr_num > 0:
-            self.ihc_hsr.run()
+            self.ihc_hsr.run(fs, ihcrp)
             hsr_db = self._run_anf(self.anf_hsr, fs, times, output_format)
         else:
             hsr_db = None
 
         if self.msr_num > 0:
-            self.ihc_msr.run()
+            self.ihc_msr.run(fs, ihcrp)
             msr_db = self._run_anf(self.anf_msr, fs, times, output_format)
         else:
             msr_db = None
 
         if self.lsr_num > 0:
-            self.ihc_lsr.run()
+            self.ihc_lsr.run(fs, ihcrp)
             lsr_db = self._run_anf(self.anf_lsr, fs, times, output_format)
         else:
             lsr_db = None
 
 
         return hsr_db, msr_db, lsr_db
+
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
+    fs = 48000
+    fstim = 1000
+    t = np.arange(0, 0.1, 1/fs)
+    s = np.sin(2 * np.pi * t * fstim)
+    s = dsam.set_dB_SPL(60, s)
+    s = s * np.hanning(len(s))
+
+    s = np.zeros_like( t )
+    s[np.ceil(len(s)/3)] = 1000
+
+    ear = Holmberg2008(hsr=100, msr=0, lsr=0)
+    hsr, msr, lsr = ear.run(fs, s, output_format='signals')
+
+    fig = plt.gcf()
+    ax = fig.add_subplot(211)
+    ax.plot(t, s)
+
+    ax = fig.add_subplot(212)
+    ax.imshow(hsr.T, aspect='auto', interpolation=None)
+    # ax.colorbar()
+    plt.show()
 
