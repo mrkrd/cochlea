@@ -1,4 +1,4 @@
-/* Time-stamp: <2009-10-29 20:52:07 marek>
+/* Time-stamp: <2009-11-09 23:04:51 marek>
 
    Modification of the original code from Zilany and Laurel Carney.
    Matlab dependency has been removed.  Suitable for Python.
