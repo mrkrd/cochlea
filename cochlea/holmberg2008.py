@@ -145,8 +145,8 @@ if __name__ == "__main__":
     s = dsam.set_dB_SPL(60, s)
     s = s * np.hanning(len(s))
 
-    s = np.zeros_like( t )
-    s[np.ceil(len(s)/3)] = 1000
+    # s = np.zeros_like( t )
+    # s[np.ceil(len(s)/3)] = 1000
 
     ear = Holmberg2008(hsr=100, msr=0, lsr=0)
     hsr, msr, lsr = ear.run(fs, s, output_format='signals')
@@ -159,4 +159,3 @@ if __name__ == "__main__":
     ax.imshow(hsr.T, aspect='auto', interpolation=None)
     # ax.colorbar()
     plt.show()
-

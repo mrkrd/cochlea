@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-10-22 18:09:35 marek>
+# Time-stamp: <2009-12-17 18:24:45 marek>
 #
 # Description: Rate-intensity function
 
@@ -13,10 +13,8 @@ import thorns as th
 
 def rate_intensity(ear, fs, cf_list, dbspl_list):
 
-    fs = float(fs)
-
     tmax = 0.1
-    t = np.arange(0, tmax, 1./fs)
+    t = np.arange(0, tmax, 1/fs)
 
     hsr_rate = np.zeros( (len(cf_list), len(dbspl_list)) )
     msr_rate = np.zeros( (len(cf_list), len(dbspl_list)) )
