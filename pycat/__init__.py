@@ -1,8 +1,8 @@
 from catmodel import run_ihc
 from catmodel import run_synapse
-from catmodel import set_dB_SPL
+from catmodel import set_dbspl
 
-from carney2009 import Carney2009
-from carney2009 import Carney2009 as Zilany2009
+from zilany2009 import Zilany2009
+
 
 

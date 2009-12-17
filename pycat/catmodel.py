@@ -28,13 +28,13 @@ def run_ihc(sound, cf, fs, cohc=1, cihc=1):
 
 
 
-def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=1):
+def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_sum=1):
     """
     vihc: IHC receptor potential
     cf: characteristic frequency
     anf_type: auditory nerve fiber type ('hsr', 'msr' or 'lsr')
     powerlaw_implnt: implementation of the powerlaw ('actual', 'approx')
-    anf_num: number of ANF
+    anf_sum: number of ANF
 
     return: PSTH from ANF
     """
@@ -43,7 +43,7 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=
     assert (fs >= 100e3) and (fs <= 500e3)
     assert anf_type in ['hsr', 'msr', 'lsr']
     assert powerlaw_implnt in ['actual', 'approx']
-    assert isinstance(anf_num, int) and (anf_num > 0)
+    assert isinstance(anf_sum, int) and (anf_sum > 0)
 
     anf_map = {'hsr': 3,
                'msr': 2,
@@ -53,7 +53,7 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=
                   'approx': 0}
 
     spike_signal = np.zeros_like( vihc )
-    for anf_idx in range(anf_num):
+    for anf_idx in range(anf_sum):
         psth = _catmodel.run_synapse(vihc, cf, fs,
                                      anf_map[anf_type], implnt_map[powerlaw_implnt])
         spike_signal = spike_signal + psth
@@ -61,7 +61,7 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual', anf_num=
     return spike_signal
 
 
-def set_dB_SPL(dB, signal):
+def set_dbspl(dB, signal):
     p0 = 2e-5                   # Pa
     squared = signal**2
     rms = np.sqrt( np.sum(squared) / len(signal) )
