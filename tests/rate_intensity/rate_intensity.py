@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-18 20:14:38 marek>
+# Time-stamp: <2009-12-18 20:22:50 marek>
 #
 # Description: Rate-intensity function
 
@@ -74,7 +74,7 @@ def rate_intensity_sumner2002():
 def rate_intensity_carney2009():
 
     dbspl_list = np.arange(-20, 120, 5)
-    cf = 5000
+    cf = 2000
 
     ear = cochlea.Zilany2009((50, 50, 50), powerlaw_implnt='approx')
 
@@ -97,5 +97,5 @@ def rate_intensity_carney2009():
 
 
 if __name__ == "__main__":
-    #rate_intensity_carney2009()
-    rate_intensity_sumner2002()
+    rate_intensity_carney2009()
+    #rate_intensity_sumner2002()
