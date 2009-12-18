@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-24 11:26:32 marek>
+# Time-stamp: <2009-12-18 20:11:18 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -13,30 +13,29 @@ import dsam
 from auditory_periphery import AuditoryPeriphery, par_dir
 
 class Sumner2002(AuditoryPeriphery):
-    def __init__(self, hsr=100, msr=100, lsr=100,
-                 freq=1000.0, animal='gp', sg_type='carney'):
+    def __init__(self, anf_sum=(100, 100, 100),
+                 freq=1000, animal='gp', sg_type='carney'):
+        """ Auditory periphery model from Sumner (2002)
+
+        anf_sum: (hsr_sum, msr_sum, lsr_sum)
+        freq: CF
+        animal: 'gp', 'human'
+
         """
-        hsr, msr, lsr: number of HSR/MSR/LSR fibers
+        self._hsr_sum = anf_sum[0]
+        self._msr_sum = anf_sum[1]
+        self._lsr_sum = anf_sum[2]
+        self._animal = animal
 
-        freq: int => single CF
-        tuple => (min_freq, max_freq, how_many_channels)
 
-        animal: gp, human
-        """
-        self.hsr_num = hsr
-        self.msr_num = msr
-        self.lsr_num = lsr
-        self.animal = animal
-
-        # Outer/middle ear filter
-        if self.animal == 'gp':
+        if self._animal == 'gp':
             self.outer_middle_ear = dsam.EarModule("Filt_MultiBPass")
             self.outer_middle_ear.read_pars(par_dir("filt_GP_A.par"))
 
             self.outer_middle_ear_B = dsam.EarModule("Filt_MultiBPass")
             self.outer_middle_ear_B.read_pars(par_dir("filt_GP_B.par"))
             dsam.connect(self.outer_middle_ear, self.outer_middle_ear_B)
-        elif self.animal == 'human':
+        elif self._animal == 'human':
             self.outer_middle_ear = dsam.EarModule("Filt_MultiBPass")
             self.outer_middle_ear.read_pars(par_dir("filt_Human.par"))
         else:
@@ -45,10 +44,10 @@ class Sumner2002(AuditoryPeriphery):
 
         # Stapes velocity [Pa -> m/s]
         self.stapes_velocity = dsam.EarModule("Util_mathOp")
-        if self.animal == 'gp':
+        if self._animal == 'gp':
             self.stapes_velocity.read_pars(par_dir("stapes_Meddis2005.par"))
             dsam.connect(self.outer_middle_ear_B, self.stapes_velocity)
-        elif self.animal == 'human':
+        elif self._animal == 'human':
             self.stapes_velocity.set_par("OPERATOR", "SCALE")
             self.stapes_velocity.set_par("OPERAND", 1.7e-11)
             dsam.connect(self.outer_middle_ear, self.stapes_velocity)
@@ -57,12 +56,12 @@ class Sumner2002(AuditoryPeriphery):
 
 
         # Basilar membrane
-        if self.animal == 'gp':
+        if self._animal == 'gp':
             self.bm = dsam.EarModule("BM_DRNL")
             self.bm.read_pars(par_dir("bm_drnl_gp.par"))
             self.set_freq(freq)
             dsam.connect(self.stapes_velocity, self.bm)
-        elif self.animal == 'human':
+        elif self._animal == 'human':
             self.bm = dsam.EarModule("BM_DRNL")
             self.bm.read_pars(par_dir("drnl_human_Lopez-Poveda2001.par"))
             self.set_freq(freq)
@@ -76,29 +75,29 @@ class Sumner2002(AuditoryPeriphery):
         self.ihcrp.read_pars(par_dir("ihcrp_Meddis2005_modified.par"))
         dsam.connect(self.bm, self.ihcrp)
 
-        if self.hsr_num != 0:
+        if self._hsr_sum != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_hsr)
 
-            self.anf_hsr = self._generate_anf(sg_type, self.hsr_num)
+            self.anf_hsr = self._generate_anf(sg_type, self._hsr_sum)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
-        if self.msr_num != 0:
+        if self._msr_sum != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_msr)
 
-            self.anf_msr = self._generate_anf(sg_type, self.msr_num)
+            self.anf_msr = self._generate_anf(sg_type, self._msr_sum)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
 
-        if self.lsr_num != 0:
+        if self._lsr_sum != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
             self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
             dsam.connect(self.ihcrp, self.ihc_lsr)
 
-            self.anf_lsr = self._generate_anf(sg_type, self.lsr_num)
+            self.anf_lsr = self._generate_anf(sg_type, self._lsr_sum)
             dsam.connect(self.ihc_lsr, self.anf_lsr)
 
 
@@ -116,9 +115,9 @@ class Sumner2002(AuditoryPeriphery):
             self.bm.set_par("CF_MODE", "single")
             self.bm.set_par("SINGLE_CF", freq)
         elif isinstance(freq, tuple):
-            if self.animal == 'gp':
+            if self._animal == 'gp':
                 self.bm.set_par("CF_MODE", "guinea_pig")
-            elif self.animal == 'human':
+            elif self._animal == 'human':
                 self.bm.set_par("CF_MODE", "human")
             else:
                 assert False
@@ -137,59 +136,65 @@ class Sumner2002(AuditoryPeriphery):
         return self.bm.get_labels()
 
 
-    def run(self, fs, sound, times=1, output_format='spikes'):
-        """
-        Run auditory periphery model.
-
-        sound: audio signal
+    def run(self, fs, sound, times=1):
+        """ Run auditory periphery model.
 
         fs: sampling frequency
-
+        sound: audio signal
         times: how many many trials
 
-        output_format: format of the output 'spikes' (for spiking
-        times), 'signals' (for time function)
         """
-        if output_format == 'signals':
-            assert times == 1
-
-        fs = float(fs)
-        input_module = dsam.EarModule(fs, sound)
-
-        dsam.connect(input_module, self.outer_middle_ear)
-
-        if self.animal == 'gp':
-            self.outer_middle_ear.run()
+        self.outer_middle_ear.run(fs, sound)
+        if self._animal == 'gp':
             self.outer_middle_ear_B.run()
-        elif self.animal == 'human':
-            self.outer_middle_ear.run()
-        else:
-            self.outer_middle_ear.run()
-
-        dsam.disconnect(input_module, self.outer_middle_ear)
 
         self.stapes_velocity.run()
         self.bm.run()
         self.ihcrp.run()
 
-        if self.hsr_num > 0:
+        if self._hsr_sum > 0:
             self.ihc_hsr.run()
-            hsr_db = self._run_anf(self.anf_hsr, fs, times, output_format)
+            hsr_trains = self._run_anf(self.anf_hsr, fs, times)
         else:
-            hsr_db = None
+            hsr_trains = None
 
-        if self.msr_num > 0:
+        if self._msr_sum > 0:
             self.ihc_msr.run()
-            msr_db = self._run_anf(self.anf_msr, fs, times, output_format)
+            msr_trains = self._run_anf(self.anf_msr, fs, times)
         else:
-            msr_db = None
+            msr_trains = None
 
-        if self.lsr_num > 0:
+        if self._lsr_sum > 0:
             self.ihc_lsr.run()
-            lsr_db = self._run_anf(self.anf_lsr, fs, times, output_format)
+            lsr_trains = self._run_anf(self.anf_lsr, fs, times)
         else:
-            lsr_db = None
+            lsr_trains = None
 
 
-        return hsr_db, msr_db, lsr_db
+        return hsr_trains, msr_trains, lsr_trains
+
+
+
+def main():
+    ear = Sumner2002((1,0,0), freq=5000)
+
+    fs = 100000.0
+    cf = 1000
+    stimdb = 50
+
+    t = np.arange(0, 0.1, 1/fs)
+    s = np.sin(2 * np.pi * t * cf)
+    s = dsam.set_dbspl(stimdb, s)
+    z = np.zeros( np.ceil(len(t)/2) )
+    s = np.concatenate( (z, s, z) )
+
+    ear.set_freq( cf )
+
+    hsr, msr, lsr = ear.run(fs, s, times=250)
+    th.plot_raster(hsr['spikes'])
+    th.plot_psth(hsr['spikes'])
+
+
+if __name__ == "__main__":
+    main()
 

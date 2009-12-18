@@ -45,40 +45,30 @@ class AuditoryPeriphery(object):
 
 
 
-    def _run_anf(self, anf, fs, times, output_format):
-        """
-        Run spike generator several times and format the output.
-        """
+    def _run_anf(self, anf, fs, times):
+        """ Run spike generator several times and format the output. """
 
         # Explicit set of dt is required by some modules
         if anf.module_type.lower() == 'an_sg_binomial':
             anf.set_par("PULSE_DURATION", 1.1/fs)
 
-        if output_format == 'spikes':
-            anf_db = []
-            for run_idx in range(times):
-                anf.run()
-                anf_signal = anf.get_signal()
-                anf_spikes = th.signal_to_spikes(fs, anf_signal)
+        freq_map = self.get_freq_map()
+        anf_trains = []
+        for run_idx in range(times):
+            anf.run()
+            anf_signal = anf.get_signal()
+            anf_spikes = th.signal_to_spikes(fs, anf_signal)
 
-                for freq_idx,each_freq in enumerate(anf_spikes):
-                    anf_db.append( (freq_idx, run_idx, each_freq) )
+            for freq, train in zip(freq_map, anf_spikes):
+                anf_trains.append( (freq, run_idx, train) )
 
-            anf_output = np.array(anf_db, dtype=[ ('freq', int),
+        anf_trains = np.array(anf_trains, dtype=[ ('freq', float),
                                                   ('trial', int),
                                                   ('spikes', np.ndarray) ])
-        elif output_format == 'signals':
-            anf.run()
-            anf_output = anf.get_signal()
-        else:
-            assert False
-
-        return anf_output
+        return anf_trains
 
 
 
     def run(self):
-        """
-        Run the model;  Run each DSAM module in the proper sequence.
-        """
+        """ Run the model """
         pass
