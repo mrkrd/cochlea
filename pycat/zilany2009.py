@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-18 00:32:03 marek>
+# Time-stamp: <2009-12-20 19:36:49 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -83,9 +83,12 @@ class Zilany2009(object):
 
 
         train_type = [ ('freq', float), ('trial', int), ('spikes', np.ndarray) ]
-        hsr_trains = np.array(hsr_trains, dtype=train_type)
-        msr_trains = np.array(msr_trains, dtype=train_type)
-        lsr_trains = np.array(lsr_trains, dtype=train_type)
+        if self._hsr_sum > 0:
+            hsr_trains = np.array(hsr_trains, dtype=train_type)
+        if self._msr_sum > 0:
+            msr_trains = np.array(msr_trains, dtype=train_type)
+        if self._lsr_sum > 0:
+            lsr_trains = np.array(lsr_trains, dtype=train_type)
 
         return hsr_trains, msr_trains, lsr_trains
 
