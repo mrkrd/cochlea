@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-20 19:36:49 marek>
+# Time-stamp: <2010-01-20 16:49:41 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -13,21 +13,23 @@ import thorns as th
 
 
 class Zilany2009(object):
-    def __init__(self, anf_sum=(1,1,1), freq=1000,
-                 animal='cat', powerlaw_implnt='actual'):
+    def __init__(self, anf_num=(1,1,1), freq=1000,
+                 animal='cat', powerlaw_implnt='actual', concat=False):
         """Auditory periphery model of a cat (Zilany et al. 2009)
 
-        anf_sum: (hsr_sum, msr_sum, lsr_sum)
+        anf_num: (hsr_num, msr_num, lsr_num)
         freq: CF
         animal: must be 'cat'
         powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
+        concat: if True, then spike trains of each type are concatenated
 
         """
         assert animal == 'cat'
+        assert concat == False
 
-        self._hsr_sum = anf_sum[0]
-        self._msr_sum = anf_sum[1]
-        self._lsr_sum = anf_sum[2]
+        self._hsr_num = anf_num[0]
+        self._msr_num = anf_num[1]
+        self._lsr_num = anf_num[2]
 
         self._powerlaw_implnt = powerlaw_implnt
 
@@ -37,15 +39,14 @@ class Zilany2009(object):
         self.set_freq(freq)
 
 
-    def run(self, fs, sound, times=1):
+    def run(self, fs, sound):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
         sound: input signal
-        times: number of tirals / number of output trains
 
         """
-        # TODO: implement storing the spikes in a file and reloading them automaticly
+        # TODO: implement storing of spikes in a file/db and reloading them as needed
 
         hsr_trains = []
         msr_trains = []
@@ -55,56 +56,56 @@ class Zilany2009(object):
             vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, cohc=self._cohc, cihc=self._cihc)
 
             # Run HSR synapse
-            if self._hsr_sum > 0:
+            if self._hsr_num > 0:
                 synapse_pars = {'anf_type':'hsr',
-                                'anf_sum':self._hsr_sum,
+                                'anf_sum':1, # _hsr_num if concat==True
                                 'powerlaw_implnt':self._powerlaw_implnt}
-                hsr_trains.extend( self._run_anf(fs, cf, vihc, times, synapse_pars) )
+                hsr_trains.extend( self._run_anf(fs, cf, vihc, self._hsr_num, synapse_pars) )
             else:
                 hsr_trains = None
 
             # Run MSR synapse
-            if self._msr_sum > 0:
+            if self._msr_num > 0:
                 synapse_pars = {'anf_type':'msr',
-                                'anf_sum':self._msr_sum,
+                                'anf_sum':1,
                                 'powerlaw_implnt':self._powerlaw_implnt}
-                msr_trains.extend( self._run_anf(fs, cf, vihc, times, synapse_pars) )
+                msr_trains.extend( self._run_anf(fs, cf, vihc, self._msr_num, synapse_pars) )
             else:
                 msr_trains = None
 
             # Run LSR synapse
-            if self._lsr_sum > 0:
+            if self._lsr_num > 0:
                 synapse_pars = {'anf_type':'lsr',
-                                'anf_sum':self._lsr_sum,
+                                'anf_sum':1,
                                 'powerlaw_implnt':self._powerlaw_implnt}
-                lsr_trains.extend( self._run_anf(fs, cf, vihc, times, synapse_pars) )
+                lsr_trains.extend( self._run_anf(fs, cf, vihc, self._lsr_num, synapse_pars) )
             else:
                 lsr_trains = None
 
 
-        train_type = [ ('freq', float), ('trial', int), ('spikes', np.ndarray) ]
-        if self._hsr_sum > 0:
+        train_type = [ ('freq', float), ('anf_id', int), ('spikes', np.ndarray) ]
+        if self._hsr_num > 0:
             hsr_trains = np.array(hsr_trains, dtype=train_type)
-        if self._msr_sum > 0:
+        if self._msr_num > 0:
             msr_trains = np.array(msr_trains, dtype=train_type)
-        if self._lsr_sum > 0:
+        if self._lsr_num > 0:
             lsr_trains = np.array(lsr_trains, dtype=train_type)
 
         return hsr_trains, msr_trains, lsr_trains
 
 
 
-    def _run_anf(self, fs, cf, vihc, times, synapse_pars):
+    def _run_anf(self, fs, cf, vihc, anf_num, synapse_pars):
 
         anf_trains = []
-        for run_idx in range(times):
+        for anf_id in range(anf_num):
             psth = catmodel.run_synapse(fs=fs,
                                         vihc=vihc,
                                         cf=cf,
                                         **synapse_pars);
             train = th.signal_to_spikes(fs, psth)
             train = train[0] # there is only one train per run
-            anf_trains.append( (cf, run_idx, train) )
+            anf_trains.append( (cf, anf_id, train) )
 
         return anf_trains
 
@@ -138,7 +139,7 @@ class Zilany2009(object):
 
 
 def main():
-    ear = Zilany2009((1,0,0), freq=5000, powerlaw_implnt='approx')
+    ear = Zilany2009((250,0,0), freq=5000, powerlaw_implnt='approx')
 
     fs = 100000.0
     cf = 1000
@@ -152,7 +153,7 @@ def main():
 
     ear.set_freq( cf )
 
-    hsr, msr, lsr = ear.run(fs, s, times=250)
+    hsr, msr, lsr = ear.run(fs, s)
     th.plot_raster(hsr['spikes'])
     th.plot_psth(hsr['spikes'])
 
