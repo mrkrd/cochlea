@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-01-20 16:49:41 marek>
+# Time-stamp: <2010-01-20 16:54:57 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -61,8 +61,6 @@ class Zilany2009(object):
                                 'anf_sum':1, # _hsr_num if concat==True
                                 'powerlaw_implnt':self._powerlaw_implnt}
                 hsr_trains.extend( self._run_anf(fs, cf, vihc, self._hsr_num, synapse_pars) )
-            else:
-                hsr_trains = None
 
             # Run MSR synapse
             if self._msr_num > 0:
@@ -70,8 +68,6 @@ class Zilany2009(object):
                                 'anf_sum':1,
                                 'powerlaw_implnt':self._powerlaw_implnt}
                 msr_trains.extend( self._run_anf(fs, cf, vihc, self._msr_num, synapse_pars) )
-            else:
-                msr_trains = None
 
             # Run LSR synapse
             if self._lsr_num > 0:
@@ -79,8 +75,6 @@ class Zilany2009(object):
                                 'anf_sum':1,
                                 'powerlaw_implnt':self._powerlaw_implnt}
                 lsr_trains.extend( self._run_anf(fs, cf, vihc, self._lsr_num, synapse_pars) )
-            else:
-                lsr_trains = None
 
 
         train_type = [ ('freq', float), ('anf_id', int), ('spikes', np.ndarray) ]
