@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-01-20 16:54:57 marek>
+# Time-stamp: <2010-01-29 19:59:32 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -14,7 +14,7 @@ import thorns as th
 
 class Zilany2009(object):
     def __init__(self, anf_num=(1,1,1), freq=1000,
-                 animal='cat', powerlaw_implnt='actual', concat=False):
+                 animal='cat', powerlaw_implnt='actual', accumulate=False):
         """Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -35,6 +35,8 @@ class Zilany2009(object):
 
         self._cohc = 1
         self._cihc = 1
+
+        self._train_type = [ ('freq', float), ('anf_id', int), ('spikes', np.ndarray) ]
 
         self.set_freq(freq)
 
@@ -77,13 +79,9 @@ class Zilany2009(object):
                 lsr_trains.extend( self._run_anf(fs, cf, vihc, self._lsr_num, synapse_pars) )
 
 
-        train_type = [ ('freq', float), ('anf_id', int), ('spikes', np.ndarray) ]
-        if self._hsr_num > 0:
-            hsr_trains = np.array(hsr_trains, dtype=train_type)
-        if self._msr_num > 0:
-            msr_trains = np.array(msr_trains, dtype=train_type)
-        if self._lsr_num > 0:
-            lsr_trains = np.array(lsr_trains, dtype=train_type)
+        hsr_trains = np.array(hsr_trains, dtype=self._train_type)
+        msr_trains = np.array(msr_trains, dtype=self._train_type)
+        lsr_trains = np.array(lsr_trains, dtype=self._train_type)
 
         return hsr_trains, msr_trains, lsr_trains
 
@@ -133,7 +131,7 @@ class Zilany2009(object):
 
 
 def main():
-    ear = Zilany2009((250,0,0), freq=5000, powerlaw_implnt='approx')
+    ear = Zilany2009((250,0,0), powerlaw_implnt='approx')
 
     fs = 100000.0
     cf = 1000
