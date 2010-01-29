@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-18 20:22:50 marek>
+# Time-stamp: <2009-12-19 00:34:15 marek>
 #
 # Description: Rate-intensity function
 
@@ -69,6 +69,31 @@ def rate_intensity_sumner2002():
     plt.show()
 
 
+def rate_intensity_holmberg2008():
+    import traveling_waves as tw
+
+    dbspl_list = np.arange(-20, 120, 5)
+    cf = tw.real_freq_map[50]
+
+    ear = cochlea.Holmberg2008((50, 50, 50), freq=cf)
+
+    hsr_rates, msr_rates, lsr_rates = \
+        rate_intensity(ear, fs=48000, cf=cf, dbspl_list=dbspl_list)
+
+    fig = plt.gcf()
+    ax = fig.add_subplot(111)
+
+    ax.plot(dbspl_list, hsr_rates)
+    ax.plot(dbspl_list, msr_rates)
+    ax.plot(dbspl_list, lsr_rates)
+
+    ax.set_xlabel("Intensity (dB SPL)")
+    ax.set_ylabel("Rate (spikes / sec)")
+
+    fig.savefig("holmberg2008_rate-intensity.eps")
+
+    plt.show()
+
 
 
 def rate_intensity_carney2009():
@@ -97,5 +122,6 @@ def rate_intensity_carney2009():
 
 
 if __name__ == "__main__":
-    rate_intensity_carney2009()
-    #rate_intensity_sumner2002()
+    # rate_intensity_carney2009()
+    # rate_intensity_sumner2002()
+    rate_intensity_holmberg2008()

@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-18 20:11:18 marek>
+# Time-stamp: <2009-12-18 20:42:33 marek>
 #
 # Description: Model of auditory periphery as described by Sumner et
 # al. (2002)
@@ -48,6 +48,7 @@ class Sumner2002(AuditoryPeriphery):
             self.stapes_velocity.read_pars(par_dir("stapes_Meddis2005.par"))
             dsam.connect(self.outer_middle_ear_B, self.stapes_velocity)
         elif self._animal == 'human':
+            # TODO: fix threshold for human
             self.stapes_velocity.set_par("OPERATOR", "SCALE")
             self.stapes_velocity.set_par("OPERAND", 1.7e-11)
             dsam.connect(self.outer_middle_ear, self.stapes_velocity)
@@ -58,6 +59,8 @@ class Sumner2002(AuditoryPeriphery):
         # Basilar membrane
         if self._animal == 'gp':
             self.bm = dsam.EarModule("BM_DRNL")
+            # TODO: fix BM parameters in order to have correct
+            # rate-intensity curves
             self.bm.read_pars(par_dir("bm_drnl_gp.par"))
             self.set_freq(freq)
             dsam.connect(self.stapes_velocity, self.bm)
