@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-19 00:34:15 marek>
+# Time-stamp: <2010-02-03 14:32:47 marek>
 #
 # Description: Rate-intensity function
 
@@ -32,13 +32,13 @@ def rate_intensity(ear, fs, cf, dbspl_list):
 
         if hsr != None:
             hsr_rates.append( th.firing_rate( hsr['spikes'],
-                                              tmax, ear._hsr_sum) )
+                                              tmax, ear._hsr_num) )
         if msr != None:
             msr_rates.append( th.firing_rate( msr['spikes'],
-                                              tmax, ear._msr_sum) )
+                                              tmax, ear._msr_num) )
         if lsr != None:
             lsr_rates.append( th.firing_rate( lsr['spikes'],
-                                              tmax, ear._lsr_sum) )
+                                              tmax, ear._lsr_num) )
 
     return hsr_rates, msr_rates, lsr_rates
 
@@ -96,7 +96,7 @@ def rate_intensity_holmberg2008():
 
 
 
-def rate_intensity_carney2009():
+def rate_intensity_zilany2009():
 
     dbspl_list = np.arange(-20, 120, 5)
     cf = 2000
@@ -122,6 +122,6 @@ def rate_intensity_carney2009():
 
 
 if __name__ == "__main__":
-    # rate_intensity_carney2009()
+    rate_intensity_zilany2009()
     # rate_intensity_sumner2002()
-    rate_intensity_holmberg2008()
+    # rate_intensity_holmberg2008()
