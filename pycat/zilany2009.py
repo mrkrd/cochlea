@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-01-29 19:59:32 marek>
+# Time-stamp: <2010-02-04 10:38:20 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -21,11 +21,11 @@ class Zilany2009(object):
         freq: CF
         animal: must be 'cat'
         powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
-        concat: if True, then spike trains of each type are concatenated
+        accumulate: if True, then spike trains of each type are concatenated
 
         """
         assert animal == 'cat'
-        assert concat == False
+        assert accumulate == False
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
@@ -131,7 +131,9 @@ class Zilany2009(object):
 
 
 def main():
-    ear = Zilany2009((250,0,0), powerlaw_implnt='approx')
+    import matplotlib.pyplot as plt
+
+    ear = Zilany2009((0,5,0), freq=(100, 20000, 100), powerlaw_implnt='approx')
 
     fs = 100000.0
     cf = 1000
@@ -143,12 +145,13 @@ def main():
     z = np.zeros( np.ceil(len(t)/2) )
     s = np.concatenate( (z, s, z) )
 
-    ear.set_freq( cf )
-
     hsr, msr, lsr = ear.run(fs, s)
-    th.plot_raster(hsr['spikes'])
-    th.plot_psth(hsr['spikes'])
 
+    fig = plt.gcf()
+    ax = fig.add_subplot(111)
+    th.plot_raster(msr['spikes'], axis=ax)
+    # th.plot_psth(msr['spikes'])
+    fig.savefig('raster.pdf')
 
 if __name__ == "__main__":
     main()
