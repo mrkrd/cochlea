@@ -1,2 +1,3 @@
-void SingleAN_IHC(double *px, double cf, int nrep, double binwidth, int totalstim,
-		  double cohc, double cihc, double *ihcout);
+void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
+	   double cohc, double cihc, double *ihcout);
+

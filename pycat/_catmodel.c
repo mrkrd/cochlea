@@ -6,7 +6,7 @@
 
 
 static PyObject*
-catmodel_IHC_wrap(PyObject* self, PyObject* args)
+IHCAN_wrap(PyObject* self, PyObject* args)
 {
 
      PyObject *signal_arr, *signal_arg;
@@ -42,7 +42,7 @@ catmodel_IHC_wrap(PyObject* self, PyObject* args)
      }
 
      /* Run IHC function */
-     SingleAN_IHC(signal_data, cf, 1, 1.0/fs, signal_len, cohc, cihc, ihcout_data);
+     IHCAN(signal_data, cf, 1, 1.0/fs, signal_len, cohc, cihc, ihcout_data);
 
 
      Py_DECREF(signal_arr);
@@ -52,7 +52,7 @@ catmodel_IHC_wrap(PyObject* self, PyObject* args)
 
 
 static PyObject*
-catmodel_Synapse_wrap(PyObject* self, PyObject* args)
+SingleAN_wrap(PyObject* self, PyObject* args)
 {
 
      PyObject *signal_arr, *signal_arg;
@@ -98,8 +98,8 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
      }
 
      /* Run IHC function */
-     SingleAN_Synapse(signal_data, cf, nrep, 1.0/fs, signal_len, \
-		      fibertype, implnt, synout_data, psth_data);
+     SingleAN(signal_data, cf, nrep, 1.0/fs, signal_len,	\
+	      fibertype, implnt, synout_data, psth_data);
 
      Py_DECREF(signal_arr);
      /* Py_DECREF(psth_arr); */
@@ -117,8 +117,8 @@ catmodel_Synapse_wrap(PyObject* self, PyObject* args)
 static PyMethodDef
 PyCat_Methods[] =
 {
-     {"run_ihc", catmodel_IHC_wrap, METH_VARARGS, "IHC module."},
-     {"run_synapse", catmodel_Synapse_wrap, METH_VARARGS, "Synapse module."},
+     {"run_ihc", IHCAN_wrap, METH_VARARGS, "IHC module."},
+     {"run_synapse", SingleAN_wrap, METH_VARARGS, "Synapse module."},
      {NULL, NULL, 0, NULL}
 };
 
