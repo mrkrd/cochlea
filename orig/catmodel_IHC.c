@@ -26,7 +26,7 @@
 #include <math.h>      /* Added for MS Visual C++ compatability, by Ian Bruce, 1999 */
 #include <mex.h>
 #include <time.h>
-/* #include <iostream.h> */
+/* #include <iostream.h>  This file may be needed for some C compilers - Not needed for lcc */
 
 #include "complex.hpp"
 
@@ -48,14 +48,14 @@
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 
-	double *px, cf, binwidth, reptime, cohc, cihc;
+	double *px, cf, tdres, reptime, cohc, cihc;
 	int    nrep, pxbins, lp, outsize[2], totalstim;
 
-	double *pxtmp, *cftmp, *nreptmp, *binwidthtmp, *reptimetmp, *cohctmp, *cihctmp;
+	double *pxtmp, *cftmp, *nreptmp, *tdrestmp, *reptimetmp, *cohctmp, *cihctmp;
 
     double *ihcout;
 
-	void   SingleAN(double *, double, int, double, int, double, double, double *);
+	void   IHCAN(double *, double, int, double, int, double, double, double *);
 
 	/* Check for proper number of arguments */
 
@@ -74,7 +74,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	pxtmp		= mxGetPr(prhs[0]);
 	cftmp		= mxGetPr(prhs[1]);
 	nreptmp		= mxGetPr(prhs[2]);
-	binwidthtmp	= mxGetPr(prhs[3]);
+	tdrestmp	= mxGetPr(prhs[3]);
 	reptimetmp	= mxGetPr(prhs[4]);
     cohctmp		= mxGetPr(prhs[5]);
     cihctmp		= mxGetPr(prhs[6]);
@@ -92,16 +92,16 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		mexErrMsgTxt("\n");
     }
 
-	nrep = (int)nreptmp[0];
+	nrep = (int) nreptmp[0];
 	if (nreptmp[0]!=nrep)
 		mexErrMsgTxt("nrep must an integer.\n");
 	if (nrep<1)
 		mexErrMsgTxt("nrep must be greater that 0.\n");
 
-    binwidth = binwidthtmp[0];
+    tdres = tdrestmp[0];
 
 	reptime = reptimetmp[0];
-	if (reptime<pxbins*binwidth)  /* duration of stimulus = pxbins*binwidth */
+	if (reptime<pxbins*tdres)  /* duration of stimulus = pxbins*tdres */
 		mexErrMsgTxt("reptime should be equal to or longer than the stimulus duration.\n");
 
     cohc = cohctmp[0]; /* impairment in the OHC  */
@@ -120,12 +120,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 	/* Calculate number of samples for total repetition time */
 
-	totalstim = (int)floor((reptime*1e3)/(binwidth*1e3));
+	totalstim = (int)floor((reptime*1e3)/(tdres*1e3));
 
-    outsize[0] = 1;
-	outsize[1] = totalstim;
-
-    px = (double*)mxCalloc(outsize[1],sizeof(double));
+    px = (double*)mxCalloc(totalstim,sizeof(double));
 
 	/* Put stimulus waveform into pressure waveform */
 
@@ -133,6 +130,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 			px[lp] = pxtmp[lp];
 
 	/* Create an array for the return argument */
+
+    outsize[0] = 1;
+	outsize[1] = totalstim*nrep;
 
 	plhs[0] = mxCreateNumericArray(2, outsize, mxDOUBLE_CLASS, mxREAL);
 
@@ -142,13 +142,13 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 	/* run the model */
 
-	SingleAN(px,cf,nrep,binwidth,totalstim,cohc,cihc,ihcout);
+	IHCAN(px,cf,nrep,tdres,totalstim,cohc,cihc,ihcout);
 
  mxFree(px);
 
 }
 
-void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
+void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
                 double cohc, double cihc, double *ihcout)
 {
 
@@ -185,7 +185,7 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
     double NLogarithm(double, double, double, double);
 
     /* Allocate dynamic memory for the temporary variables */
-	ihcouttmp  = (double*)mxCalloc(totalstim,sizeof(double));
+	ihcouttmp  = (double*)mxCalloc(totalstim*nrep,sizeof(double));
 
 	mey1 = (double*)mxCalloc(totalstim,sizeof(double));
 	mey2 = (double*)mxCalloc(totalstim,sizeof(double));
@@ -223,7 +223,7 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
 	TauWBMin = TauWBMax/Taumax[0]*Taumin[0];
     tauwb    = TauWBMax+(bmTaubm-bmTaumax[0])*(TauWBMax-TauWBMin)/(bmTaumax[0]-bmTaumin[0]);
 
-	wbgain = gain_groupdelay(binwidth,centerfreq,cf,tauwb,grdelay);
+	wbgain = gain_groupdelay(tdres,centerfreq,cf,tauwb,grdelay);
 	tmpgain[0]   = wbgain;
 	lasttmpgain  = wbgain;
   	/*===============================================================*/
@@ -234,7 +234,7 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
     /*===============================================================*/
     /* Prewarping and related constants for the middle ear */
      fp = 1e3;  /* prewarping frequency 1 kHz */
-     C  = TWOPI*fp/tan(TWOPI/2*fp*binwidth);
+     C  = TWOPI*fp/tan(TWOPI/2*fp*tdres);
 	 m11 = C/(C + 693.48);                    m12 = (693.48 - C)/C;
 	 m21 = 1/(pow(C,2) + 11053*C + 1.163e8);  m22 = -2*pow(C,2) + 2.326e8;    m23 = pow(C,2) - 11053*C + 1.163e8;
 	 m24 = pow(C,2) + 1356.3*C + 7.4417e8;    m25 = -2*pow(C,2) + 14.8834e8;  m26 = pow(C,2) - 1356.3*C + 7.4417e8;
@@ -266,14 +266,13 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
             meout = mey3[n]/megainmax;
 		}; 	/* End of the middle-ear filtering section */
 
-
 		/* Control-path filter */
 
-        wbout1 = WbGammaTone(meout,binwidth,centerfreq,n,tauwb,wbgain,wborder);
+        wbout1 = WbGammaTone(meout,tdres,centerfreq,n,tauwb,wbgain,wborder);
         wbout  = pow((tauwb/TauWBMax),wborder)*wbout1*10e3*__max(1,cf/5e3);
 
         ohcnonlinout = Boltzman(wbout,ohcasym,12.0,5.0,5.0); /* pass the control signal through OHC Nonlinear Function */
-		ohcout = OhcLowPass(ohcnonlinout,binwidth,600,n,1.0,2);/* lowpass filtering after the OHC nonlinearity */
+		ohcout = OhcLowPass(ohcnonlinout,tdres,600,n,1.0,2);/* lowpass filtering after the OHC nonlinearity */
 
 		tmptauc1 = NLafterohc(ohcout,bmTaumin[0],bmTaumax[0],ohcasym); /* nonlinear function after OHC low-pass filter */
 		tauc1    = cohc*(tmptauc1-bmTaumin[0])+bmTaumin[0];  /* time -constant for the signal-path C1 filter */
@@ -283,7 +282,7 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
 
 		tauwb = TauWBMax+(tauc1-bmTaumax[0])*(TauWBMax-TauWBMin)/(bmTaumax[0]-bmTaumin[0]);
 
-	    wb_gain = gain_groupdelay(binwidth,centerfreq,cf,tauwb,grdelay);
+	    wb_gain = gain_groupdelay(tdres,centerfreq,cf,tauwb,grdelay);
 
 		grd = grdelay[0];
 
@@ -298,12 +297,12 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
 
         /*====== Signal-path C1 filter ======*/
 
-		 c1filterouttmp = C1ChirpFilt(meout, binwidth, cf, n, bmTaumax[0], rsigma); /* C1 filter output */
+		 c1filterouttmp = C1ChirpFilt(meout, tdres, cf, n, bmTaumax[0], rsigma); /* C1 filter output */
 
 
         /*====== Parallel-path C2 filter ======*/
 
-		 c2filterouttmp  = C2ChirpFilt(meout, binwidth, cf, n, bmTaumax[0], 1/ratiobm[0]); /* parallel-filter output*/
+		 c2filterouttmp  = C2ChirpFilt(meout, tdres, cf, n, bmTaumax[0], 1/ratiobm[0]); /* parallel-filter output*/
 
 	    /*=== Run the inner hair cell (IHC) section: NL function and then lowpass filtering ===*/
 
@@ -311,25 +310,29 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim,
 
 		c2vihctmp = -NLogarithm(c2filterouttmp*fabs(c2filterouttmp)*cf/10*cf/2e3,0.2,1.0,cf); /* C2 transduction output */
 
-        ihcouttmp[n] = IhcLowPass(c1vihctmp+c2vihctmp,binwidth,3000,n,1.0,7);
+        ihcouttmp[n] = IhcLowPass(c1vihctmp+c2vihctmp,tdres,3000,n,1.0,7);
    };  /* End of the loop */
 
-   	/* Adjust total path delay to all signals after BM */
+    /* Stretched out the IHC output according to nrep (number of repetitions) */
 
-	delay      = delay_cat(cf);
-	delaypoint =__max(0,(int) ceil(delay/binwidth));
-
-    for(i=delaypoint;i<totalstim;i++)
+    for(i=0;i<totalstim*nrep;i++)
 	{
-		ihcout[i] = ihcouttmp[i-delaypoint];
+		ihcouttmp[i] = ihcouttmp[(int) (fmod(i,totalstim))];
+  	};
+   	/* Adjust total path delay to IHC output signal */
+	delay      = delay_cat(cf);
+	delaypoint =__max(0,(int) ceil(delay/tdres));
+
+    for(i=delaypoint;i<totalstim*nrep;i++)
+	{
+		ihcout[i] = ihcouttmp[i - delaypoint];
   	};
 
+    /* Freeing dynamic memory allocated earlier */
 
-/* Freeing dynamic memory allocated earlier */
-
-mxFree(ihcouttmp);
-mxFree(mey1); mxFree(mey2); mxFree(mey3);
-mxFree(tmpgain);
+    mxFree(ihcouttmp);
+    mxFree(mey1); mxFree(mey2); mxFree(mey3);
+    mxFree(tmpgain);
 
 } /* End of the SingleAN function */
 /* -------------------------------------------------------------------------------------------- */
@@ -384,7 +387,7 @@ double Get_taubm(double cf, double taumax,double *bmTaumax,double *bmTaumin, dou
 /* -------------------------------------------------------------------------------------------- */
 /** Pass the signal through the signal-path C1 Tenth Order Nonlinear Chirp-Gammatone Filter */
 
-double C1ChirpFilt(double x, double binwidth,double cf, int n, double taumax, double rsigma)
+double C1ChirpFilt(double x, double tdres,double cf, int n, double taumax, double rsigma)
 {
     static double C1gain_norm, C1initphase;
     static double C1input[12][4], C1output[12][4];
@@ -410,7 +413,7 @@ double C1ChirpFilt(double x, double binwidth,double cf, int n, double taumax, do
      half_order_pole  = order_of_pole/2;
      order_of_zero    = half_order_pole;
 
-	 fs_bilinear = TWOPI*cf/tan(TWOPI*cf*binwidth/2);
+	 fs_bilinear = TWOPI*cf/tan(TWOPI*cf*tdres/2);
      rzero       = -pzero;
 	 CF          = TWOPI*cf;
 
@@ -530,7 +533,7 @@ double C1ChirpFilt(double x, double binwidth,double cf, int n, double taumax, do
 /* -------------------------------------------------------------------------------------------- */
 /** Parallelpath C2 filter: same as the signal-path C1 filter with the OHC completely impaired */
 
-double C2ChirpFilt(double xx, double binwidth,double cf, int n, double taumax, double fcohc)
+double C2ChirpFilt(double xx, double tdres,double cf, int n, double taumax, double fcohc)
 {
 	static double C2gain_norm, C2initphase;
     static double C2input[12][4];  static double C2output[12][4];
@@ -556,7 +559,7 @@ double C2ChirpFilt(double xx, double binwidth,double cf, int n, double taumax, d
      half_order_pole  = order_of_pole/2;
      order_of_zero    = half_order_pole;
 
-	 fs_bilinear = TWOPI*cf/tan(TWOPI*cf*binwidth/2);
+	 fs_bilinear = TWOPI*cf/tan(TWOPI*cf*tdres/2);
      rzero       = -pzero;
 	 CF          = TWOPI*cf;
 
@@ -672,7 +675,7 @@ double C2ChirpFilt(double xx, double binwidth,double cf, int n, double taumax, d
 /* -------------------------------------------------------------------------------------------- */
 /** Pass the signal through the Control path Third Order Nonlinear Gammatone Filter */
 
-double WbGammaTone(double x,double binwidth,double centerfreq, int n, double tau,double gain,int order)
+double WbGammaTone(double x,double tdres,double centerfreq, int n, double tau,double gain,int order)
 {
   static double wbphase;
   static COMPLEX wbgtf[4], wbgtfl[4];
@@ -690,10 +693,10 @@ double WbGammaTone(double x,double binwidth,double centerfreq, int n, double tau
       }
   }
 
-  delta_phase = -TWOPI*centerfreq*binwidth;
+  delta_phase = -TWOPI*centerfreq*tdres;
   wbphase += delta_phase;
 
-  dtmp = tau*2.0/binwidth;
+  dtmp = tau*2.0/tdres;
   c1LP = (dtmp-1)/(dtmp+1);
   c2LP = 1.0/(dtmp+1);
   wbgtf[0] = compmult(x,compexp(wbphase));                 /* FREQUENCY SHIFT */
@@ -710,12 +713,12 @@ double WbGammaTone(double x,double binwidth,double centerfreq, int n, double tau
 /* -------------------------------------------------------------------------------------------- */
 /** Calculate the gain and group delay for the Control path Filter */
 
-double gain_groupdelay(double binwidth,double centerfreq, double cf, double tau,int *grdelay)
+double gain_groupdelay(double tdres,double centerfreq, double cf, double tau,int *grdelay)
 {
   double tmpcos,dtmp2,c1LP,c2LP,tmp1,tmp2,wb_gain;
 
-  tmpcos = cos(TWOPI*(centerfreq-cf)*binwidth);
-  dtmp2 = tau*2.0/binwidth;
+  tmpcos = cos(TWOPI*(centerfreq-cf)*tdres);
+  dtmp2 = tau*2.0/tdres;
   c1LP = (dtmp2-1)/(dtmp2+1);
   c2LP = 1.0/(dtmp2+1);
   tmp1 = 1+c1LP*c1LP-2*c1LP*tmpcos;
@@ -760,7 +763,7 @@ double Boltzman(double x, double asym, double s0, double s1, double x1)
 /* -------------------------------------------------------------------------------------------- */
 /* Get the output of the OHC Low Pass Filter in the Control path */
 
-double OhcLowPass(double x,double binwidth,double Fc, int n,double gain,int order)
+double OhcLowPass(double x,double tdres,double Fc, int n,double gain,int order)
 {
   static double ohc[4],ohcl[4];
 
@@ -776,7 +779,7 @@ double OhcLowPass(double x,double binwidth,double Fc, int n,double gain,int orde
       }
   }
 
-  c = 2.0/binwidth;
+  c = 2.0/tdres;
   c1LP = ( c - TWOPI*Fc ) / ( c + TWOPI*Fc );
   c2LP = TWOPI*Fc / (TWOPI*Fc + c);
 
@@ -789,7 +792,7 @@ double OhcLowPass(double x,double binwidth,double Fc, int n,double gain,int orde
 /* -------------------------------------------------------------------------------------------- */
 /* Get the output of the IHC Low Pass Filter  */
 
-double IhcLowPass(double x,double binwidth,double Fc, int n,double gain,int order)
+double IhcLowPass(double x,double tdres,double Fc, int n,double gain,int order)
 {
   static double ihc[8],ihcl[8];
 
@@ -805,7 +808,7 @@ double IhcLowPass(double x,double binwidth,double Fc, int n,double gain,int orde
       }
   }
 
-  C = 2.0/binwidth;
+  C = 2.0/tdres;
   c1LP = ( C - TWOPI*Fc ) / ( C + TWOPI*Fc );
   c2LP = TWOPI*Fc / (TWOPI*Fc + C);
 

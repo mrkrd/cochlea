@@ -1,12 +1,12 @@
 %%% readme.txt for catmodel %%%
 
-This is Version 3 of the public distribution of the code for the cat auditory
+This is Version 4 of the public distribution of the code for the cat auditory
 periphery model with power-law adaptation of:
 
-Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (). "A phenomenological 
-model of the synapse between the inner hair cell and auditory nerve: Long-term 
-adaptation with power-law dynamics," accepted for publication in the Journal 
-of the Acoustical Society of America.            
+Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (2009). "A phenomenological 
+        model of the synapse between the inner hair cell and auditory nerve: Long-term 
+        adaptation with power-law dynamics," Journal of the Acoustical Society of America
+        126(5): 2390-2412.            
  
 Zilany, M. S. A. and Bruce, I. C. (2007). "Representation of the vowel
         /eh/ in normal and impaired auditory nerve fibers: Model predictions of
@@ -23,6 +23,22 @@ code or any modified versions of this code.
 
 *** Change History ***
 
+Version 4.0:-
+
+-  In previous versions, we used spontaneous rate of the fiber to fill in the 
+   delay period (transmission, synaptic, etc.). In this version,
+   we used fractional Gaussian noise (fGn) during that delay period. 
+   
+
+-  A bug was fixed in the discharge generator (DG) portion of the code. For medium or 
+   low spont rates, it is likely that the rate starts with zero (because of
+   adapted and rectified fGn). In the DG, the initial "endoflastdeadtime" was 
+   computed by diving the log probability by rates (which ended up being negative infinity). 
+   In this version, we forced this time to be non-negative. 
+
+-  Model sampling rate should be 100 kHz (because the filter coefficients for 
+   power-law kernel were obtained for this sampling rate).
+
 Version 3.0:-
 
 -  The major improvement in this version of the code is the inclusion of 
@@ -36,7 +52,7 @@ Version 3.0:-
 
 -  Note that, actual implementation of the power-law functions takes really long
    time to finish computation. However, approximate implementation is as good 
-   as actual implementation for short stimulus.
+   as actual implementation for short duration stimulus.
 
 Version 2.0:-
    
@@ -126,4 +142,4 @@ and by Qing Tan and Laurel Carney for the model of:
     responses of auditory nerve fibers. II. Nonlinear tuning with a
     frequency glide,” J. Acoust. Soc. Am. 114, 2007–2020.
 
-%%% © Ian C. Bruce (ibruce@ieee.org), M. S. Arefeen Zilany, Rasha Ibrahim, Paul C. Nelson, and Laurel H. Carney June 2006 - December 2008 %%%
+%%% © Muhammad S. A. Zilany (msazilany@gmail.com), Ian C. Bruce, Rasha Ibrahim, Paul C. Nelson, and Laurel H. Carney     June 2006 - January 2010 %%%

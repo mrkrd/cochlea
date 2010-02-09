@@ -1,25 +1,26 @@
 /* This is Version 3 of the public distribution of the code for the auditory
    periphery model of:
 
-        Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation)
+    Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (2009). "A Phenomenological
+        model of the synapse between the inner hair cell and auditory nerve : Long-term adaptation 
+        with power-law dynamics," Journal of the Acoustical Society of America 126(5): 2390-2412.        
 
    Please cite this paper if you publish any research
    results obtained with this code or any modified versions of this code.
 
    See the file readme.txt for details of compiling and running the model.  
    
-   %%% © Ian C. Bruce (ibruce@ieee.org), M. S. Arefeen Zilany, Paul C. Nelson, and laurel H. Carney October 2008 %%%
+   %%% © Muhammad S.A. Zilany (msazilany@gmail.com), Ian C. Bruce, Paul C. Nelson, and laurel H. Carney October 2008 %%%
    
 */
 
 #include <stdio.h>
 #include <stdlib.h>
-/*#include <vector.h>*/
 #include <string.h>
 #include <math.h>      /* Added for MS Visual C++ compatability, by Ian Bruce, 1999 */
 #include <mex.h>
 #include <time.h>
-/*#include <iostream.h>*/
+/* #include <iostream.h> */
 
 #include "complex.hpp"
 
@@ -41,10 +42,10 @@
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	
-	double *px, cf, binwidth, reptime, fibertype, implnt;
+	double *px, cf, tdres, fibertype, implnt;
 	int    nrep, pxbins, lp, outsize[2], totalstim;
 
-	double *pxtmp, *cftmp, *nreptmp, *binwidthtmp, *reptimetmp, *fibertypetmp, *implnttmp;
+	double *pxtmp, *cftmp, *nreptmp, *tdrestmp, *fibertypetmp, *implnttmp;
         
     double *synout, *psth;
    
@@ -52,7 +53,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	
 	/* Check for proper number of arguments */
 	
-	if (nrhs != 7) 
+	if (nrhs != 6) 
 	{
 		mexErrMsgTxt("catmodel_Synapse requires 6 input arguments.");
 	}; 
@@ -67,10 +68,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	pxtmp		= mxGetPr(prhs[0]);
 	cftmp		= mxGetPr(prhs[1]);
 	nreptmp		= mxGetPr(prhs[2]);
-	binwidthtmp	= mxGetPr(prhs[3]);
-	reptimetmp	= mxGetPr(prhs[4]);
-    fibertypetmp= mxGetPr(prhs[5]);
-    implnttmp	= mxGetPr(prhs[6]);
+	tdrestmp	= mxGetPr(prhs[3]);
+    fibertypetmp= mxGetPr(prhs[4]);
+    implnttmp	= mxGetPr(prhs[5]);
 	
 	/* Check with individual input arguments */
 
@@ -91,31 +91,27 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	if (nrep<1)
 		mexErrMsgTxt("nrep must be greater that 0.\n");
 
-    binwidth = binwidthtmp[0];
-	
-	reptime = reptimetmp[0];
-	/*if (reptime<pxbins*binwidth)  /* duration of stimulus = pxbins*binwidth */
-	/*	mexErrMsgTxt("reptime should be equal to or longer than the stimulus duration.\n"); */
-    
+    tdres = tdrestmp[0];	
+   
 	fibertype  = fibertypetmp[0];  /* spontaneous rate of the fiber */
     
     implnt = implnttmp[0];  /* actual/approximate implementation of the power-law functions */
 
 	/* Calculate number of samples for total repetition time */
 
-	totalstim = (int)floor((reptime*1e3)/(binwidth*1e3));
+	totalstim = (int)floor(pxbins/nrep);    
 
-    outsize[0] = 1;
-	outsize[1] = totalstim;
-
-    px = (double*)mxCalloc(outsize[1],sizeof(double)); 
+    px = (double*)mxCalloc(totalstim*nrep,sizeof(double)); 
 
 	/* Put stimulus waveform into pressure waveform */
-
-	for (lp=0; lp<pxbins; lp++)
+    
+   	for (lp=0; lp<pxbins; lp++)
 			px[lp] = pxtmp[lp];
 	
 	/* Create an array for the return argument */
+    
+    outsize[0] = 1;
+	outsize[1] = totalstim;
 	
 	plhs[0] = mxCreateNumericArray(2, outsize, mxDOUBLE_CLASS, mxREAL);
     plhs[1] = mxCreateNumericArray(2, outsize, mxDOUBLE_CLASS, mxREAL);
@@ -129,13 +125,13 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
 	mexPrintf("catmodel: Zilany, Bruce, Nelson, and Carney : Cat Auditory Nerve Model\n");
 
-	SingleAN(px,cf,nrep,binwidth,totalstim,fibertype,implnt,synout,psth);
+	SingleAN(px,cf,nrep,tdres,totalstim,fibertype,implnt,synout,psth);
 
  mxFree(px);
 
 }
 
-void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim, double fibertype, double implnt, double *synout, double *psth)
+void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, double fibertype, double implnt, double *synout, double *psth)
 {	
         	
 	/*variables for the signal-path, control-path and onward */
@@ -143,15 +139,15 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim, d
 
 	int    i,nspikes,ipst;
 	double I,spont;
-    double sampFreq = 10e3; 
+    double sampFreq = 10e3; /* Sampling frequency used in the synapse */
         
     /* Declarations of the functions used in the program */
 	double Synapse(double *, double, double, int, int, double, double, double, double *);
-	int    SpikeGenerator(double *, double, int, int, double *); 
-    double delay_cat(double cf);
+	int    SpikeGenerator(double *, double, int, int, double *);
+    
     /* Allocate dynamic memory for the temporary variables */
     synouttmp  = (double*)mxCalloc(totalstim*nrep,sizeof(double));
-    sptime  = (double*)mxCalloc((long) ceil(totalstim*binwidth*nrep/0.00075),sizeof(double));  	
+    sptime  = (double*)mxCalloc((long) ceil(totalstim*tdres*nrep/0.00075),sizeof(double));  	
 	   
     /* Spontaneous Rate of the fiber corresponding to Fibertype */    
     if (fibertype==1) spont = 0.1;
@@ -159,7 +155,7 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim, d
     if (fibertype==3) spont = 100.0;
     
     /*====== Run the synapse model ======*/    
-    I = Synapse(px, binwidth, cf, totalstim, nrep, spont, implnt, sampFreq, synouttmp);
+    I = Synapse(px, tdres, cf, totalstim, nrep, spont, implnt, sampFreq, synouttmp);
             
     /* Wrapping up the unfolded (due to no. of repetitions) Synapse Output */
     for(i = 0; i <I ; i++)
@@ -169,40 +165,18 @@ void SingleAN(double *px, double cf, int nrep, double binwidth, int totalstim, d
 	};    
     /*======  Spike Generations ======*/
     
-	nspikes = SpikeGenerator(synouttmp, binwidth, totalstim, nrep, sptime);
+	nspikes = SpikeGenerator(synouttmp, tdres, totalstim, nrep, sptime);
 	for(i = 0; i < nspikes; i++)
 	{        
-		ipst = (int) (fmod(sptime[i],binwidth*totalstim) / binwidth);
+		ipst = (int) (fmod(sptime[i],tdres*totalstim) / tdres);
         psth[ipst] = psth[ipst] + 1;       
 	};
 
     /* Freeing dynamic memory allocated earlier */
 
-    mxFree(sptime); mxFree(synouttmp); //mxFree(tmpsyntmp);
+    mxFree(sptime); mxFree(synouttmp); 
 
 } /* End of the SingleAN function */
-/* -------------------------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------------------------- */
-/** Calculate the delay (basilar membrane, synapse, etc. for cat) */
-
-double delay_cat(double cf)
-{
-  /* DELAY THE WAVEFORM (delay buf1, tauf, ihc for display purposes)  */
-  /* Note: Latency vs. CF for click responses is available for Cat only (not human) */
-  /* Use original fit for Tl (latency vs. CF in msec) from Carney & Yin '88
-     and then correct by .75 cycles to go from PEAK delay to ONSET delay */
-	/* from Carney and Yin '88 */
-  double A0,A1,x,delay;
-
-  A0    = 3.0;  
-  A1    = 12.5;
-  x     = 11.9 * log10(0.80 + cf / 456.0);      /* cat mapping */
-  delay = A0 * exp( -x/A1 ) * 1e-3;
-  
-  return(delay);
-}
-/* -------------------------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------- */
 /*  Synapse model: if the time resolution is not small enough, the concentration of
    the immediate pool could be as low as negative, at this time there is an alert message
@@ -213,10 +187,10 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
     /* Initalize Variables */     
     int z, b;
     int resamp = (int) ceil(1/(tdres*sampFreq));
-    double incr = 0.0;    
+    double incr = 0.0; int delaypoint = floor(7500/(cf/1e3));   
     
-    double alpha1, beta1, I1, alpha2, beta2, I2, binwidth, delay;
-    int    k,j,indx,i, delaypoint;    
+    double alpha1, beta1, I1, alpha2, beta2, I2, binwidth;
+    int    k,j,indx,i;    
     double synstrength,synslope,CI,CL,PG,CG,VL,PL,VI;
 	double cf_factor,PImax,kslope,Ass,Asp,TauR,TauST,Ar_Ast,PTS,Aon,AR,AST,Prest,gamma1,gamma2,k1,k2;
 	double VI0,VI1,alpha,beta,theta1,theta2,theta3,vsat,tmpst,tmp,PPI,CIlast,temp;
@@ -229,13 +203,10 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
     double *randNums;
     
     mxArray	*IhcInputArray[3], *IhcOutputArray[1];
-    double *sampIHC, *ihcDims;
-    
-    delay      = delay_cat(cf);
-	delaypoint =__max(0,(int) ceil(delay/tdres)*5);  
+    double *sampIHC, *ihcDims;	  
         
     exponOut = (double*)mxCalloc((long) ceil(totalstim*nrep),sizeof(double));
-    powerLawIn = (double*)mxCalloc((long) ceil(totalstim*nrep+5*delaypoint),sizeof(double));
+    powerLawIn = (double*)mxCalloc((long) ceil(totalstim*nrep+3*delaypoint),sizeof(double));
     sout1 = (double*)mxCalloc((long) ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq),sizeof(double));
     sout2 = (double*)mxCalloc((long) ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq),sizeof(double));
     synSampOut  = (double*)mxCalloc((long) ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq),sizeof(double));
@@ -261,7 +232,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
     /*------- Generating a random sequence ---------------------*/
     /*----------------------------------------------------------*/ 
     randInputArray[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
-    *mxGetPr(randInputArray[0])= ceil((totalstim*nrep+5*delaypoint)*tdres*sampFreq);
+    *mxGetPr(randInputArray[0])= ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq);
     randInputArray[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
     *mxGetPr(randInputArray[1])= 1/sampFreq;
     randInputArray[2] = mxCreateDoubleMatrix(1, 1, mxREAL);
@@ -274,9 +245,9 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
     /*----------------------------------------------------------*/
     /*----- Double Exponential Adaptation ----------------------*/
     /*----------------------------------------------------------*/    
-       if (spont==100) cf_factor = __min(300,pow(10,0.29*cf/1e3 + 0.7));
-       if (spont==5) cf_factor = __min(15,2.48e-4*cf*5+0.2);
-       if (spont==0.1) cf_factor = __min(0.3,2.48e-4*cf*0.1+0.2);              
+       if (spont==100) cf_factor = __min(800,pow(10,0.29*cf/1e3 + 0.7));
+       if (spont==5)   cf_factor = __min(50,2.5e-4*cf*4+0.2);
+       if (spont==0.1) cf_factor = __min(1.0,2.5e-4*cf*0.1+0.15);              
 	         
 	   PImax  = 0.6;                /* PI2 : Maximum of the PI(PI at steady state) */
        kslope = (1+50.0)/(5+50.0)*cf_factor*20.0*PImax;           
@@ -322,10 +293,8 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
        synslope = Prest/log(2)*synstrength;
        
        k = 0;     
-      for (j=0; j<nrep; ++j)
-        { 
-        for (indx=0; indx<totalstim; ++indx)
-            {
+       for (indx=0; indx<totalstim*nrep; ++indx)
+       {
             tmp = synstrength*(ihcout[indx]);
             if(tmp<400) tmp = log(1+exp(tmp));
             PPI = synslope/synstrength*tmp;           
@@ -341,13 +310,12 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
             };
             exponOut[k] = CI*PPI;
             k=k+1;
-            }
-        }         
+        }                 
         for (k=0; k<delaypoint; k++)
 			powerLawIn[k] = exponOut[0];    
         for (k=delaypoint; k<totalstim*nrep+delaypoint; k++)
 			powerLawIn[k] = exponOut[k-delaypoint];
-        for (k=totalstim*nrep+delaypoint; k<totalstim*nrep+5*delaypoint; k++)
+        for (k=totalstim*nrep+delaypoint; k<totalstim*nrep+3*delaypoint; k++)
 			powerLawIn[k] = powerLawIn[k-1];         
    /*----------------------------------------------------------*/ 
    /*------ Downsampling to sampFreq (Low) sampling rate ------*/   
@@ -368,10 +336,10 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
    /*----- Running Power-law Adaptation -----------------------*/     
    /*----------------------------------------------------------*/
     k = 0;
-    for (indx=0; indx<ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq); indx++)
+    for (indx=0; indx<floor((totalstim*nrep+2*delaypoint)*tdres*sampFreq); indx++)
     {
-          sout1[k]  = __max( 0, sampIHC[indx] + randNums[indx]- alpha1*I1);
-          //sout1[k]  = __max( 0, sampIHC[indx] - alpha1*I1);
+          sout1[k]  = __max( 0, sampIHC[indx] + randNums[indx]- alpha1*I1); 
+          /* sout1[k]  = __max( 0, sampIHC[indx] - alpha1*I1); */   /* No fGn condition */
           sout2[k]  = __max( 0, sampIHC[indx] - alpha2*I2); 
                                    
          if (implnt==1)    /* ACTUAL Implementation */
@@ -436,7 +404,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
       mxFree(sout1); mxFree(sout2);  
       mxFree(m1); mxFree(m2); mxFree(m3); mxFree(m4); mxFree(m5); mxFree(n1); mxFree(n2); mxFree(n3); 
     /*----------------------------------------------------------*/    
-    /*----- Upsampling to original (High) sampling rate --------*/  
+    /*----- Upsampling to original (High 100 kHz) sampling rate --------*/  
     /*----------------------------------------------------------*/    
     for(z=0; z<k-1; ++z)
     {    
@@ -456,7 +424,6 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
 
     return((long) ceil(totalstim*nrep));
 }    
-/* --------------------------------------------------------------------------------------------*/
 /* ------------------------------------------------------------------------------------ */
 /* Pass the output of Synapse model through the Spike Generator */
 
@@ -501,9 +468,9 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
 	refracMult1 = 1 - tdres/s1;  /* If y1(t) = c1*exp(-t/s1), then y1(t+tdres) = y1(t)*refracMult1 */
 
 	/* Calculate effects of a random spike before t=0 on refractoriness and the time-warping sum at t=0 */
-    endOfLastDeadtime = log(randNums[randBufIndex++]) / synouttmp[0] + dead;  /* End of last deadtime before t=0 */
-	refracValue0 = c0*exp(endOfLastDeadtime/s0);                     /* Value of first exponential in refractory function */
-	refracValue1 = c1*exp(endOfLastDeadtime/s1);                     /* Value of second exponential in refractory function */
+    endOfLastDeadtime = __max(0,log(randNums[randBufIndex++]) / synouttmp[0] + dead);  /* End of last deadtime before t=0 */
+    refracValue0 = c0*exp(endOfLastDeadtime/s0);     /* Value of first exponential in refractory function */
+	refracValue1 = c1*exp(endOfLastDeadtime/s1);     /* Value of second exponential in refractory function */
 	Xsum = synouttmp[0] * (-endOfLastDeadtime + c0*s0*(exp(endOfLastDeadtime/s0)-1) + c1*s1*(exp(endOfLastDeadtime/s1)-1));  
         /* Value of time-warping sum */
 		/*  ^^^^ This is the "integral" of the refractory function ^^^^ (normalized by 'tdres') */

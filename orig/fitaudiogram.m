@@ -1,8 +1,8 @@
 function [Cohc,Cihc,OHC_Loss]=fitaudiogram(FREQUENCIES,dBLoss,Dsd_OHC_Loss)
 
 % FITAUDIOGRAM Gives values of Cohc and Cihc that produce a desired
-% threshold shift for the cat auditory-periphery model of Zilany and Bruce
-% (J. Acoust. Soc. Am. 2007).
+% threshold shift for the cat auditory-periphery model of Zilany et al.
+% (J. Acoust. Soc. Am. 2009).
 %
 % [Cohc,Cihc,OHC_Loss]=fitaudiogram(FREQUENCIES,dBLoss,Dsd_OHC_Loss)\
 %
@@ -35,21 +35,25 @@ function [Cohc,Cihc,OHC_Loss]=fitaudiogram(FREQUENCIES,dBLoss,Dsd_OHC_Loss)
 %      JASA 2007) and estimated OHC impairment in humans (see Moore,
 %      Glasberg & Vickers, JASA 1999).
 %
-% © M. S. A. Zilany and I. C. Bruce (ibruce@ieee.org), March - April 2007
+% © M. S. A. Zilany (msazilany@gmail.com), I. C. Bruce, P. C. Nelson, and
+% L. H. Carney, January 2010
 
 
-load THRESHOLD_TUNING_ALL;
+load THRESHOLD_ALL;
 % Variables are
-% CF: 125 Hz to 10 kHz                   [1*37]
-% CIHC: varies from 1.0 to 0.0001        [1*56]
-% COHC: varies from 1.0 to 0             [1*56]
-% THR : absolute thresholds              [37*56*56]
+% CF: 125 Hz to 10 kHz              [1*37]
+% CIHC: varies from 1.0 to 0.0001   [1*56]
+% COHC: varies from 1.0 to 0        [1*56]
+% THR : absolute thresholds         [37*56*56] [CF-CIHC-COHC]
 
 for k = 1:length(THR(:,1,1))
     dBShift(k,:,:)= THR(k,:,:) - THR(k,1,1);
 end
-
-if nargin<3, Dsd_OHC_Loss = 2/3*dBLoss;
+if nargin>2 && prod(dBLoss-Dsd_OHC_Loss)<0
+    error('Hearing loss due to OHC cannot be greater than overall loss (OHC+IHC)')    
+end;
+if nargin<3
+    Dsd_OHC_Loss = 2/3*dBLoss;
 end;
 
 for m = 1:length(FREQUENCIES)

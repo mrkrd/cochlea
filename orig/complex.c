@@ -1,4 +1,4 @@
-/** 
+/* 
 complex.cpp includes all of the COMPLEX math functions needed for model programs
 */
 
@@ -6,7 +6,7 @@ complex.cpp includes all of the COMPLEX math functions needed for model programs
 #include <math.h>
 #include "complex.hpp"
 
-//divide
+/* divide */
 COMPLEX compdiv(COMPLEX ne,COMPLEX de)
 {
   double d;
@@ -16,7 +16,7 @@ COMPLEX compdiv(COMPLEX ne,COMPLEX de)
   z.y=(ne.y*de.x-ne.x*de.y)/d;
   return(z);
 }
-// this returns a complex number equal to exp(i*theta)
+/* this returns a complex number equal to exp(i*theta) */
 COMPLEX compexp(double theta)
 {
   COMPLEX dummy;
@@ -24,7 +24,7 @@ COMPLEX compexp(double theta)
   dummy.y = sin(theta);
   return dummy;
 }
-// Multiply a complex number by a scalar
+/* Multiply a complex number by a scalar */
 COMPLEX compmult(double scalar, COMPLEX compnum)
 {
  COMPLEX answer;
@@ -32,7 +32,7 @@ COMPLEX compmult(double scalar, COMPLEX compnum)
  answer.y = scalar * compnum.y;
  return answer;
 }
-// Find the product of 2 complex numbers
+/* Find the product of 2 complex numbers */
 COMPLEX compprod(COMPLEX compnum1, COMPLEX compnum2)
 {
  COMPLEX answer;
@@ -40,7 +40,7 @@ COMPLEX compprod(COMPLEX compnum1, COMPLEX compnum2)
  answer.y = (compnum1.x * compnum2.y) + (compnum1.y * compnum2.x);
  return answer;
 }
-// add 2 complex numbers
+/* add 2 complex numbers */
 COMPLEX comp2sum(COMPLEX summand1, COMPLEX summand2)
 {
  COMPLEX answer;
@@ -48,7 +48,7 @@ COMPLEX comp2sum(COMPLEX summand1, COMPLEX summand2)
  answer.y = summand1.y + summand2.y;
  return answer;
 }
-// add three complex numbers
+/* add three complex numbers */
 COMPLEX comp3sum(COMPLEX summand1, COMPLEX summand2, COMPLEX summand3)
 {
  COMPLEX answer;
@@ -57,7 +57,7 @@ COMPLEX comp3sum(COMPLEX summand1, COMPLEX summand2, COMPLEX summand3)
  return answer;
 }
 
-// subtraction: complexA - complexB
+/* subtraction: complexA - complexB */
 COMPLEX compsubtract(COMPLEX complexA, COMPLEX complexB)
 {
  COMPLEX answer;
@@ -65,19 +65,19 @@ COMPLEX compsubtract(COMPLEX complexA, COMPLEX complexB)
  answer.y = complexA.y - complexB.y;
  return answer;
 }
-//Get the real part of the complex
+/* Get the real part of the complex */
 double REAL(COMPLEX compnum)
-{ return(compnum.x); };
+{ return(compnum.x); } 
 
-//Get the imaginary part of the complex
+/* Get the imaginary part of the complex */
 double IMAG(COMPLEX compnum)
-{ return(compnum.y); };
+{ return(compnum.y); } 
 
-//Get the conjugate of the complex signal
+/* Get the conjugate of the complex signal */
 COMPLEX compconj(COMPLEX complexA)
 {
   COMPLEX answer;
   answer.x = complexA.x;
   answer.y = -complexA.y;
   return (answer);
-};
+}
