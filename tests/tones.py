@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Author: Marek Rudnicki
-# Time-stamp: <2009-12-17 23:07:58 marek>
+# Time-stamp: <2010-02-17 20:45:37 marek>
 
 # Description:
 
@@ -31,14 +31,14 @@ def main():
     print("Generating ANF spikes...")
     ear = pycat.Zilany2009((1,0,0), freq=cf,
                            powerlaw_implnt='approx')
-    hsr, msr, lsr = ear.run(fs, s, times=1)
+    anf = ear.run(fs, s)
     print("done")
 
-    hsr_trains = th.fold( hsr['spikes'], 200 )
+    trains = th.fold(anf.spikes, 200)
 
-    th.plot_raster(hsr_trains)
-    th.plot_psth(hsr_trains, bin_size=1)
-    th.plot_isih(hsr_trains, bin_size=1)
+    th.plot_raster(trains)
+    th.plot_psth(trains, bin_size=1)
+    th.plot_isih(trains, bin_size=1)
 
 
 if __name__ == "__main__":
