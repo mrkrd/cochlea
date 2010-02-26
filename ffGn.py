@@ -35,7 +35,7 @@ def ffGn(N, tdres, Hinput, mu, sigma=None):
         y = randn(N)
     else:
         # TODO: make variables persistant
-        Nfft = 2 ** np.ceil( np.log2(2*(N-1)) )
+        Nfft = 2 ** np.ceil(np.log2(2*(N-1)))
         NfftHalf = np.round(Nfft / 2)
 
         k = np.concatenate( (np.arange(0,NfftHalf), np.arange(NfftHalf,0,-1)) )
@@ -46,7 +46,7 @@ def ffGn(N, tdres, Hinput, mu, sigma=None):
 
         Zmag = np.sqrt(Zmag)
 
-        Z = Zmag * ( randn(Nfft) + 1j*randn(Nfft) )
+        Z = Zmag * (randn(Nfft) + 1j*randn(Nfft))
 
         y = np.real(ifft(Z)) * np.sqrt(Nfft)
 
@@ -72,8 +72,6 @@ def ffGn(N, tdres, Hinput, mu, sigma=None):
         y = y*sigma
 
         return y[0:nop]
-
-
 
 
 def main():
