@@ -1,11 +1,4 @@
-# These parameters used to set fiber type
-# based on MSR in Sumner table II
-#        	IHC_Meddis2000	< IHC_Meddis2000LSR.par
-
-# Sumner, C,  Lopez-Poveda, E.A.,  O'Mard, L.P. and Ray Meddis,
-# "A revised model of the inner-hair cell and auditory nerve complex
-# Table II
-
+# Sumner, C, et al (2002) JASA
 
 OP_MODE		PROB	Output mode: 'spike' or probability, 'prob'
 DIAG_MODE	OFF	Diagnostic mode:('off', 'screen' or <file name>).
@@ -25,15 +18,9 @@ RECOVERY_R	6580	Recovery rate (units per second).
 
 POWER_CA	3	Calcium transmitter release exponent (power).
 
-# These parameters used to set fiber type
-# based on L(1) in Sumner table II
-GMAX_CA		2.75E-9	  	Maximum calcium conductance (Siemens).
-CONC_THRESH_CA	4e-11		Calcium threshold Concentration.
-MAX_FREE_POOL_M	8		Max. no. of transmitter packets in free pool (integer).
-
-# L(2)
-# GMAX_CA		2.75E-9	  	Maximum calcium conductance (Siemens).
-# CONC_THRESH_CA	4.2e-11		Calcium threshold Concentration.
-# MAX_FREE_POOL_M	6		Max. no. of transmitter packets in free pool (integer).
+# Table II M2
+CONC_THRESH_CA	2.5e-11	Calcium threshold Concentration.
+MAX_FREE_POOL_M	9	Max. no. of transmitter packets in free pool (integer).
+GMAX_CA		4.25E-9	Maximum calcium conductance (Siemens).
 
 

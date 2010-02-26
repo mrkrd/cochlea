@@ -8,24 +8,20 @@ import dsam
 
 
 class Holmberg2008(AuditoryPeriphery):
-    def __init__(self, anf_sum=(100, 100, 100),
-                 freq=None, animal='human', sg_type='carney'):
+    def __init__(self, anf_num=(100, 100, 100),
+                 freq=None, sg_type='carney'):
         """ Auditory periphery model from Marcus Holmberg
 
-        anf_sum: (hsr_sum, msr_sum, lsr_sum)
+        anf_num: (hsr_num, msr_num, lsr_num)
         freq: CF
-        animal: only 'human' implemented
+        sg_type: 'carney', 'binomial'
 
         """
-
-        assert animal == 'human'
-
         self.set_freq(freq)
 
-        self._hsr_sum = anf_sum[0]
-        self._msr_sum = anf_sum[1]
-        self._lsr_sum = anf_sum[2]
-        self._animal = animal
+        self._hsr_num = anf_num[0]
+        self._msr_num = anf_num[1]
+        self._lsr_num = anf_num[2]
 
 
         # Outer/middle ear filter
@@ -38,27 +34,27 @@ class Holmberg2008(AuditoryPeriphery):
         # IHC receptor potential
 
 
-        if self._hsr_sum != 0:
+        if self._hsr_num != 0:
             self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Meddis2002.par"))
+            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Sumner2002.par"))
 
-            self.anf_hsr = self._generate_anf(sg_type, self._hsr_sum)
+            self.anf_hsr = self._generate_anf(sg_type, 1)
             dsam.connect(self.ihc_hsr, self.anf_hsr)
 
-        if self._msr_sum != 0:
+        if self._msr_num != 0:
             self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr.read_pars(par_dir("ihc_msr_Meddis2002.par"))
+            self.ihc_msr.read_pars(par_dir("ihc_msr_Sumner2002.par"))
 
-            self.anf_msr = self._generate_anf(sg_type, self._msr_sum)
+            self.anf_msr = self._generate_anf(sg_type, 1)
             dsam.connect(self.ihc_msr, self.anf_msr)
 
 
-        if self._lsr_sum != 0:
+        if self._lsr_num != 0:
             self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Meddis2002.par"))
+            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Sumner2002.par"))
 
-            self.anf_lsr = self._generate_anf(sg_type, self._lsr_sum)
-            dsam.connect(self.ihc_hsr, self.anf_lsr)
+            self.anf_lsr = self._generate_anf(sg_type, 1)
+            dsam.connect(self.ihc_lsr, self.anf_lsr)
 
 
     def set_freq(self, freq):
@@ -88,12 +84,11 @@ class Holmberg2008(AuditoryPeriphery):
         return freq_map
 
 
-    def run(self, fs, sound, times=1):
+    def run(self, fs, sound):
         """ Run auditory periphery model.
 
         sound: audio signal
         fs: sampling frequency
-        times: how many many trials
 
         """
         # TODO: filter with original filters from the model
@@ -113,26 +108,25 @@ class Holmberg2008(AuditoryPeriphery):
             ihcrp = ihcrp[:,self._freq_idx]
 
 
-        if self._hsr_sum > 0:
+        trains = []
+        if self._hsr_num > 0:
             self.ihc_hsr.run(fs, ihcrp)
-            hsr_trains = self._run_anf(self.anf_hsr, fs, times)
-        else:
-            hsr_trains = None
+            tr = self._run_anf('hsr', self.anf_hsr, fs, self._hsr_num)
+            trains.extend(tr)
 
-        if self._msr_sum > 0:
+        if self._msr_num > 0:
             self.ihc_msr.run(fs, ihcrp)
-            msr_trains = self._run_anf(self.anf_msr, fs, times)
-        else:
-            msr_trains = None
+            tr = self._run_anf('msr', self.anf_msr, fs, self._msr_num)
+            trains.extend(tr)
 
-        if self._lsr_sum > 0:
+        if self._lsr_num > 0:
             self.ihc_lsr.run(fs, ihcrp)
-            lsr_trains = self._run_anf(self.anf_lsr, fs, times)
-        else:
-            lsr_trains = None
+            tr = self._run_anf('lsr', self.anf_lsr, fs, self._lsr_num)
+            trains.extend(tr)
 
-        return hsr_trains, msr_trains, lsr_trains
+        trains = np.rec.array(trains, dtype=self._train_type)
 
+        return trains
 
 
 def main():
@@ -140,10 +134,10 @@ def main():
 
     fs = 48000
     cf = tw.real_freq_map[38]
-
-    ear = Holmberg2008((1,0,0), freq=cf)
-
+    print "CF:", cf
     stimdb = 50
+
+    ear = Holmberg2008((250,0,0), freq=cf)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
@@ -151,11 +145,10 @@ def main():
     z = np.zeros( np.ceil(len(t)/2) )
     s = np.concatenate( (z, s, z) )
 
-    ear.set_freq( cf )
 
-    hsr, msr, lsr = ear.run(fs, s, times=250)
-    th.plot_raster(hsr['spikes'])
-    th.plot_psth(hsr['spikes'])
+    anf = ear.run(fs, s)
+    th.plot_raster(anf['spk'])
+    th.plot_psth(anf['spk'])
 
 
 if __name__ == "__main__":

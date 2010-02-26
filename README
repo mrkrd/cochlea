@@ -1,18 +1,9 @@
 -*- Mode: org; -*-
 Author: Marek Rudnicki
-Time-stamp: <2009-08-03 16:57:54 marek>
+Time-stamp: <2010-02-26 20:27:35 marek>
 
 
 Implementation of auditory periphery models for python
-
-
-* Requirements
-
-** pyDSAM
-** pyThorns
-Spike analysis software.
-** pyWaves
-Model of BM.
 
 
 * Usage
@@ -21,8 +12,8 @@ Run Python:
 
 >>> import cochlea
 
->>> ear = cochlea.Sumner2002(hsr=1, msr=0, lsr=0, animal='gp')
->>> hsr, msr, lsr = ear.run(fs, signal, times=10)
+>>> ear = cochlea.Sumner2002((10,0,0), cf=1000)
+>>> anf = ear.run(fs, signal)
 
 
 

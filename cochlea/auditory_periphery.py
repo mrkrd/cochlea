@@ -16,7 +16,10 @@ def par_dir(par_file):
 
 class AuditoryPeriphery(object):
 
-    _train_type = [ ('freq', float), ('anf_id', int), ('spikes', np.ndarray) ]
+    _train_type = [('typ', 'S3'),
+                   ('cf', float),
+                   ('id', int),
+                   ('spikes', np.ndarray)]
 
     def __init__(self):
         pass
@@ -48,7 +51,7 @@ class AuditoryPeriphery(object):
 
 
 
-    def _run_anf(self, anf, fs, anf_num):
+    def _run_anf(self, anf_type, anf, fs, anf_num):
         """ Run spike generator several times and format the output. """
 
         # Explicit set of dt is required by some modules
@@ -63,7 +66,7 @@ class AuditoryPeriphery(object):
             anf_spikes = th.signal_to_spikes(fs, anf_signal)
 
             for freq, train in zip(freq_map, anf_spikes):
-                anf_trains.append( (freq, anf_id, train) )
+                anf_trains.append( (anf_type, freq, anf_id, train) )
 
         return anf_trains
 

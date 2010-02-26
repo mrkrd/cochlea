@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-02-03 14:32:47 marek>
+# Time-stamp: <2010-02-26 01:05:07 marek>
 #
 # Description: Rate-intensity function
 
@@ -28,28 +28,31 @@ def rate_intensity(ear, fs, cf, dbspl_list):
         s = wv.set_dbspl(dbspl, s)
 
         print "dB_SPL:", dbspl
-        hsr, msr, lsr = ear.run(fs, s)
+        anf = ear.run(fs, s)
 
-        if hsr != None:
-            hsr_rates.append( th.firing_rate( hsr['spikes'],
-                                              tmax, ear._hsr_num) )
-        if msr != None:
-            msr_rates.append( th.firing_rate( msr['spikes'],
-                                              tmax, ear._msr_num) )
-        if lsr != None:
-            lsr_rates.append( th.firing_rate( lsr['spikes'],
-                                              tmax, ear._lsr_num) )
+        q = anf.typ=='hsr'
+        spikes = anf[q]['spk']
+        hsr_rates.append(th.firing_rate(spikes, tmax, ear._hsr_num))
+
+        q = anf.typ=='msr'
+        spikes = anf[q]['spk']
+        msr_rates.append(th.firing_rate(spikes, tmax, ear._hsr_num))
+
+        q = anf.typ=='lsr'
+        spikes = anf[q]['spk']
+        lsr_rates.append(th.firing_rate(spikes, tmax, ear._hsr_num))
+
 
     return hsr_rates, msr_rates, lsr_rates
 
 
 
 
-def rate_intensity_sumner2002():
-    dbspl_list = np.arange(-20, 120, 5)
-    cf = 5000
+def rate_intensity_sumner2003():
+    dbspl_list = np.arange(-20, 110, 10)
+    cf = 700
 
-    ear = cochlea.Sumner2002((50, 50, 50), freq=cf)
+    ear = cochlea.Sumner2003((50, 50, 50), freq=cf)
 
     hsr_rates, msr_rates, lsr_rates = \
         rate_intensity(ear, fs=100000, cf=cf, dbspl_list=dbspl_list)
@@ -72,9 +75,10 @@ def rate_intensity_sumner2002():
 def rate_intensity_holmberg2008():
     import traveling_waves as tw
 
-    dbspl_list = np.arange(-20, 120, 5)
+    dbspl_list = np.arange(-20, 110, 10)
     cf = tw.real_freq_map[50]
 
+    print "CF:", cf
     ear = cochlea.Holmberg2008((50, 50, 50), freq=cf)
 
     hsr_rates, msr_rates, lsr_rates = \
@@ -99,7 +103,7 @@ def rate_intensity_holmberg2008():
 def rate_intensity_zilany2009():
 
     dbspl_list = np.arange(-20, 120, 5)
-    cf = 2000
+    cf = 700
 
     ear = cochlea.Zilany2009((50, 50, 50), powerlaw_implnt='approx')
 
@@ -122,6 +126,6 @@ def rate_intensity_zilany2009():
 
 
 if __name__ == "__main__":
-    rate_intensity_zilany2009()
-    # rate_intensity_sumner2002()
-    # rate_intensity_holmberg2008()
+    # rate_intensity_zilany2009()
+    # rate_intensity_sumner2003()
+    rate_intensity_holmberg2008()
