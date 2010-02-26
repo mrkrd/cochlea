@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-02-18 18:39:42 marek>
+# Time-stamp: <2010-02-26 13:50:53 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -34,10 +34,10 @@ class Zilany2009(object):
         self._cohc = 1
         self._cihc = 1
 
-        self._train_type = [('type', 'S3'),
-                            ('freq', float),
+        self._train_type = [('typ', 'S3'),
+                            ('cf', float),
                             ('id', int),
-                            ('trains', np.ndarray)]
+                            ('spikes', np.ndarray)]
 
         self.set_freq(freq)
 
@@ -142,12 +142,12 @@ def main():
 
     anf = ear.run(fs, s)
 
-    th.plot_raster(anf.trains)
+    th.plot_raster(anf.spikes)
 
     ax = plt.gca()
-    th.plot_psth(anf[anf.type=='hsr']['trains'], axis=ax)
-    th.plot_psth(anf[anf.type=='msr']['trains'], axis=ax)
-    th.plot_psth(anf[anf.type=='lsr']['trains'], axis=ax)
+    th.plot_psth(anf[anf.typ=='hsr']['spikes'], axis=ax)
+    th.plot_psth(anf[anf.typ=='msr']['spikes'], axis=ax)
+    th.plot_psth(anf[anf.typ=='lsr']['spikes'], axis=ax)
     plt.show()
 
 
