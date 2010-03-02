@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-02-26 20:25:37 marek>
+# Time-stamp: <2010-03-01 17:58:12 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -15,7 +15,7 @@ import thorns as th
 class Zilany2009(object):
     def __init__(self, anf_num=(1,1,1), freq=1000,
                  powerlaw_implnt='actual', accumulate=False):
-        """Auditory periphery model of a cat (Zilany et al. 2009)
+        """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
         freq: CF
@@ -23,6 +23,8 @@ class Zilany2009(object):
         accumulate: if True, then spike trains of each type are concatenated
 
         """
+        self.name = 'Zilany2009'
+
         assert accumulate == False
 
         self._hsr_num = anf_num[0]
