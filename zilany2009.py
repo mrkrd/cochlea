@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-03-09 23:14:26 marek>
+# Time-stamp: <2010-03-14 15:11:15 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -132,8 +132,6 @@ class Zilany2009(object):
 
 
 def main():
-    import matplotlib.pyplot as plt
-
     fs = 100000.0
     cf = 1000
     stimdb = 80
@@ -149,13 +147,12 @@ def main():
 
     anf = ear.run(fs, s)
 
-    th.plot_raster(anf.spikes)
+    th.plot_raster(anf.spikes).show()
 
-    ax = plt.gca()
-    th.plot_psth(anf[anf.typ=='hsr']['spikes'], axis=ax)
-    th.plot_psth(anf[anf.typ=='msr']['spikes'], axis=ax)
-    th.plot_psth(anf[anf.typ=='lsr']['spikes'], axis=ax)
-    plt.show()
+    p = th.plot_psth(anf[anf.typ=='hsr']['spikes'], color='black')
+    th.plot_psth(anf[anf.typ=='msr']['spikes'], color='red', plot=p)
+    th.plot_psth(anf[anf.typ=='lsr']['spikes'], color='blue', plot=p)
+    p.show()
 
 
 if __name__ == "__main__":
