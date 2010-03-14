@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-03-01 17:58:12 marek>
+# Time-stamp: <2010-03-09 23:14:26 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -13,12 +13,12 @@ import thorns as th
 
 
 class Zilany2009(object):
-    def __init__(self, anf_num=(1,1,1), freq=1000,
-                 powerlaw_implnt='actual', accumulate=False):
+    def __init__(self, anf_num=(1,1,1), cf=1000,
+                 powerlaw_implnt='actual', accumulate=False, verbose=False):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
-        freq: CF
+        cf: CF
         powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
         accumulate: if True, then spike trains of each type are concatenated
 
@@ -41,8 +41,9 @@ class Zilany2009(object):
                             ('id', int),
                             ('spikes', np.ndarray)]
 
-        self.set_freq(freq)
+        self.set_freq(cf)
 
+        self._verbose = verbose
 
     def run(self, fs, sound):
         """ Run the model.
@@ -56,7 +57,9 @@ class Zilany2009(object):
         trains = []
         for cf in self._freq_map:
             # Run IHC model
-            vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf, cohc=self._cohc, cihc=self._cihc)
+            vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf,
+                                    cohc=self._cohc, cihc=self._cihc,
+                                    verbose=self._verbose)
 
             # Run HSR synapse
             if self._hsr_num > 0:
@@ -91,7 +94,8 @@ class Zilany2009(object):
         for anf_id in range(anf_num):
             psth = catmodel.run_synapse(fs=fs, vihc=vihc, cf=cf,
                                         anf_type=anf_type,
-                                        powerlaw_implnt=self._powerlaw_implnt)
+                                        powerlaw_implnt=self._powerlaw_implnt,
+                                        verbose=self._verbose)
             train = th.signal_to_spikes(fs, psth)
             train = train[0] # there is only one train per run
             anf_trains.append( (anf_type, cf, anf_id, train) )
@@ -99,22 +103,22 @@ class Zilany2009(object):
         return anf_trains
 
 
-    def set_freq(self, freq):
+    def set_freq(self, cf):
         """ Set signle or range of CF for the model."""
-        if isinstance(freq, int):
-            freq = float(freq)
-        assert (isinstance(freq, tuple) or
-                isinstance(freq, float))
+        if isinstance(cf, int):
+            cf = float(cf)
+        assert (isinstance(cf, tuple) or
+                isinstance(cf, float))
 
-        if isinstance(freq, float):
-            self._freq_map = [freq]
-        elif isinstance(freq, tuple):
+        if isinstance(cf, float):
+            self._freq_map = [cf]
+        elif isinstance(cf, tuple):
             # Based on GenerateGreenwood_CFList() from DSAM
             aA = 456.0
             k = 0.8
             a = 2.1
 
-            freq_min, freq_max, freq_num = freq
+            freq_min, freq_max, freq_num = cf
 
             xmin = np.log10( freq_min / aA + k) / a
             xmax = np.log10( freq_max / aA + k) / a
@@ -134,7 +138,8 @@ def main():
     cf = 1000
     stimdb = 80
 
-    ear = Zilany2009((100,100,100), freq=cf, powerlaw_implnt='approx')
+    ear = Zilany2009((100,100,100), cf=cf, powerlaw_implnt='approx',
+                     verbose=False)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)

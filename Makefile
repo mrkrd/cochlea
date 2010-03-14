@@ -21,7 +21,8 @@ _catmodel.so : _catmodel.c catmodel_IHC.o complex.o ffGn.o catmodel_Synapse.o
 	-c _catmodel.c -o _catmodel.o
 
 	gcc -shared `python-config --ldflags` -o _catmodel.so \
-	_catmodel.o catmodel_IHC.o complex.o ffGn.o catmodel_Synapse.o
+	_catmodel.o catmodel_IHC.o complex.o ffGn.o catmodel_Synapse.o \
+	-L/usr/local/lib/pth
 
 
 ffGn_test : ffGn_test.c ffGn.o
