@@ -1,4 +1,4 @@
-/* Time-stamp: <2010-02-09 17:20:15 marek>
+/* Time-stamp: <2010-03-15 13:56:33 marek>
  *
  * Modified by: Marek Rudnicki
  *
@@ -21,6 +21,9 @@
 
 */
 
+#include "Python.h"
+#include "_pycat.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,8 +32,6 @@
 /* #include <iostream.h> */
 
 #include "complex.hpp"
-
-#include "ffGn.h"
 
 #define MAXSPIKES 1000000
 #ifndef TWOPI
@@ -60,6 +61,13 @@ void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, doub
      double I,spont;
      double sampFreq = 10e3; /* Sampling frequency used in the synapse */
 
+     /* printf("Init: %d\n", Py_IsInitialized()); */
+
+     /* Py_Initialize(); */
+     if (!is_pycat_initialized) {
+	  init_pycat();
+	  is_pycat_initialized = 1;
+     }
 
      /* Allocate dynamic memory for the temporary variables */
      synouttmp  = (double*)calloc(totalstim*nrep,sizeof(double));
@@ -227,8 +235,11 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /*------ Downsampling to sampFreq (Low) sampling rate ------*/
      /*----------------------------------------------------------*/
-     sampIHC = pyResample(powerLawIn, k, 1, resamp);
-
+     sampIHC = decimate(k, powerLawIn, resamp);
+     /* for (k=0; k<100; k++) { */
+     /* 	  printf("%f %f\n", powerLawIn[k], sampIHC[k]); */
+     /* } */
+     /* printf("\n"); */
      free(powerLawIn); free(exponOut);
      /*----------------------------------------------------------*/
      /*----- Running Power-law Adaptation -----------------------*/
@@ -348,7 +359,8 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
      Nout = 0;
      NoutMax = (long) ceil(totalstim*nrep*tdres/dead);
 
-     randNums = pyRand(NoutMax+1);
+
+     randNums = generate_random_numbers(NoutMax+1);
      randBufIndex = 0;
 
      /* Calculate useful constants */

@@ -6,3 +6,5 @@ syntax: glob
 *.so
 *.orig
 ffGn_test
+_pycat.c
+_pycat.h
