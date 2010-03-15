@@ -1,17 +1,25 @@
 import numpy as np
-cimport numpy as np
 from stdlib cimport malloc
 import scipy.signal as dsp
 import ffGn_module
 
+### cython v0.11
+cimport numpy12 as np
+### cython v0.12
+# cimport numpy as np
+
+
 cdef extern from "stdlib.h":
     void *memcpy(void *str1, void *str2, size_t n)
+
+
 
 cdef extern from "catmodel.h":
     void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
                double cohc, double cihc, double *ihcout)
     void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim,
                   double fibertype, double implnt, double *synout, double *psth)
+
 
 
 np.import_array()
@@ -46,7 +54,7 @@ cdef public double* decimate(int k, double *signal, int q):
     # after return from this function
     signal_arr = np.PyArray_SimpleNewFromData(1, [k],
                                               np.NPY_DOUBLE,
-                                              <void*>signal)
+                                              <void *>signal)
 
     # Filter + downsample
     b = dsp.firwin(2*q, 1./q, window='hamming')
