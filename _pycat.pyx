@@ -1,11 +1,14 @@
 import numpy as np
-cimport numpy as np
 from stdlib cimport malloc
 import scipy.signal as dsp
 import ffGn_module
 
+cimport numpy as np
+
+
 cdef extern from "stdlib.h":
     void *memcpy(void *str1, void *str2, size_t n)
+
 
 cdef extern from "catmodel.h":
     void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
@@ -14,7 +17,17 @@ cdef extern from "catmodel.h":
                   double fibertype, double implnt, double *synout, double *psth)
 
 
-np.import_array()
+cdef extern from "Python.h":
+    ctypedef int Py_intptr_t
+
+
+cdef extern from "numpy/arrayobject.h":
+    ctypedef Py_intptr_t npy_intp
+    object PyArray_SimpleNewFromData(int nd, npy_intp* dims, int typenum, void* data)
+    void import_array()
+
+
+import_array()
 
 
 
@@ -44,9 +57,9 @@ cdef public double* decimate(int k, double *signal, int q):
     """
     # signal_arr will not own the data, signal's array has to be freed
     # after return from this function
-    signal_arr = np.PyArray_SimpleNewFromData(1, [k],
-                                              np.NPY_DOUBLE,
-                                              <void*>signal)
+    signal_arr = PyArray_SimpleNewFromData(1, [k],
+                                           np.NPY_DOUBLE,
+                                           <void *>signal)
 
     # Filter + downsample
     b = dsp.firwin(2*q, 1./q, window='hamming')
