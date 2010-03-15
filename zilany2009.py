@@ -1,5 +1,4 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-03-15 15:35:13 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
