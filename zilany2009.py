@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-03-15 14:27:15 marek>
+# Time-stamp: <2010-03-15 15:35:13 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -8,7 +8,7 @@ from __future__ import division
 
 import numpy as np
 
-import catmodel
+import _pycat
 import thorns as th
 
 
@@ -57,9 +57,9 @@ class Zilany2009(object):
         trains = []
         for cf in self._freq_map:
             # Run IHC model
-            vihc = catmodel.run_ihc(fs=fs, sound=sound, cf=cf,
-                                    cohc=self._cohc, cihc=self._cihc,
-                                    verbose=self._verbose)
+            vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
+                                  cohc=self._cohc, cihc=self._cihc,
+                                  verbose=self._verbose)
 
             # Run HSR synapse
             if self._hsr_num > 0:
@@ -92,10 +92,10 @@ class Zilany2009(object):
 
         anf_trains = []
         for anf_id in range(anf_num):
-            psth = catmodel.run_synapse(fs=fs, vihc=vihc, cf=cf,
-                                        anf_type=anf_type,
-                                        powerlaw_implnt=self._powerlaw_implnt,
-                                        verbose=self._verbose)
+            psth = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
+                                      anf_type=anf_type,
+                                      powerlaw_implnt=self._powerlaw_implnt,
+                                      verbose=self._verbose)
             train = th.signal_to_spikes(fs, psth)
             train = train[0] # there is only one train per run
             anf_trains.append( (anf_type, cf, anf_id, train) )
@@ -141,7 +141,7 @@ def main():
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
-    s = catmodel.set_dbspl(stimdb, s)
+    s = _pycat.set_dbspl(stimdb, s)
     z = np.zeros( np.ceil(len(t)/2) )
     s = np.concatenate( (z, s, z) )
 

@@ -1,6 +1,6 @@
-from catmodel import run_ihc
-from catmodel import run_synapse
-from catmodel import set_dbspl
+from _pycat import run_ihc
+from _pycat import run_synapse
+from _pycat import set_dbspl
 
 from zilany2009 import Zilany2009
 
