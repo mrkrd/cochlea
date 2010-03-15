@@ -2,6 +2,7 @@ import numpy as np
 cimport numpy as np
 from stdlib cimport malloc
 import scipy.signal as dsp
+import ffGn_module
 
 cdef extern from "stdlib.h":
     void *memcpy(void *str1, void *str2, size_t n)
@@ -47,3 +48,17 @@ cdef public double* decimate(int k, double *signal, int q):
     memcpy(out_ptr, decimated_ptr, len(decimated)*sizeof(double))
 
     return out_ptr
+
+
+cdef public double* ffGn(int N, double tdres, double Hinput, double mu):
+    """ ffGn.py wrapper """
+
+    a = ffGn_module.ffGn(N, tdres, Hinput, mu)
+
+    # Copy data to output array
+    cdef double *ptr = <double *>np.PyArray_DATA(a)
+    cdef double *out_ptr = <double *>malloc(len(a)*sizeof(double))
+    memcpy(out_ptr, ptr, len(a)*sizeof(double))
+
+    return out_ptr
+

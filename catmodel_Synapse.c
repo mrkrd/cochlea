@@ -1,4 +1,4 @@
-/* Time-stamp: <2010-03-14 23:00:26 marek>
+/* Time-stamp: <2010-03-14 23:40:07 marek>
  *
  * Modified by: Marek Rudnicki
  *
@@ -32,8 +32,6 @@
 /* #include <iostream.h> */
 
 #include "complex.hpp"
-
-#include "ffGn.h"
 
 #define MAXSPIKES 1000000
 #ifndef TWOPI

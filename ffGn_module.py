@@ -5,7 +5,9 @@ from numpy.random import randn
 from scipy.signal import resample
 from numpy.fft import fft, ifft
 
-def ffGn(N, tdres, Hinput, mu, sigma=None):
+# sigma has been removed as it is never read
+def ffGn(N, tdres, Hinput, mu):
+
 
     assert (N > 0)
     assert (tdres < 1)
