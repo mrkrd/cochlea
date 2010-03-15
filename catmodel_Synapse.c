@@ -1,4 +1,4 @@
-/* Time-stamp: <2010-03-15 13:56:33 marek>
+/* Time-stamp: <2010-03-15 18:08:42 marek>
  *
  * Modified by: Marek Rudnicki
  *
@@ -61,9 +61,6 @@ void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, doub
      double I,spont;
      double sampFreq = 10e3; /* Sampling frequency used in the synapse */
 
-     /* printf("Init: %d\n", Py_IsInitialized()); */
-
-     /* Py_Initialize(); */
      if (!is_pycat_initialized) {
 	  init_pycat();
 	  is_pycat_initialized = 1;
@@ -236,10 +233,7 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*------ Downsampling to sampFreq (Low) sampling rate ------*/
      /*----------------------------------------------------------*/
      sampIHC = decimate(k, powerLawIn, resamp);
-     /* for (k=0; k<100; k++) { */
-     /* 	  printf("%f %f\n", powerLawIn[k], sampIHC[k]); */
-     /* } */
-     /* printf("\n"); */
+
      free(powerLawIn); free(exponOut);
      /*----------------------------------------------------------*/
      /*----- Running Power-law Adaptation -----------------------*/
