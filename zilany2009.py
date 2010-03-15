@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-03-15 10:12:46 marek>
+# Time-stamp: <2010-03-15 14:27:15 marek>
 #
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
@@ -145,8 +145,7 @@ def main():
     z = np.zeros( np.ceil(len(t)/2) )
     s = np.concatenate( (z, s, z) )
 
-    while True:
-        anf = ear.run(fs, s)
+    anf = ear.run(fs, s)
 
     th.plot_raster(anf.spikes).show()
 

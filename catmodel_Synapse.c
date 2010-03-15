@@ -1,4 +1,4 @@
-/* Time-stamp: <2010-03-14 23:40:07 marek>
+/* Time-stamp: <2010-03-15 13:56:33 marek>
  *
  * Modified by: Marek Rudnicki
  *
@@ -61,8 +61,13 @@ void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, doub
      double I,spont;
      double sampFreq = 10e3; /* Sampling frequency used in the synapse */
 
-     Py_Initialize();
-     init_pycat();
+     /* printf("Init: %d\n", Py_IsInitialized()); */
+
+     /* Py_Initialize(); */
+     if (!is_pycat_initialized) {
+	  init_pycat();
+	  is_pycat_initialized = 1;
+     }
 
      /* Allocate dynamic memory for the temporary variables */
      synouttmp  = (double*)calloc(totalstim*nrep,sizeof(double));

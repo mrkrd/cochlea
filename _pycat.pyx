@@ -11,6 +11,9 @@ np.import_array()
 
 
 
+cdef public int is_pycat_initialized = 0
+
+
 
 cdef public double* generate_random_numbers(long length):
     arr = np.random.rand(length)
@@ -40,7 +43,7 @@ cdef public double* decimate(int k, double *signal, int q):
                                               <void*>signal)
 
     # Filter + downsample
-    b = dsp.firwin(q*2, 1./q, window='hamming')
+    b = dsp.firwin(2*q, 1./q, window='hamming')
     filtered = dsp.lfilter(b, 1., signal_arr)
     decimated = np.array(filtered[::q])
 
