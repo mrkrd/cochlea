@@ -9,6 +9,9 @@ cdef extern from "stdlib.h":
 
 np.import_array()
 
+
+
+
 cdef public double* generate_random_numbers(long length):
     arr = np.random.rand(length)
 
