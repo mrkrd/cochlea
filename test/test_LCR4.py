@@ -11,7 +11,7 @@ def main():
     forward = np.loadtxt('forward.txt') * S_ST
     t = np.arange(len(forward)) / fs * 1000
 
-    ref = np.loadtxt('uIHC_70.txt')
+    ref = np.loadtxt('LCR4_70.txt')
 
 
     _tw.bm_init(fs,
@@ -35,23 +35,18 @@ def main():
     LCR4 = _tw.LCR4(xBM,
                     bm_pars.Qmax,
                     bm_pars.Qmin)
-    _tw.ihcrp_init(fs)
-    uIHC = _tw.ihcrp(LCR4,
-                     bm_pars.ciliaGain)
 
 
-
-
-    uIHC = uIHC[:,70]
+    LCR4 = LCR4[:,70]
 
 
     sec = range(400, 1600)
     t = t[sec]
-    uIHC = uIHC[sec]
+    LCR4 = LCR4[sec]
     ref = ref[sec]
     p = biggles.FramedPlot()
     p.add( biggles.Curve(t, ref, color='red', width=3) )
-    p.add( biggles.Curve(t, uIHC))
+    p.add( biggles.Curve(t, LCR4))
     p.show()
 
 

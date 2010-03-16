@@ -108,7 +108,7 @@ def LCR4_init(double fs, freq_map, Qmin, SAT1, SAT4):
 
 def LCR4(xBM, Qmax, Qmin):
 
-    xBM = np.array(xBM)         # don't do inplace calculations
+    xBM = np.array(xBM)         # make a copy, changes are in-place
     cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
     cdef double *Qmin_data = <double *>np.PyArray_DATA(Qmin)
     cdef double *Qmax_data = <double *>np.PyArray_DATA(Qmax)
@@ -117,8 +117,8 @@ def LCR4(xBM, Qmax, Qmin):
 
     for i in range(sample_num):
         LCR4_c(&xBM_data[i*100],
-                Qmin_data,
                 Qmax_data,
+                Qmin_data,
                 0,
                 100)
 

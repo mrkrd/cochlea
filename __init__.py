@@ -55,16 +55,16 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
 
     if with_LCR:
 
-        _tw.LCR4_init(fs,
-                      bm_pars.freq_map,
-                      bm_pars.Qmin,
-                      bm_pars.SAT1,
-                      bm_pars.SAT4)
+        _tw.LCR4_init(fs=fs,
+                      freq_map=bm_pars.freq_map,
+                      Qmin=bm_pars.Qmin,
+                      SAT1=bm_pars.SAT1,
+                      SAT4=bm_pars.SAT4)
 
 
-        xBM = _tw.LCR4(xBM,
-                       bm_pars.Qmax,
-                       bm_pars.Qmin)
+        xBM = _tw.LCR4(xBM=xBM,
+                       Qmax=bm_pars.Qmax,
+                       Qmin=bm_pars.Qmin)
 
 
         # Compensate for LCR4 delays
@@ -107,17 +107,17 @@ def run_ihcrp(fs, xBM):
 
 
 
-def run_stapes(s):
+def run_stapes(signal):
     """
     TODO: docs
     """
 
     # 5.61382474984 is the abs value of the orignal filter's
     # transferfunction at 1kHz
-    return s * S_ST * S_ED * 5.61382474984
+    return signal * S_ST * S_ED * 5.61382474984
 
 
-def run_mid_ear_filter_orig(fs, signal):
+def run_middle_ear_filter_orig(fs, signal):
     """
     Middle ear filter designed using digital wave techinique.
     """
@@ -138,7 +138,7 @@ def run_mid_ear_filter_orig(fs, signal):
     return out
 
 
-def run_mid_ear_filter(fs, signal):
+def run_middle_ear_filter(fs, signal):
     """
     Middle ear filter from Werner's model.
     """

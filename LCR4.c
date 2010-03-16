@@ -96,7 +96,7 @@ void LCR4_c(double *xBM,
      int sec;
      double rect, rect_LP, b2;
 
-     /* printf("%f\n", Qmin[50]); */
+     /* printf("%e\n", Rc_res[50]); */
      /* exit(0); */
 
 
