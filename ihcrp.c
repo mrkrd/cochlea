@@ -33,7 +33,7 @@ double  restingPotential_V0;
 
 
 /* Initialize parameters */
-double ihcrp_init(double f_s)
+double ihcrp_init_c(double f_s)
 {
      int sec;
      double L_ST,R_ST,f0_ST;
@@ -79,7 +79,7 @@ double ihcrp_init(double f_s)
 
 
 void
-ihcrp(double *uIHC, double *xBM, double *ciliaCouplingGain)
+ihcrp_c(double *uIHC, double *xBM, double *ciliaCouplingGain)
 {
      int sec;
      double  leakageConductance_Ga, conductance_G, potential_V;

@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.signal as dsp
-import _bm
+import _tw
 import bm_pars
 from bm_pars import real_freq_map, S_ST, S_ED, C_eardrum
 
@@ -37,7 +37,7 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
         signal = np.append(signal,
                            np.zeros(delays.max()))
 
-    _bm.bm_init(fs,
+    _tw.bm_init(fs,
                 bm_pars.Ls,
                 bm_pars.Rs,
                 bm_pars.Ct,
@@ -47,7 +47,7 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
                 bm_pars.Rh, # helicotrema, end of BM
                 bm_pars.Lh) # end of BM
 
-    xBM = _bm.bm_wave(signal,
+    xBM = _tw.bm_wave(signal,
                       bm_pars.ampl_corr,
                       bm_pars.Abm,
                       bm_pars.Cbm)
@@ -55,16 +55,16 @@ def run_bm(fs, signal, mode='v', with_LCR=True):
 
     if with_LCR:
 
-        _bm.LCR4_init(fs,
+        _tw.LCR4_init(fs,
                       bm_pars.freq_map,
                       bm_pars.Qmin,
                       bm_pars.SAT1,
                       bm_pars.SAT4)
 
 
-        xBM = _bm.LCR4(xBM,
+        xBM = _tw.LCR4(xBM,
                        bm_pars.Qmax,
-                       bm_pars.Qmin);
+                       bm_pars.Qmin)
 
 
         # Compensate for LCR4 delays
@@ -99,9 +99,9 @@ def run_ihcrp(fs, xBM):
     uIHC: IHC potential
     """
     fs = float(fs)
-    _bm.ihcrp_init(fs)
+    _tw.ihcrp_init(fs)
 
-    uIHC = _bm.ihcrp(np.fliplr(xBM), bm_pars.ciliaGain)
+    uIHC = _tw.ihcrp(np.fliplr(xBM), bm_pars.ciliaGain)
 
     return np.fliplr(uIHC)
 

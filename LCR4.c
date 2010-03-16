@@ -29,11 +29,11 @@ int weight_bm_n;
 int g_firstsec[SECTIONS],g_lastsec[SECTIONS];
 
 
-void LCR4_init(double f_s,
-	       double *freq_map,
-	       double *Qmin,
-	       double *SAT1,
-	       double *SAT4)
+void LCR4_init_c(double f_s,
+		 double *freq_map,
+		 double *Qmin,
+		 double *SAT1,
+		 double *SAT4)
 {
      int sec, i;
      double R1, R2, tau;
@@ -82,11 +82,11 @@ void LCR4_init(double f_s,
 
 
 
-void LCR4(double *xBM,
-	  double *Qmax,
-	  double *Qmin,
-	  int first_sec,
-	  int last_sec)
+void LCR4_c(double *xBM,
+	    double *Qmax,
+	    double *Qmin,
+	    int first_sec,
+	    int last_sec)
 {
      double V2[SECTIONS], V3[SECTIONS], V4[SECTIONS], V5[SECTIONS],
 	  X2[SECTIONS], X3[SECTIONS], X4[SECTIONS], X5[SECTIONS],

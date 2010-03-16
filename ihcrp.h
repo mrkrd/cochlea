@@ -4,6 +4,6 @@
 #define SECTIONS 100
 
 
-double ihcrp_init(double f_s);
-void ihcrp(double *uIHC, double *xBM, double *ciliaCouplingGain);
+double ihcrp_init_c(double f_s);
+void ihcrp_c(double *uIHC, double *xBM, double *ciliaCouplingGain);
 

@@ -41,7 +41,7 @@ double R_input;
 
 
 /*--------------------------------------- INIT ------------------------------*/
-double bm_init(double f_s, double *Ls, double *Rs, double *Ct, double *Rbm, double *Cbm, double *Lbm, double Rh, double Lh)
+double bm_init_c(double f_s, double *Ls, double *Rs, double *Ct, double *Rbm, double *Cbm, double *Lbm, double Rh, double Lh)
 {
      int sec;
      double R14, R44, G33, G23;
@@ -90,7 +90,7 @@ double bm_init(double f_s, double *Ls, double *Rs, double *Ct, double *Rbm, doub
 /*------------------------------- E N D - INIT ------------------------------*/
 /*---------------------------------------------------------------------------*/
 
-void bm_wave(double input, double *x_BM, double *ampl_corr, double *Abm, double *Cbm)
+void bm_wave_c(double input, double *x_BM, double *ampl_corr, double *Abm, double *Cbm)
 {
      int sec;
      double  b14[SECTIONS], b44[SECTIONS],b30[SECTIONS], b33[SECTIONS], b20[SECTIONS], b23[SECTIONS];
