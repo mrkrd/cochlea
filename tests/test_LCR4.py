@@ -40,7 +40,7 @@ def main():
     LCR4 = LCR4[:,70]
 
 
-    sec = range(400, 1600)
+    sec = range(400, 2000)
     t = t[sec]
     LCR4 = LCR4[sec]
     ref = ref[sec]
