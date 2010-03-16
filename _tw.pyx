@@ -50,7 +50,14 @@ cdef extern from "ihcrp.h":
 
 
 # TODO: type check
-def bm_init(double fs, Ls, Rs, Ct, Rbm, Cbm, Lbm, double Rh, double Lh):
+def bm_init(double fs,
+            np.ndarray[np.float64_t, ndim=1] Ls,
+            np.ndarray[np.float64_t, ndim=1] Rs,
+            np.ndarray[np.float64_t, ndim=1] Ct,
+            np.ndarray[np.float64_t, ndim=1] Rbm,
+            np.ndarray[np.float64_t, ndim=1] Cbm,
+            np.ndarray[np.float64_t, ndim=1] Lbm,
+            double Rh, double Lh):
 
     cdef double *Ls_data = <double *>np.PyArray_DATA(Ls)
     cdef double *Rs_data = <double *>np.PyArray_DATA(Rs)
@@ -70,7 +77,10 @@ def bm_init(double fs, Ls, Rs, Ct, Rbm, Cbm, Lbm, double Rh, double Lh):
               Lh)
 
 
-def bm_wave(signal, ampl_corr, Abm, Cbm):
+def bm_wave(np.ndarray[np.float64_t, ndim=1] signal,
+            np.ndarray[np.float64_t, ndim=1] ampl_corr,
+            np.ndarray[np.float64_t, ndim=1] Abm,
+            np.ndarray[np.float64_t, ndim=1] Cbm):
 
     xBM = np.zeros((len(signal), 100))
 
@@ -91,7 +101,11 @@ def bm_wave(signal, ampl_corr, Abm, Cbm):
 
 
 
-def LCR4_init(double fs, freq_map, Qmin, SAT1, SAT4):
+def LCR4_init(double fs,
+              np.ndarray[np.float64_t, ndim=1] freq_map,
+              np.ndarray[np.float64_t, ndim=1] Qmin,
+              np.ndarray[np.float64_t, ndim=1] SAT1,
+              np.ndarray[np.float64_t, ndim=1] SAT4):
 
     cdef double *freq_map_data = <double *>np.PyArray_DATA(freq_map)
     cdef double *Qmin_data = <double *>np.PyArray_DATA(Qmin)
@@ -106,14 +120,17 @@ def LCR4_init(double fs, freq_map, Qmin, SAT1, SAT4):
 
 
 
-def LCR4(xBM, Qmax, Qmin):
+def LCR4(np.ndarray[np.float64_t, ndim=2] xBM,
+         np.ndarray[np.float64_t, ndim=1] Qmax,
+         np.ndarray[np.float64_t, ndim=1] Qmin):
 
     xBM = np.array(xBM)         # make a copy, changes are in-place
     cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
     cdef double *Qmin_data = <double *>np.PyArray_DATA(Qmin)
     cdef double *Qmax_data = <double *>np.PyArray_DATA(Qmax)
 
-    sample_num, section_num = xBM.shape
+    cdef np.npy_intp sample_num = xBM.shape[0]
+    cdef np.npy_intp section_num = xBM.shape[1]
 
     for i in range(sample_num):
         LCR4_c(&xBM_data[i*100],
@@ -130,9 +147,11 @@ def ihcrp_init(double fs):
     ihcrp_init_c(fs)
 
 
-def ihcrp(xBM, ciliaGain):
+def ihcrp(np.ndarray[np.float64_t, ndim=2] xBM,
+          np.ndarray[np.float64_t, ndim=1] ciliaGain):
 
-    sample_num, section_num = xBM.shape
+    cdef np.npy_intp sample_num = xBM.shape[0]
+    cdef np.npy_intp section_num = xBM.shape[1]
 
     uIHC = np.zeros_like(xBM)
 
