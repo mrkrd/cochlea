@@ -1,16 +1,16 @@
 # Author:  Marek Rudnicki
-# Time-stamp: <2009-11-25 21:25:37 marek>
+# Time-stamp: <2010-03-17 01:43:52 marek>
 
 # Description: Compute the real frequency map of the BM model.
 
 import numpy as np
-import matplotlib.pyplot as plt
+import biggles
 
 import traveling_waves as tw
-import thorns.waves as w
+import thorns.waves as wv
 
 
-def calc_mean_displacement(freq, sec):
+def calc_mean_displacement(freq, sec, dbspl):
     """
     Computes mean displacement of a given section stimulated by tone
     wiht frequency=freq.
@@ -24,19 +24,13 @@ def calc_mean_displacement(freq, sec):
 
     s = np.sin(2 * np.pi * t * freq)
     s = s * np.hanning(len(s))
-    s = w.set_dB_SPL(80, s)
+    s = tw.set_dbspl(dbspl, s)
 
-    s = tw.run_stapes(s)
-    s = tw.run_mid_ear_filter(fs, s)
+    s = tw.scaling_factor * s
+    s = tw.run_middle_ear_filter(fs, s)
     xBM = tw.run_bm(fs, s, mode='x')
 
-    # plt.imshow(xBM, aspect='auto')
-    # plt.show()
-
-    # plt.plot(np.abs(xBM[sec]))
-    # plt.show()
-
-    avg = np.max(np.abs(xBM[:,sec]))
+    avg = np.sum(np.abs(xBM[:,sec]))
 
     return -avg
 
@@ -47,19 +41,25 @@ def optimize_real_freq_map():
     """
     import scipy.optimize as opt
 
-    sec_num = 100
-    last_x0 = 1000
-    real_freq_map = np.zeros(sec_num)
-    for sec in range(sec_num):
-        real_freq_map[sec] = opt.fminbound(calc_mean_displacement,
-                                           x1=10,
-                                           x2=22000,
-                                           args=(sec,),
-                                           xtol=0.01)
+    dbspl = 0
+    real_freq_map = []
+    secs = []
 
-    np.save('real_freq_map.npy', real_freq_map)
-    plt.plot(real_freq_map)
-    plt.show()
+    for sec in range(100):
+        freq = opt.fminbound(calc_mean_displacement,
+                             x1=10,
+                             x2=22000,
+                             args=(sec,dbspl),
+                             xtol=0.1)
+        real_freq_map.extend(freq)
+        secs.append(sec)
+
+    fname = wv.meta_stamp('maps/real_freq_map.npy', dbspl=dbspl)
+    np.save(fname, np.array(real_freq_map))
+
+    p = biggles.FramedPlot()
+    p.add( biggles.Curve(secs, real_freq_map) )
+    p.show()
 
 
 if __name__ == "__main__":

@@ -9,16 +9,6 @@ LCR4.o : LCR4.c LCR4.h
 ihcrp.o : ihcrp.c ihcrp.h
 	gcc -fPIC -c ihcrp.c -o ihcrp.o
 
-# _bm.o : _bm.c
-# 	gcc -fPIC `python-config --cflags` \
-# 	-I `python -c "import numpy; print numpy.get_include()"` \
-# 	-c _bm.c -o _bm.o
-
-# _bm.so : _bm.o bm_wave.o LCR4.o ihcrp.o
-# 	gcc -shared `python-config --ldflags` -o _bm.so \
-# 	-L/usr/local/lib/pth \
-# 	_bm.o bm_wave.o LCR4.o ihcrp.o
-
 _tw.so : _tw.pyx bm_wave.o LCR4.o ihcrp.o
 	cython _tw.pyx
 

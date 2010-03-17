@@ -129,8 +129,7 @@ def LCR4(np.ndarray[np.float64_t, ndim=2] xBM,
     cdef double *Qmin_data = <double *>np.PyArray_DATA(Qmin)
     cdef double *Qmax_data = <double *>np.PyArray_DATA(Qmax)
 
-    cdef np.npy_intp sample_num = xBM.shape[0]
-    cdef np.npy_intp section_num = xBM.shape[1]
+    sample_num, section_num = (<object>xBM).shape
 
     for i in range(sample_num):
         LCR4_c(&xBM_data[i*100],
@@ -150,8 +149,7 @@ def ihcrp_init(double fs):
 def ihcrp(np.ndarray[np.float64_t, ndim=2] xBM,
           np.ndarray[np.float64_t, ndim=1] ciliaGain):
 
-    cdef np.npy_intp sample_num = xBM.shape[0]
-    cdef np.npy_intp section_num = xBM.shape[1]
+    sample_num, section_num = (<object>xBM).shape
 
     uIHC = np.zeros_like(xBM)
 
