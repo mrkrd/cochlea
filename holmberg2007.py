@@ -7,22 +7,26 @@ import traveling_waves as tw
 import dsam
 
 
-class Holmberg2008(AuditoryPeriphery):
-    def __init__(self, anf_num=(100, 100, 100),
-                 cf=None, sg_type='carney'):
+class Holmberg2007(AuditoryPeriphery):
+    def __init__(self, anf_num=(1,1,1), cf=None,
+                 sg_type='carney', accumulate=False):
         """ Auditory periphery model from Marcus Holmberg
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
         sg_type: 'carney', 'binomial'
+        accumulate: if True, spikes for all fibers are calculated at once
 
         """
+        self.name = "Holmberg2007"
+
         self.set_freq(cf)
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
         self._lsr_num = anf_num[2]
 
+        self._accumulate = accumulate
 
         # Outer/middle ear filter
         # Stapes velocity [Pa -> m/s]
@@ -30,27 +34,27 @@ class Holmberg2008(AuditoryPeriphery):
         # IHC receptor potential
 
 
-        if self._hsr_num != 0:
-            self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Sumner2002.par"))
+        if self._hsr_num > 0:
+            self.ihc_hsr_module = dsam.EarModule("IHC_Meddis2000")
+            self.ihc_hsr_module.read_pars(par_dir("ihc_hsr_Sumner2002.par"))
 
-            self.anf_hsr = self._generate_anf(sg_type, 1)
-            dsam.connect(self.ihc_hsr, self.anf_hsr)
+            self.sg_hsr_module = self._generate_anf(self._hsr_num, sg_type, accumulate)
+            dsam.connect(self.ihc_hsr_module, self.sg_hsr_module)
 
-        if self._msr_num != 0:
-            self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr.read_pars(par_dir("ihc_msr_Sumner2002.par"))
+        if self._msr_num > 0:
+            self.ihc_msr_module = dsam.EarModule("IHC_Meddis2000")
+            self.ihc_msr_module.read_pars(par_dir("ihc_msr_Sumner2002.par"))
 
-            self.anf_msr = self._generate_anf(sg_type, 1)
-            dsam.connect(self.ihc_msr, self.anf_msr)
+            self.sg_msr_module = self._generate_anf(self._msr_num, sg_type, accumulate)
+            dsam.connect(self.ihc_msr_module, self.sg_msr_module)
 
 
-        if self._lsr_num != 0:
-            self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Sumner2002.par"))
+        if self._lsr_num > 0:
+            self.ihc_lsr_module = dsam.EarModule("IHC_Meddis2000")
+            self.ihc_lsr_module.read_pars(par_dir("ihc_lsr_Sumner2002.par"))
 
-            self.anf_lsr = self._generate_anf(sg_type, 1)
-            dsam.connect(self.ihc_lsr, self.anf_lsr)
+            self.sg_lsr_module = self._generate_anf(self._lsr_num, sg_type, accumulate)
+            dsam.connect(self.ihc_lsr_module, self.sg_lsr_module)
 
 
     def set_freq(self, cf):
@@ -59,14 +63,13 @@ class Holmberg2008(AuditoryPeriphery):
             cf = float(cf)
 
         # Only real numbers please.
-        assert (isinstance(cf, float) or
-                cf == None)
+        assert isinstance(cf, float) | (cf is None)
 
         if isinstance(cf, float):
             real_freq_map = tw.bm_pars.real_freq_map
             assert cf in real_freq_map
             self._freq_idx = int(np.where(real_freq_map == cf)[0])
-        elif cf == None:
+        elif cf is None:
             self._freq_idx = None
 
 
@@ -103,24 +106,27 @@ class Holmberg2008(AuditoryPeriphery):
 
         ### IHCRP
         ihcrp = tw.run_ihcrp(fs, xBM)
-        if self._freq_idx != None:
+        if self._freq_idx is not None:
             ihcrp = ihcrp[:,self._freq_idx]
 
 
         trains = []
         if self._hsr_num > 0:
-            self.ihc_hsr.run(fs, ihcrp)
-            tr = self._run_anf('hsr', self.anf_hsr, fs, self._hsr_num)
+            self.ihc_hsr_module.run(fs, ihcrp)
+            tr = self._run_anf('hsr', self.sg_hsr_module,
+                               fs, self._hsr_num, self._accumulate)
             trains.extend(tr)
 
         if self._msr_num > 0:
-            self.ihc_msr.run(fs, ihcrp)
-            tr = self._run_anf('msr', self.anf_msr, fs, self._msr_num)
+            self.ihc_msr_module.run(fs, ihcrp)
+            tr = self._run_anf('msr', self.sg_msr_module,
+                               fs, self._msr_num, self._accumulate)
             trains.extend(tr)
 
         if self._lsr_num > 0:
-            self.ihc_lsr.run(fs, ihcrp)
-            tr = self._run_anf('lsr', self.anf_lsr, fs, self._lsr_num)
+            self.ihc_lsr_module.run(fs, ihcrp)
+            tr = self._run_anf('lsr', self.sg_lsr_module,
+                               fs, self._lsr_num, self._accumulate)
             trains.extend(tr)
 
         trains = np.rec.array(trains, dtype=self._train_type)
@@ -136,7 +142,7 @@ def main():
     print "CF:", cf
     stimdb = 70
 
-    ear = Holmberg2008((250,0,0), cf=cf)
+    ear = Holmberg2007((250,0,0), cf=cf)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)

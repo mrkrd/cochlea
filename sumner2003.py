@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-03-16 21:04:08 marek>
+# Time-stamp: <2010-03-30 22:16:01 marek>
 #
 # Description: Sumner et al. ``A nonlinear filter-bank model of the
 # guinea-pig cochlear nerve: Rate responses''
@@ -15,19 +15,19 @@ import dsam
 from auditory_periphery import AuditoryPeriphery, par_dir
 
 class Sumner2003(AuditoryPeriphery):
-    def __init__(self, anf_num=(1, 1, 1), cf=1000,
+    def __init__(self, anf_num=(1,1,1), cf=1000,
                  sg_type='carney', accumulate=False):
         """ Auditory periphery model from Sumner (2003)
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
         sg_type: 'carney', 'binomial'
-        accumulate: if True, then spike trains of each type are concatenated
+        accumulate: if True, spikes for all fibers are calculated at once
 
         """
         self.name = 'Sumner2003'
 
-        assert accumulate == False
+        self._accumulate = accumulate
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
@@ -35,56 +35,62 @@ class Sumner2003(AuditoryPeriphery):
 
 
         # TODO: check the filters
-        self.outer_middle_ear_A = dsam.EarModule("Filt_MultiBPass")
-        self.outer_middle_ear_A.read_pars(par_dir("filt_GPa_Sumner2003.par"))
+        self.middle_ear_module_A = dsam.EarModule("Filt_MultiBPass")
+        self.middle_ear_module_A.read_pars(par_dir("filt_GPa_Sumner2003.par"))
 
-        self.outer_middle_ear_B = dsam.EarModule("Filt_MultiBPass")
-        self.outer_middle_ear_B.read_pars(par_dir("filt_GPb_Sumner2003.par"))
-        dsam.connect(self.outer_middle_ear_A, self.outer_middle_ear_B)
+        self.middle_ear_module_B = dsam.EarModule("Filt_MultiBPass")
+        self.middle_ear_module_B.read_pars(par_dir("filt_GPb_Sumner2003.par"))
+        dsam.connect(self.middle_ear_module_A, self.middle_ear_module_B)
 
 
         # Stapes velocity [Pa -> m/s]
-        self.stapes_velocity = dsam.EarModule("Util_mathOp")
-        self.stapes_velocity.read_pars(par_dir("stapes_Sumner2003.par"))
-        dsam.connect(self.outer_middle_ear_B, self.stapes_velocity)
+        self.stapes_module = dsam.EarModule("Util_mathOp")
+        self.stapes_module.read_pars(par_dir("stapes_Sumner2003.par"))
+        dsam.connect(self.middle_ear_module_B, self.stapes_module)
 
 
         # Basilar membrane
-        self.bm = dsam.EarModule("BM_DRNL")
-        self.bm.read_pars(par_dir("bm_Sumner2003.par"))
+        self.bm_module = dsam.EarModule("BM_DRNL")
+        self.bm_module.read_pars(par_dir("bm_Sumner2003.par"))
         self.set_freq(cf)
-        dsam.connect(self.stapes_velocity, self.bm)
+        dsam.connect(self.stapes_module, self.bm_module)
 
 
         # IHC receptor potential
-        self.ihcrp = dsam.EarModule("IHCRP_Shamma3StateVelIn")
-        self.ihcrp.read_pars(par_dir("ihcrp_Sumner2002.par"))
-        dsam.connect(self.bm, self.ihcrp)
+        self.ihcrp_module = dsam.EarModule("IHCRP_Shamma3StateVelIn")
+        self.ihcrp_module.read_pars(par_dir("ihcrp_Sumner2002.par"))
+        dsam.connect(self.bm_module, self.ihcrp_module)
+
 
         if self._hsr_num > 0:
-            self.ihc_hsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr.read_pars(par_dir("ihc_hsr_Sumner2003.par"))
-            dsam.connect(self.ihcrp, self.ihc_hsr)
+            self.ihc_hsr_module = dsam.EarModule("IHC_Meddis2000")
+            self.ihc_hsr_module.read_pars(par_dir("ihc_hsr_Sumner2003.par"))
+            dsam.connect(self.ihcrp_module, self.ihc_hsr_module)
 
-            self.anf_hsr = self._generate_anf(sg_type, 1)
-            dsam.connect(self.ihc_hsr, self.anf_hsr)
+            self.sg_hsr_module = self._generate_anf(self._hsr_num,
+                                              sg_type,
+                                              accumulate)
+            dsam.connect(self.ihc_hsr_module, self.sg_hsr_module)
 
         if self._msr_num > 0:
-            self.ihc_msr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr.read_pars(par_dir("ihc_msr_Sumner2003.par"))
-            dsam.connect(self.ihcrp, self.ihc_msr)
+            self.ihc_msr_module = dsam.EarModule("IHC_Meddis2000")
+            self.ihc_msr_module.read_pars(par_dir("ihc_msr_Sumner2003.par"))
+            dsam.connect(self.ihcrp_module, self.ihc_msr_module)
 
-            self.anf_msr = self._generate_anf(sg_type, 1)
-            dsam.connect(self.ihc_msr, self.anf_msr)
-
+            self.sg_msr_module = self._generate_anf(self._msr_num,
+                                              sg_type,
+                                              accumulate)
+            dsam.connect(self.ihc_msr_module, self.sg_msr_module)
 
         if self._lsr_num > 0:
-            self.ihc_lsr = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr.read_pars(par_dir("ihc_lsr_Sumner2003.par"))
-            dsam.connect(self.ihcrp, self.ihc_lsr)
+            self.ihc_lsr_module = dsam.EarModule("IHC_Meddis2000")
+            self.ihc_lsr_module.read_pars(par_dir("ihc_lsr_Sumner2003.par"))
+            dsam.connect(self.ihcrp_module, self.ihc_lsr_module)
 
-            self.anf_lsr = self._generate_anf(sg_type, 1)
-            dsam.connect(self.ihc_lsr, self.anf_lsr)
+            self.sg_lsr_module = self._generate_anf(self._lsr_num,
+                                              sg_type,
+                                              accumulate)
+            dsam.connect(self.ihc_lsr_module, self.sg_lsr_module)
 
 
 
@@ -98,13 +104,13 @@ class Sumner2003(AuditoryPeriphery):
                 isinstance(cf, float))
 
         if isinstance(cf, float):
-            self.bm.set_par("CF_MODE", "single")
-            self.bm.set_par("SINGLE_CF", cf)
+            self.bm_module.set_par("CF_MODE", "single")
+            self.bm_module.set_par("SINGLE_CF", cf)
         elif isinstance(cf, tuple):
-            self.bm.set_par("CF_MODE", "guinea_pig")
-            self.bm.set_par("MIN_CF", cf[0])
-            self.bm.set_par("MAX_CF", cf[1])
-            self.bm.set_par("CHANNELS", cf[2])
+            self.bm_module.set_par("CF_MODE", "guinea_pig")
+            self.bm_module.set_par("MIN_CF", cf[0])
+            self.bm_module.set_par("MAX_CF", cf[1])
+            self.bm_module.set_par("CHANNELS", cf[2])
 
 
     def get_freq_map(self):
@@ -114,19 +120,19 @@ class Sumner2003(AuditoryPeriphery):
         function hast to be called after run()
 
         """
-        return self.bm.get_labels()
+        return self.bm_module.get_labels()
 
 
     def print_pars(self):
-        self.bm.print_pars()
+        self.bm_module.print_pars()
         if self._hsr_num > 0:
-            self.ihc_hsr.print_pars()
+            self.ihc_hsr_module.print_pars()
 
         if self._msr_num > 0:
-            self.ihc_msr.print_pars()
+            self.ihc_msr_module.print_pars()
 
         if self._lsr_num > 0:
-            self.ihc_lsr.print_pars()
+            self.ihc_lsr_module.print_pars()
 
 
     def run(self, fs, sound):
@@ -136,27 +142,31 @@ class Sumner2003(AuditoryPeriphery):
         sound: audio signal
 
         """
-        self.outer_middle_ear_A.run(fs, sound)
-        self.outer_middle_ear_B.run()
+        self.middle_ear_module_A.run(fs, sound)
+        self.middle_ear_module_B.run()
 
-        self.stapes_velocity.run()
-        self.bm.run()
-        self.ihcrp.run()
+        self.stapes_module.run()
+        self.bm_module.run()
+        self.ihcrp_module.run()
+
 
         trains = []
         if self._hsr_num > 0:
-            self.ihc_hsr.run()
-            tr = self._run_anf('hsr', self.anf_hsr, fs, self._hsr_num)
+            self.ihc_hsr_module.run()
+            tr = self._run_anf('hsr', self.sg_hsr_module,
+                               fs, self._hsr_num, self._accumulate)
             trains.extend(tr)
 
         if self._msr_num > 0:
-            self.ihc_msr.run()
-            tr = self._run_anf('msr', self.anf_msr, fs, self._msr_num)
+            self.ihc_msr_module.run()
+            tr = self._run_anf('msr', self.sg_msr_module,
+                               fs, self._msr_num, self._accumulate)
             trains.extend(tr)
 
         if self._lsr_num > 0:
-            self.ihc_lsr.run()
-            tr = self._run_anf('lsr', self.anf_lsr, fs, self._lsr_num)
+            self.ihc_lsr_module.run()
+            tr = self._run_anf('lsr', self.sg_lsr_module,
+                               fs, self._lsr_num, self._accumulate)
             trains.extend(tr)
 
         trains = np.rec.array(trains, dtype=self._train_type)
