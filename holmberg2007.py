@@ -129,7 +129,7 @@ class Holmberg2007(AuditoryPeriphery):
                                fs, self._lsr_num, self._accumulate)
             trains.extend(tr)
 
-        trains = np.rec.array(trains, dtype=self._train_type)
+        trains = np.array(trains, dtype=self._train_type)
 
         return trains
 
