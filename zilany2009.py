@@ -12,19 +12,15 @@ import thorns as th
 
 
 class Zilany2009(object):
-    def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='actual', accumulate=False, verbose=False):
+    def __init__(self, anf_num=(1,1,1), cf=1000, powerlaw_implnt='actual'):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
         powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
-        accumulate: if True, then spike trains of each type are concatenated
 
         """
         self.name = 'Zilany2009'
-
-        assert accumulate == False
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
@@ -42,7 +38,6 @@ class Zilany2009(object):
 
         self.set_freq(cf)
 
-        self._verbose = verbose
 
     def run(self, fs, sound):
         """ Run the model.
@@ -57,8 +52,7 @@ class Zilany2009(object):
         for cf in self._freq_map:
             # Run IHC model
             vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
-                                  cohc=self._cohc, cihc=self._cihc,
-                                  verbose=self._verbose)
+                                  cohc=self._cohc, cihc=self._cihc)
 
             # Run HSR synapse
             if self._hsr_num > 0:
@@ -93,8 +87,7 @@ class Zilany2009(object):
         for anf_id in range(anf_num):
             psth = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
                                       anf_type=anf_type,
-                                      powerlaw_implnt=self._powerlaw_implnt,
-                                      verbose=self._verbose)
+                                      powerlaw_implnt=self._powerlaw_implnt)
             train = th.signal_to_spikes(fs, psth)
             train = train[0] # there is only one train per run
             anf_trains.append( (anf_type, cf, anf_id, train) )
@@ -135,8 +128,7 @@ def main():
     cf = 1000
     stimdb = 80
 
-    ear = Zilany2009((100,100,100), cf=cf, powerlaw_implnt='approx',
-                     verbose=False)
+    ear = Zilany2009((100,100,100), cf=cf, powerlaw_implnt='approx')
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)

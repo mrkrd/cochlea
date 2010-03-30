@@ -31,8 +31,6 @@ import_array()
 
 
 
-cdef public int is_pycat_initialized = 0
-
 
 cdef public double* generate_random_numbers(long length):
     arr = np.random.rand(length)
@@ -62,9 +60,15 @@ cdef public double* decimate(int k, double *signal, int q):
                                            <void *>signal)
 
     # Filter + downsample
-    b = dsp.firwin(2*q, 1./q, window='hamming')
-    filtered = dsp.lfilter(b, 1., signal_arr)
-    decimated = np.array(filtered[::q])
+    # b = dsp.firwin(2*q, 1./q, window='hamming')
+    # filtered = dsp.lfilter(b, 1., signal_arr)
+    # decimated = np.array(filtered[::q])
+
+    new_len = len(signal_arr) // q
+    signal_arr = signal_arr[0:new_len*q]
+    decimated = signal_arr.reshape((new_len, q))
+    b = dsp.firwin(q, 1./q, window='hamming')
+    decimated = np.sum(decimated*b, axis=1)
 
 
     # Copy data to output array
@@ -90,7 +94,11 @@ cdef public double* ffGn(int N, double tdres, double Hinput, double mu):
 
 
 # TODO: type check
-def run_ihc(signal, cf, fs, cohc=1, cihc=1, verbose=False):
+def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
+            double cf,
+            double fs,
+            int cohc=1,
+            int cihc=1):
     """
     signal: input sound in uPa
     cf: characteristic frequency
@@ -109,9 +117,6 @@ def run_ihc(signal, cf, fs, cohc=1, cihc=1, verbose=False):
     # Compatibility with DSAM
     signal = signal * 1e-6
 
-    if verbose:
-        print "IHC@", cf
-
 
     # Input sound
     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
@@ -129,8 +134,11 @@ def run_ihc(signal, cf, fs, cohc=1, cihc=1, verbose=False):
 
 
 
-def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual',
-                verbose=False):
+def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
+                double cf,
+                double fs,
+                anf_type='hsr',
+                powerlaw_implnt='actual'):
     """
     vihc: IHC receptor potential
     cf: characteristic frequency
@@ -139,7 +147,6 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual',
 
     return: PSTH from ANF
     """
-    assert isinstance(vihc, np.ndarray) and (vihc.ndim == 1)
     assert (cf > 80) and (cf < 40e3)
     assert (fs >= 100e3) and (fs <= 500e3)
     assert anf_type in ['hsr', 'msr', 'lsr']
@@ -152,8 +159,6 @@ def run_synapse(vihc, cf, fs, anf_type='hsr', powerlaw_implnt='actual',
     implnt_map = {'actual': 1,
                   'approx': 0}
 
-    if verbose:
-        print "Syn@", cf
 
     # Input IHC voltage
     cdef double *vihc_data = <double *>np.PyArray_DATA(vihc)
