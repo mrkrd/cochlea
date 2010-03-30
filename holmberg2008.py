@@ -9,15 +9,15 @@ import dsam
 
 class Holmberg2008(AuditoryPeriphery):
     def __init__(self, anf_num=(100, 100, 100),
-                 freq=None, sg_type='carney'):
+                 cf=None, sg_type='carney'):
         """ Auditory periphery model from Marcus Holmberg
 
         anf_num: (hsr_num, msr_num, lsr_num)
-        freq: CF
+        cf: CF
         sg_type: 'carney', 'binomial'
 
         """
-        self.set_freq(freq)
+        self.set_freq(cf)
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
@@ -25,10 +25,6 @@ class Holmberg2008(AuditoryPeriphery):
 
 
         # Outer/middle ear filter
-        self.outer_middle_ear = dsam.EarModule("Filt_MultiBPass")
-        self.outer_middle_ear.read_pars(par_dir("filt_Human.par"))
-
-
         # Stapes velocity [Pa -> m/s]
         # BM module is in run()
         # IHC receptor potential
@@ -57,20 +53,20 @@ class Holmberg2008(AuditoryPeriphery):
             dsam.connect(self.ihc_lsr, self.anf_lsr)
 
 
-    def set_freq(self, freq):
+    def set_freq(self, cf):
 
-        if isinstance(freq, int):
-            freq = float(freq)
+        if isinstance(cf, int):
+            cf = float(cf)
 
         # Only real numbers please.
-        assert (isinstance(freq, float) or
-                freq == None)
+        assert (isinstance(cf, float) or
+                cf == None)
 
-        if isinstance(freq, float):
+        if isinstance(cf, float):
             real_freq_map = tw.bm_pars.real_freq_map
-            assert freq in real_freq_map
-            self._freq_idx = int(np.where(real_freq_map == freq)[0])
-        elif freq == None:
+            assert cf in real_freq_map
+            self._freq_idx = int(np.where(real_freq_map == cf)[0])
+        elif cf == None:
             self._freq_idx = None
 
 
@@ -88,19 +84,22 @@ class Holmberg2008(AuditoryPeriphery):
         """ Run auditory periphery model.
 
         sound: audio signal
-        fs: sampling frequency
+        fs: sampling frequency (48000 Hz)
 
         """
-        # TODO: filter with original filters from the model
-        self.outer_middle_ear.run(fs, sound)
+        assert fs == 48000
 
-        s = self.outer_middle_ear.get_signal()
+        ### Outer ear filter
+        sound = tw.run_outer_ear_filter(fs, sound)
 
-        ### Stapes
-        stapes_velocity = tw.run_stapes(s)
+        ### Middle ear filter
+        sound = tw.run_middle_ear_filter(fs, sound)
+
+        ### Scaling
+        sound = sound * tw.scaling_factor
 
         ### Basilar membrane
-        xBM = tw.run_bm(fs, stapes_velocity, mode='x')
+        xBM = tw.run_bm(fs, sound, mode='x')
 
         ### IHCRP
         ihcrp = tw.run_ihcrp(fs, xBM)
@@ -135,20 +134,20 @@ def main():
     fs = 48000
     cf = tw.real_freq_map[38]
     print "CF:", cf
-    stimdb = 50
+    stimdb = 70
 
-    ear = Holmberg2008((250,0,0), freq=cf)
+    ear = Holmberg2008((250,0,0), cf=cf)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = dsam.set_dbspl(stimdb, s)
-    z = np.zeros( np.ceil(len(t)/2) )
+    z = np.zeros( np.ceil(len(t)/4) )
     s = np.concatenate( (z, s, z) )
 
 
     anf = ear.run(fs, s)
-    th.plot_raster(anf['spk'])
-    th.plot_psth(anf['spk'])
+    th.plot_raster(anf['spikes']).show()
+    th.plot_psth(anf['spikes'], bin_size=1).show()
 
 
 if __name__ == "__main__":

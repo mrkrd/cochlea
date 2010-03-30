@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-02-26 13:50:29 marek>
+# Time-stamp: <2010-03-16 21:04:08 marek>
 #
 # Description: Sumner et al. ``A nonlinear filter-bank model of the
 # guinea-pig cochlear nerve: Rate responses''
@@ -15,16 +15,18 @@ import dsam
 from auditory_periphery import AuditoryPeriphery, par_dir
 
 class Sumner2003(AuditoryPeriphery):
-    def __init__(self, anf_num=(1, 1, 1), freq=1000,
+    def __init__(self, anf_num=(1, 1, 1), cf=1000,
                  sg_type='carney', accumulate=False):
         """ Auditory periphery model from Sumner (2003)
 
         anf_num: (hsr_num, msr_num, lsr_num)
-        freq: CF
+        cf: CF
         sg_type: 'carney', 'binomial'
         accumulate: if True, then spike trains of each type are concatenated
 
         """
+        self.name = 'Sumner2003'
+
         assert accumulate == False
 
         self._hsr_num = anf_num[0]
@@ -50,7 +52,7 @@ class Sumner2003(AuditoryPeriphery):
         # Basilar membrane
         self.bm = dsam.EarModule("BM_DRNL")
         self.bm.read_pars(par_dir("bm_Sumner2003.par"))
-        self.set_freq(freq)
+        self.set_freq(cf)
         dsam.connect(self.stapes_velocity, self.bm)
 
 
@@ -86,23 +88,23 @@ class Sumner2003(AuditoryPeriphery):
 
 
 
-    def set_freq(self, freq):
-        # Test for `freq' type, should be either float or tuple
+    def set_freq(self, cf):
+        # Test for `cf' type, should be either float or tuple
         # flaot: single BM frequency
         # tuple: (min_freq, max_freq, freq_num)
-        if isinstance(freq, int):
-            freq = float(freq)
-        assert (isinstance(freq, tuple) or
-                isinstance(freq, float))
+        if isinstance(cf, int):
+            cf = float(cf)
+        assert (isinstance(cf, tuple) or
+                isinstance(cf, float))
 
-        if isinstance(freq, float):
+        if isinstance(cf, float):
             self.bm.set_par("CF_MODE", "single")
-            self.bm.set_par("SINGLE_CF", freq)
-        elif isinstance(freq, tuple):
+            self.bm.set_par("SINGLE_CF", cf)
+        elif isinstance(cf, tuple):
             self.bm.set_par("CF_MODE", "guinea_pig")
-            self.bm.set_par("MIN_CF", freq[0])
-            self.bm.set_par("MAX_CF", freq[1])
-            self.bm.set_par("CHANNELS", freq[2])
+            self.bm.set_par("MIN_CF", cf[0])
+            self.bm.set_par("MAX_CF", cf[1])
+            self.bm.set_par("CHANNELS", cf[2])
 
 
     def get_freq_map(self):
@@ -166,19 +168,23 @@ class Sumner2003(AuditoryPeriphery):
 def main():
     fs = 100000
     cf = 1000
-    stimdb = 50
+    stimdb = 70
 
-    ear = Sumner2003((250,0,0), freq=cf)
+    ear = Sumner2003((250,0,0), cf=cf)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = dsam.set_dbspl(stimdb, s)
-    z = np.zeros(np.ceil(len(t)/2))
+    z = np.zeros(np.ceil(len(t)/3))
     s = np.concatenate( (z, s, z) )
 
     anf = ear.run(fs, s)
-    th.plot_raster(anf['spikes'])
-    th.plot_psth(anf['spikes'])
+
+    p = th.plot_raster(anf['spikes'])
+    p.show()
+
+    p = th.plot_psth(anf['spikes'])
+    p.show()
 
 
 if __name__ == "__main__":
