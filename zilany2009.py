@@ -33,7 +33,6 @@ class Zilany2009(object):
 
         self._train_type = [('typ', 'S3'),
                             ('cf', float),
-                            ('id', int),
                             ('spikes', np.ndarray)]
 
         self.set_freq(cf)
@@ -90,7 +89,7 @@ class Zilany2009(object):
                                       powerlaw_implnt=self._powerlaw_implnt)
             train = th.signal_to_spikes(fs, psth)
             train = train[0] # there is only one train per run
-            anf_trains.append( (anf_type, cf, anf_id, train) )
+            anf_trains.append( (anf_type, cf, train) )
 
         return anf_trains
 
