@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2010-04-02 15:19:37 marek>
+# Time-stamp: <2010-04-14 10:16:20 marek>
 #
 # Description: Sumner et al. ``A nonlinear filter-bank model of the
 # guinea-pig cochlear nerve: Rate responses''
@@ -152,9 +152,7 @@ class Sumner2003(AuditoryPeriphery):
         import biggles
         trains = []
         if self._hsr_num > 0:
-            biggles.plot(self.ihcrp_module.get_signal())
             self.ihc_hsr_module.run()
-            biggles.plot(self.ihc_hsr_module.get_signal())
             tr = self._run_anf('hsr', self.sg_hsr_module,
                                fs, self._hsr_num, self._accumulate)
             trains.extend(tr)
