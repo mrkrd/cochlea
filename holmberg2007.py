@@ -107,8 +107,7 @@ class Holmberg2007(AuditoryPeriphery):
         ### IHCRP
         ihcrp = tw.run_ihcrp(fs, xBM)
         if self._freq_idx is not None:
-            ihcrp = ihcrp[:,self._freq_idx]
-
+            ihcrp = np.array(ihcrp[:,self._freq_idx])
 
         trains = []
         if self._hsr_num > 0:

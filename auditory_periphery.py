@@ -18,7 +18,6 @@ class AuditoryPeriphery(object):
 
     _train_type = [('typ', 'S3'),
                    ('cf', float),
-                   ('id', int),
                    ('spikes', np.ndarray)]
 
     def __init__(self):
@@ -69,7 +68,7 @@ class AuditoryPeriphery(object):
             anf_spikes = th.signal_to_spikes(fs, anf_signal)
 
             for freq, train in zip(freq_map, anf_spikes):
-                anf_trains.append( (anf_type, freq, anf_id, train) )
+                anf_trains.append( (anf_type, freq, train) )
 
         return anf_trains
 
