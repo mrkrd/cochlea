@@ -107,7 +107,8 @@ class Holmberg2007(AuditoryPeriphery):
         ### IHCRP
         ihcrp = tw.run_ihcrp(fs, xBM)
         if self._freq_idx is not None:
-            ihcrp = np.array(ihcrp[:,self._freq_idx])
+            ihcrp = ihcrp[:,self._freq_idx]
+
 
         trains = []
         if self._hsr_num > 0:
@@ -153,6 +154,13 @@ def main():
     anf = ear.run(fs, s)
     th.plot_raster(anf['spikes']).show()
     th.plot_psth(anf['spikes'], bin_size=1).show()
+
+
+    # ear = Holmberg2007((1,0,0))
+    # anf = ear.run(fs, s)
+    # th.plot_raster(anf['spikes']).show()
+    # th.plot_psth(anf['spikes'], bin_size=1).show()
+
 
 
 if __name__ == "__main__":
