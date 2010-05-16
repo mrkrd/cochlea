@@ -1,3 +1,5 @@
+from __future__ import division
+
 import numpy as np
 import os
 
@@ -28,42 +30,25 @@ class AuditoryPeriphery(object):
         pass
 
 
-    def _generate_anf(self, anf_num, sg_type, accumulate):
-        """ Returns spike generator module. """
-
-        if not accumulate:
-            anf_num = 1
-
-        if sg_type == 'carney':
-            anf = dsam.EarModule("An_SG_Carney")
-            anf.read_pars(par_dir("anf_carney.par"))
-        elif sg_type == 'binomial':
-            anf = dsam.EarModule("An_SG_Binomial")
-            anf.read_pars(par_dir("anf_binomial.par"))
-        else:
-            assert False
-
-        anf.set_par("NUM_FIBRES", anf_num)
-
-        return anf
-
-
 
 
     def _run_anf(self, anf_type, sg_module, fs, anf_num, accumulate):
         """ Run spike generator several times and format the output. """
 
-        # Explicit set of dt is required by some modules
-        if sg_module.module_type.lower() == 'an_sg_binomial':
-            sg_module.set_par("PULSE_DURATION", 1.1/fs)
+        sg_module.set_par('pulse_duration', 1.1/fs)
 
         if accumulate:
-            anf_num = 1
+            run_num = 1
+            sg_module.set_par('num_fibres', anf_num)
+        else:
+            run_num = anf_num
+            sg_module.set_par('num_fibres', 1)
 
         freq_map = self.get_freq_map()
         anf_trains = []
-        for anf_id in range(anf_num):
+        for anf_id in range(run_num):
             sg_module.run()
+
             anf_signal = sg_module.get_signal()
             anf_spikes = th.signal_to_spikes(fs, anf_signal)
 

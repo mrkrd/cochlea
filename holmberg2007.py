@@ -8,13 +8,11 @@ import dsam
 
 
 class Holmberg2007(AuditoryPeriphery):
-    def __init__(self, anf_num=(1,1,1), cf=None,
-                 sg_type='carney', accumulate=False):
+    def __init__(self, anf_num=(1,1,1), cf=None, accumulate=False):
         """ Auditory periphery model from Marcus Holmberg
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
-        sg_type: 'carney', 'binomial'
         accumulate: if True, spikes for all fibers are calculated at once
 
         """
@@ -38,14 +36,16 @@ class Holmberg2007(AuditoryPeriphery):
             self.ihc_hsr_module = dsam.EarModule("IHC_Meddis2000")
             self.ihc_hsr_module.read_pars(par_dir("ihc_hsr_Sumner2002.par"))
 
-            self.sg_hsr_module = self._generate_anf(self._hsr_num, sg_type, accumulate)
+            self.sg_hsr_module = dsam.EarModule("An_SG_Carney")
+            self.sg_hsr_module.read_pars(par_dir("anf_carney.par"))
             dsam.connect(self.ihc_hsr_module, self.sg_hsr_module)
 
         if self._msr_num > 0:
             self.ihc_msr_module = dsam.EarModule("IHC_Meddis2000")
             self.ihc_msr_module.read_pars(par_dir("ihc_msr_Sumner2002.par"))
 
-            self.sg_msr_module = self._generate_anf(self._msr_num, sg_type, accumulate)
+            self.sg_msr_module = dsam.EarModule("An_SG_Carney")
+            self.sg_msr_module.read_pars(par_dir("anf_carney.par"))
             dsam.connect(self.ihc_msr_module, self.sg_msr_module)
 
 
@@ -53,7 +53,8 @@ class Holmberg2007(AuditoryPeriphery):
             self.ihc_lsr_module = dsam.EarModule("IHC_Meddis2000")
             self.ihc_lsr_module.read_pars(par_dir("ihc_lsr_Sumner2002.par"))
 
-            self.sg_lsr_module = self._generate_anf(self._lsr_num, sg_type, accumulate)
+            self.sg_lsr_module = dsam.EarModule("An_SG_Carney")
+            self.sg_lsr_module.read_pars(par_dir("anf_carney.par"))
             dsam.connect(self.ihc_lsr_module, self.sg_lsr_module)
 
 
