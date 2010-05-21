@@ -18,8 +18,6 @@ def main():
 
     forward = run_middle_ear_filter(fs, signal) * S_ED
 
-    print np.max(forward-ref)
-
     sec = range(450,530)
     t = t[sec]
     forward = forward[sec]

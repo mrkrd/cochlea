@@ -1,5 +1,5 @@
 # Author: Marek Rudnicki
-# Time-stamp: <2009-09-15 18:49:39 marek>
+# Time-stamp: <2010-05-22 00:12:43 marek>
 #
 # Description: Show click response of the BM model
 
@@ -15,7 +15,7 @@ def main():
     idx = np.floor( len(s) / 4. )
     s[idx] = 1
 
-    xbm = tw.run_bm(fs, s, mode='x', with_LCR=True)
+    xbm = tw.run_bm(fs, s, mode='x', enable_LCR4=True)
 
     plt.imshow(xbm, aspect='auto')
     plt.show()
