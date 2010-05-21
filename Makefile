@@ -17,7 +17,6 @@ _tw.so : _tw.pyx bm_wave.o LCR4.o ihcrp.o
 	-c _tw.c
 
 	gcc -shared `python-config --ldflags` \
-	-L/usr/local/lib/pth \
 	_tw.o bm_wave.o LCR4.o ihcrp.o \
 	-o _tw.so
 
