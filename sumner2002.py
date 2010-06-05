@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 """
-Sumner et al. ``A nonlinear filter-bank model of the guinea-pig
-cochlear nerve: Rate responses'' J. Acoust. Soc. Am. Volume 113, Issue
-6, pp. 3264-3274 (June 2003)
+Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
+R. (2002). A revised model of the inner-hair cell and auditory-nerve
+complex. The Journal of the Acoustical Society of America,
+111(5):2178-2188.
 """
 
 from __future__ import division
@@ -16,16 +17,16 @@ import thorns as th
 import dsam
 from auditory_periphery import AuditoryPeriphery, par_dir
 
-class Sumner2003(AuditoryPeriphery):
+class Sumner2002(AuditoryPeriphery):
     def __init__(self, anf_num=(1,1,1), cf=1000, accumulate=False):
-        """ Auditory periphery model from Sumner (2003)
+        """ Auditory periphery model from Sumner et al. (2002)
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
         accumulate: if True, spikes for all fibers are calculated at once
 
         """
-        self.name = 'Sumner2003'
+        self.name = 'Sumner2002'
 
         self._accumulate = accumulate
 
@@ -45,7 +46,7 @@ class Sumner2003(AuditoryPeriphery):
 
         # Stapes velocity [Pa -> m/s]
         self.stapes_module = dsam.EarModule("Util_mathOp")
-        self.stapes_module.read_pars(par_dir("stapes_Sumner2003.par"))
+        self.stapes_module.read_pars(par_dir("stapes_Sumner2002.par"))
         dsam.connect(self.middle_ear_module_B, self.stapes_module)
 
 
@@ -64,7 +65,7 @@ class Sumner2003(AuditoryPeriphery):
 
         if self._hsr_num > 0:
             self.ihc_hsr_module = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr_module.read_pars(par_dir("ihc_hsr_Sumner2003.par"))
+            self.ihc_hsr_module.read_pars(par_dir("ihc_hsr_Sumner2002.par"))
             dsam.connect(self.ihcrp_module, self.ihc_hsr_module)
 
             self.sg_hsr_module = dsam.EarModule("An_SG_Carney")
@@ -73,7 +74,7 @@ class Sumner2003(AuditoryPeriphery):
 
         if self._msr_num > 0:
             self.ihc_msr_module = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr_module.read_pars(par_dir("ihc_msr_Sumner2003.par"))
+            self.ihc_msr_module.read_pars(par_dir("ihc_msr_Sumner2002.par"))
             dsam.connect(self.ihcrp_module, self.ihc_msr_module)
 
             self.sg_msr_module = dsam.EarModule("An_SG_Carney")
@@ -82,7 +83,7 @@ class Sumner2003(AuditoryPeriphery):
 
         if self._lsr_num > 0:
             self.ihc_lsr_module = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr_module.read_pars(par_dir("ihc_lsr_Sumner2003.par"))
+            self.ihc_lsr_module.read_pars(par_dir("ihc_lsr_Sumner2002.par"))
             dsam.connect(self.ihcrp_module, self.ihc_lsr_module)
 
             self.sg_lsr_module = dsam.EarModule("An_SG_Carney")
@@ -176,7 +177,7 @@ def main():
     cf = 10000
     stimdb = 70
 
-    ear = Sumner2003((250,0,0), cf=cf)
+    ear = Sumner2002((250,0,0), cf=cf)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
@@ -197,7 +198,7 @@ def main():
     print th.calc_isih(anf['spikes'], bin_size=0.1)[1][0]
 
 
-    # ear = Sumner2003((1,0,0), cf=(100, 10000, 100))
+    # ear = Sumner2002((1,0,0), cf=(100, 10000, 100))
     # anf = ear.run(fs, s)
     # p = th.plot_raster(anf['spikes'])
     # p.show()
