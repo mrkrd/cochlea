@@ -153,6 +153,7 @@ def main():
 
 
     anf = ear.run(fs, s)
+
     th.plot_raster(anf['spikes']).show()
     th.plot_psth(anf['spikes'], bin_size=1).show()
 
