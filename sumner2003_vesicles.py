@@ -1,11 +1,16 @@
-# Author: Marek Rudnicki
-# Time-stamp: <2010-04-28 22:54:13 marek>
-#
-# Description: Sumner et al. ``A nonlinear filter-bank model of the
-# guinea-pig cochlear nerve: Rate responses''
-# J. Acoust. Soc. Am. Volume 113, Issue 6, pp. 3264-3274 (June 2003)
+#!/usr/bin/env python
+
+"""
+Description: Sumner et al. ``A nonlinear filter-bank model of the
+guinea-pig cochlear nerve: Rate responses'' J. Acoust. Soc. Am. Volume
+113, Issue 6, pp. 3264-3274 (June 2003)
+
+Vesicle release version.
+"""
 
 from __future__ import division
+
+__author__ = "Marek Rudnicki"
 
 import numpy as np
 
@@ -133,7 +138,6 @@ class Sumner2003_Vesicles(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        import biggles
         trains = []
         if self._hsr_num > 0:
             tr = self._run_ihc('hsr', self.ihc_hsr_module,

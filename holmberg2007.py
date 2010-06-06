@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+
+"""
+Holmberg, M. (2007). Speech Encoding in the Human Auditory Periphery:
+Modeling and Quantitative Assessment by Means of Automatic Speech
+Recognition. PhD thesis, Technical University Darmstadt.
+"""
+
+
 from __future__ import division
 
 __author__ = "Marek Rudnicki"
@@ -11,7 +20,7 @@ import dsam
 
 class Holmberg2007(AuditoryPeriphery):
     def __init__(self, anf_num=(1,1,1), cf=None, accumulate=False):
-        """ Auditory periphery model from Marcus Holmberg
+        """ Auditory periphery model from Marcus Holmberg (2007)
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
