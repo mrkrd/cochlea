@@ -14,7 +14,8 @@ cdef extern from "catmodel.h":
     void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
                double cohc, double cihc, double *ihcout)
     void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim,
-                  double fibertype, double implnt, double *synout, double *psth)
+                  double fibertype, double implnt, double *synout, double *psth,
+                  int with_ffGn)
 
 
 cdef extern from "Python.h":
@@ -79,10 +80,13 @@ cdef public double* decimate(int k, double *signal, int q):
     return out_ptr
 
 
-cdef public double* ffGn(int N, double tdres, double Hinput, double mu):
+cdef public double* ffGn(int N, double tdres, double Hinput, double mu, bint with_ffGn):
     """ ffGn.py wrapper """
 
-    a = ffGn_module.ffGn(N, tdres, Hinput, mu)
+    if with_ffGn:
+        a = ffGn_module.ffGn(N, tdres, Hinput, mu)
+    else:
+        a = np.zeros(N)
 
     # Copy data to output array
     cdef double *ptr = <double *>np.PyArray_DATA(a)
@@ -107,11 +111,10 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
 
     return: IHC receptor potential
     """
-    assert isinstance(signal, np.ndarray) and (signal.ndim == 1)
-    assert (cf > 80) and (cf < 40e3)
-    assert (fs >= 100e3) and (fs <= 500e3)
-    assert (cohc >= 0) and (cohc <= 1)
-    assert (cihc >= 0) and (cihc <= 1)
+    assert (cf > 80) and (cf < 40e3), "Wrong CF: 80 < cf < 40e3"
+    assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
+    assert (cohc >= 0) and (cohc <= 1), "0 <= cohc <= 1"
+    assert (cihc >= 0) and (cihc <= 1), "0 <= cihc <= 1"
 
     # uPa -> Pa
     # Compatibility with DSAM
@@ -138,7 +141,8 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
                 double cf,
                 double fs,
                 anf_type='hsr',
-                powerlaw_implnt='actual'):
+                powerlaw_implnt='actual',
+                with_ffGn=True):
     """
     vihc: IHC receptor potential
     cf: characteristic frequency
@@ -147,10 +151,10 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
 
     return: PSTH from ANF
     """
-    assert (cf > 80) and (cf < 40e3)
-    assert (fs >= 100e3) and (fs <= 500e3)
-    assert anf_type in ['hsr', 'msr', 'lsr']
-    assert powerlaw_implnt in ['actual', 'approx']
+    assert (cf > 80) and (cf < 40e3), "Wrong CF: 80 < cf < 40e3"
+    assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
+    assert anf_type in ['hsr', 'msr', 'lsr'], "anf_type not hsr/msr/lsr"
+    assert powerlaw_implnt in ['actual', 'approx'], "powerlaw_implnt not actual/approx"
 
     anf_map = {'hsr': 3,
                'msr': 2,
@@ -175,7 +179,7 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
     # Run synapse model
     SingleAN(vihc_data, cf, 1, 1.0/fs, len(vihc),
              anf_map[anf_type], implnt_map[powerlaw_implnt],
-             synout_data, spikes_data);
+             synout_data, spikes_data, with_ffGn);
 
     return spikes
 

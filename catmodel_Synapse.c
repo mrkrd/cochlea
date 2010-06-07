@@ -1,4 +1,4 @@
-/* Time-stamp: <2010-03-15 18:14:25 marek>
+/* Time-stamp: <2010-06-07 17:58:36 marek>
  *
  * Modified by: Marek Rudnicki
  *
@@ -47,11 +47,12 @@
 #endif
 
 /* Declarations of the functions used in the program */
-double Synapse(double *, double, double, int, int, double, double, double, double *);
+double Synapse(double *, double, double, int, int, double, double, double, double *, int);
 int    SpikeGenerator(double *, double, int, int, double *);
 
 
-void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, double fibertype, double implnt, double *synout, double *psth)
+void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, double fibertype, double implnt, double *synout, double *psth,
+	      int with_ffGn)
 {
 
      /*variables for the signal-path, control-path and onward */
@@ -72,7 +73,7 @@ void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, doub
      if (fibertype==3) spont = 100.0;
 
      /*====== Run the synapse model ======*/
-     I = Synapse(px, tdres, cf, totalstim, nrep, spont, implnt, sampFreq, synouttmp);
+     I = Synapse(px, tdres, cf, totalstim, nrep, spont, implnt, sampFreq, synouttmp, with_ffGn);
 
      /* Wrapping up the unfolded (due to no. of repetitions) Synapse Output */
      for(i = 0; i <I ; i++)
@@ -101,7 +102,8 @@ void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, doub
     the immediate pool could be as low as negative, at this time there is an alert message
     print out and the concentration is set at saturated level  */
 /* --------------------------------------------------------------------------------------------*/
-double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep, double spont, double implnt, double sampFreq, double *synouttmp)
+double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep, double spont, double implnt, double sampFreq, double *synouttmp,
+	       int with_ffGn)
 {
      /* Initalize Variables */
      int z, b;
@@ -148,7 +150,8 @@ double Synapse(double *ihcout, double tdres, double cf, int totalstim, int nrep,
      /*----------------------------------------------------------*/
      /*------- Generating a random sequence ---------------------*/
      /*----------------------------------------------------------*/
-     randNums = ffGn( (int)ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq), 1/sampFreq, 0.9, spont);
+     randNums = ffGn( (int)ceil((totalstim*nrep+2*delaypoint)*tdres*sampFreq), 1/sampFreq, 0.9, spont,
+		      with_ffGn);
 
      /*----------------------------------------------------------*/
      /*----- Double Exponential Adaptation ----------------------*/

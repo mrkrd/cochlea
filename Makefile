@@ -19,7 +19,6 @@ complex.o : complex.c
 
 _pycat.so : _pycat.o complex.o catmodel_Synapse.o catmodel_IHC.o
 	gcc -shared `python-config --ldflags` \
-	-L/usr/local/lib/pth \
 	-o _pycat.so \
 	_pycat.o catmodel_IHC.o complex.o catmodel_Synapse.o
 

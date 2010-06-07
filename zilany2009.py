@@ -12,7 +12,8 @@ import thorns as th
 
 
 class Zilany2009(object):
-    def __init__(self, anf_num=(1,1,1), cf=1000, powerlaw_implnt='actual'):
+    def __init__(self, anf_num=(1,1,1), cf=1000,
+                 powerlaw_implnt='actual', with_ffGn=True):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -27,6 +28,7 @@ class Zilany2009(object):
         self._lsr_num = anf_num[2]
 
         self._powerlaw_implnt = powerlaw_implnt
+        self._with_ffGn = with_ffGn
 
         self._cohc = 1
         self._cihc = 1
@@ -86,7 +88,8 @@ class Zilany2009(object):
         for anf_id in range(anf_num):
             psth = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
                                       anf_type=anf_type,
-                                      powerlaw_implnt=self._powerlaw_implnt)
+                                      powerlaw_implnt=self._powerlaw_implnt,
+                                      with_ffGn=self._with_ffGn)
             train = th.signal_to_spikes(fs, psth)
             train = train[0] # there is only one train per run
             anf_trains.append( (anf_type, cf, train) )
