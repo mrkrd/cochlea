@@ -11,22 +11,18 @@ catmodel.o : catmodel.c
 	gcc -fPIC `python-config --cflags` \
 	-c catmodel.c -o catmodel.o
 
-catmodel_Synapse.o : catmodel_Synapse.c
-	gcc -fPIC `python-config --cflags` \
-	-c catmodel_Synapse.c -o catmodel_Synapse.o
-
 complex.o : complex.c
 	gcc -fPIC -c complex.c -o complex.o
 
-_pycat.so : _pycat.o complex.o catmodel_Synapse.o catmodel.o
+_pycat.so : _pycat.o complex.o  catmodel.o
 	gcc -shared `python-config --ldflags` \
 	-o _pycat.so \
-	_pycat.o catmodel.o complex.o catmodel_Synapse.o
+	_pycat.o catmodel.o complex.o
 
 
 
 
 clean :
 	rm -f _pycat.so _pycat.o _pycat.h _pycat.c
-	rm -f catmodel.o complex.o catmodel_Synapse.o
+	rm -f catmodel.o complex.o
 	rm -f *.pyc *.orig

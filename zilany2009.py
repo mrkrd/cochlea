@@ -1,9 +1,9 @@
-# Author: Marek Rudnicki
-#
 # Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
 # I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
 
 from __future__ import division
+
+__author__ = "Marek Rudnicki"
 
 import numpy as np
 
@@ -84,15 +84,18 @@ class Zilany2009(object):
 
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
+        synout = None
         anf_trains = []
         for anf_id in range(anf_num):
-            psth = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
-                                      anf_type=anf_type,
-                                      powerlaw_implnt=self._powerlaw_implnt,
-                                      with_ffGn=self._with_ffGn)
-            train = th.signal_to_spikes(fs, psth)
-            train = train[0] # there is only one train per run
-            anf_trains.append( (anf_type, cf, train) )
+            if (synout is None) or (self._with_ffGn):
+                synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
+                                            anf_type=anf_type,
+                                            powerlaw_implnt=self._powerlaw_implnt,
+                                            with_ffGn=self._with_ffGn)
+            spikes = _pycat.run_spike_generator(fs=fs,
+                                                synout=synout)
+            spikes = spikes[spikes != 0] * 1000 # s -> ms
+            anf_trains.append( (anf_type, cf, spikes) )
 
         return anf_trains
 
@@ -130,7 +133,9 @@ def main():
     cf = 1000
     stimdb = 80
 
-    ear = Zilany2009((100,100,100), cf=cf, powerlaw_implnt='approx')
+    ear = Zilany2009((100,100,100), cf=cf,
+                     powerlaw_implnt='approx',
+                     with_ffGn=True)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)

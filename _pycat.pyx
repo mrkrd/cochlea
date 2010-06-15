@@ -239,7 +239,7 @@ def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
                    1./fs,        # tdres
                    len(synout),  # totalstim
                    1,            # nprep
-                   sptime_data); # sptime
+                   sptime_data)  # sptime
 
     return sptime
 
