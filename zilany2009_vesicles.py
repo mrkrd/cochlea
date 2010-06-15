@@ -8,9 +8,10 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 
 import _pycat
+import thorns as th
 
 
-class Zilany2009(object):
+class Zilany2009_Vesicles(object):
     def __init__(self, anf_num=(1,1,1), cf=1000,
                  powerlaw_implnt='actual', with_ffGn=True):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
@@ -43,11 +44,9 @@ class Zilany2009(object):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
-        sound: input signal
+        sound: in uPa
 
         """
-        # TODO: implement storing of spikes in a file/db and reloading them as needed
-
         trains = []
         for cf in self._freq_map:
             # Run IHC model
@@ -91,10 +90,11 @@ class Zilany2009(object):
                                             anf_type=anf_type,
                                             powerlaw_implnt=self._powerlaw_implnt,
                                             with_ffGn=self._with_ffGn)
-            spikes = _pycat.run_spike_generator(fs=fs,
-                                                synout=synout)
-            spikes = spikes[spikes != 0] * 1000 # s -> ms
-            anf_trains.append( (anf_type, cf, spikes) )
+
+            vesicles = _pycat.sample_rate(fs, synout)
+            vesicles = th.signal_to_spikes(fs, vesicles)[0]
+
+            anf_trains.append( (anf_type, cf, vesicles) )
 
         return anf_trains
 
@@ -110,7 +110,7 @@ class Zilany2009(object):
             self._freq_map = [cf]
         elif isinstance(cf, tuple):
             # Based on GenerateGreenwood_CFList() from DSAM
-            aA = 456
+            aA = 456.0
             k = 0.8
             a = 2.1
 
@@ -128,15 +128,13 @@ class Zilany2009(object):
 
 
 def main():
-    import thorns as th
-
     fs = 100000
     cf = 1000
-    stimdb = 50
+    stimdb = 30
 
-    ear = Zilany2009((100,100,100), cf=cf,
-                     powerlaw_implnt='approx',
-                     with_ffGn=True)
+    ear = Zilany2009_Vesicles((100,100,100), cf=cf,
+                              powerlaw_implnt='approx',
+                              with_ffGn=True)
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
@@ -152,6 +150,7 @@ def main():
     th.plot_psth(anf[anf['typ']=='msr']['spikes'], color='red', plot=p)
     th.plot_psth(anf[anf['typ']=='lsr']['spikes'], color='blue', plot=p)
     p.show()
+
 
 
 if __name__ == "__main__":

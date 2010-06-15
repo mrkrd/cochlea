@@ -247,6 +247,19 @@ def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
 
 
 
+def sample_rate(fs, rates):
+
+    rates = rates / fs
+    events = np.zeros_like(rates)
+    randoms = np.random.rand(*rates.shape)
+
+    events[rates > randoms] = 1
+
+    return events
+
+
+
+
 def set_dbspl(dB, signal):
     p0 = 2e-5                   # Pa
     squared = signal**2
