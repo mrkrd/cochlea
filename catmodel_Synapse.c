@@ -1,4 +1,4 @@
-/* Time-stamp: <2010-06-07 17:58:36 marek>
+/* Time-stamp: <2010-06-15 18:44:28 marek>
  *
  * Modified by: Marek Rudnicki
  *
@@ -66,7 +66,7 @@ void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim, doub
      /* Allocate dynamic memory for the temporary variables */
      synouttmp  = (double*)calloc(totalstim*nrep,sizeof(double));
      sptime  = (double*)calloc((long) ceil(totalstim*tdres*nrep/0.00075),sizeof(double));
-
+     printf("%d %d\n", totalstim, (long) ceil(totalstim*tdres*nrep/0.00075));
      /* Spontaneous Rate of the fiber corresponding to Fibertype */
      if (fibertype==1) spont = 0.1;
      if (fibertype==2) spont = 5.0;

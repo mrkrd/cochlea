@@ -11,11 +11,29 @@ cdef extern from "stdlib.h":
 
 
 cdef extern from "catmodel.h":
-    void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
-               double cohc, double cihc, double *ihcout)
-    void SingleAN(double *px, double cf, int nrep, double tdres, int totalstim,
-                  double fibertype, double implnt, double *synout, double *psth,
-                  int with_ffGn)
+    void IHCAN(double *px,
+               double cf,
+               int nrep,
+               double tdres,
+               int totalstim,
+               double cohc,
+               double cihc,
+               double *ihcout)
+    double Synapse(double *ihcout,
+                   double tdres,
+                   double cf,
+                   int totalstim,
+                   int nrep,
+                   double spont,
+                   double implnt,
+                   double sampFreq,
+                   double *synouttmp,
+                   int with_ffGn)
+    int SpikeGenerator(double *synouttmp,
+                       double tdres,
+                       int totalstim,
+                       int nrep,
+                       double *sptime)
 
 
 cdef extern from "Python.h":
@@ -104,12 +122,15 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
             int cohc=1,
             int cihc=1):
     """
+    Run BM / IHC model.
+
     signal: input sound in uPa
     cf: characteristic frequency
     fs: sampling frequency
     cohc, cihc: degeneration parameters for IHC and OHC cells
 
     return: IHC receptor potential
+
     """
     assert (cf > 80) and (cf < 40e3), "Wrong CF: 80 < cf < 40e3"
     assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
@@ -144,10 +165,13 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
                 powerlaw_implnt='actual',
                 with_ffGn=True):
     """
+    Run synapse simulation.
+
     vihc: IHC receptor potential
     cf: characteristic frequency
     anf_type: auditory nerve fiber type ('hsr', 'msr' or 'lsr')
     powerlaw_implnt: implementation of the powerlaw ('actual', 'approx')
+    with_ffGn: enable/disable factorial Gauss noise generator
 
     return: PSTH from ANF
     """
@@ -156,9 +180,9 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
     assert anf_type in ['hsr', 'msr', 'lsr'], "anf_type not hsr/msr/lsr"
     assert powerlaw_implnt in ['actual', 'approx'], "powerlaw_implnt not actual/approx"
 
-    anf_map = {'hsr': 3,
-               'msr': 2,
-               'lsr': 1}
+    spont = {'hsr': 100.,
+             'msr': 5.,
+             'lsr': 0.1}
 
     implnt_map = {'actual': 1,
                   'approx': 0}
@@ -167,9 +191,6 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
     # Input IHC voltage
     cdef double *vihc_data = <double *>np.PyArray_DATA(vihc)
 
-    # Output spikes (signal)
-    spikes = np.zeros_like(vihc)
-    cdef double *spikes_data = <double *>np.PyArray_DATA(spikes)
 
     # Output synapse data (spiking probabilities)
     synout = np.zeros_like(vihc)
@@ -177,11 +198,52 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
 
 
     # Run synapse model
-    SingleAN(vihc_data, cf, 1, 1.0/fs, len(vihc),
-             anf_map[anf_type], implnt_map[powerlaw_implnt],
-             synout_data, spikes_data, with_ffGn);
+    Synapse(vihc_data,                   # px
+            1.0/fs,                      # tdres
+            cf,                          # cf
+            len(vihc),                   # totalstim
+            1,                           # nrep
+            spont[anf_type],             # spont
+            implnt_map[powerlaw_implnt], # implnt
+            10e3,                        # sampFreq
+            synout_data,                 # synouttmp
+            with_ffGn)                   # with_ffGn
 
-    return spikes
+    return synout
+
+
+
+
+
+def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
+                        double fs):
+    """
+    Run spike generator.
+
+    synout: synapse output (sp/s)
+    fs: sampling frequency
+
+    return: sptime
+
+    """
+    # Input IHC voltage
+    cdef double *synout_data = <double *>np.PyArray_DATA(synout)
+
+    # Output spikes (signal)
+    sptime = np.zeros(np.ceil(len(synout)/0.00075/fs))
+    cdef double *sptime_data = <double *>np.PyArray_DATA(sptime)
+
+
+    # Run synapse model
+    SpikeGenerator(synout_data,  # synouttmp
+                   1./fs,        # tdres
+                   len(synout),  # totalstim
+                   1,            # nprep
+                   sptime_data); # sptime
+
+    return sptime
+
+
 
 
 
