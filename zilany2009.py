@@ -131,18 +131,18 @@ def main():
     import thorns as th
 
     fs = 100000
-    cf = 1000
-    stimdb = 50
+    cf = 10000
+    stimdb = 20
 
     ear = Zilany2009((100,100,100), cf=cf,
                      powerlaw_implnt='approx',
                      with_ffGn=True)
 
-    t = np.arange(0, 0.1, 1/fs)
+    t = np.arange(0, 0.05, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
     s = _pycat.set_dbspl(stimdb, s)
-    z = np.zeros( np.ceil(len(t)/2) )
-    s = np.concatenate( (z, s, z) )
+    z = np.zeros_like(s)
+    s = np.concatenate( (s, z) )
 
     anf = ear.run(fs, s)
 
