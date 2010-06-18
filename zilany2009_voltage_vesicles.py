@@ -44,7 +44,7 @@ class Zilany2009_Voltage_Vesicles(object):
         voltage: IHC receptor potential (V)
 
         """
-        voltage = voltage + 50e-3
+        voltage = voltage + 55e-3
         trains = []
 
         # Run HSR synapse
