@@ -101,14 +101,13 @@ class Sumner2002_Voltage_Vesicles(AuditoryPeriphery):
 
 
 def main():
-    fs = 100000
+    fs = 100000                 # Hz
+    tmax = 1000                 # ms
 
     ear = Sumner2002_Voltage_Vesicles((250,0,0))
 
-    t = np.arange(0, 0.1, 1/fs)
-    v = -0.05 * np.ones_like(t)
-    third = np.ceil(len(v)/3)
-    v[third:2*third] = -0.045
+    v = -0.089 * np.ones( np.ceil(tmax*fs/1000) )
+    v[np.ceil(10*fs/1000):np.ceil(990*fs/1000)] = -0.029
 
     anf = ear.run(fs, v)
 

@@ -62,7 +62,7 @@ def main():
     import biggles
     import cochlea
 
-    rates = calc_rate_intensity(cochlea.Sumner2002)
+    rates = calc_rate_intensity(cochlea.Sumner2003)
 
     plot = biggles.FramedPlot()
     plot.add( biggles.Curve(rates['dbspl'], rates['hsr']) )
