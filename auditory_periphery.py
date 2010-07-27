@@ -35,7 +35,7 @@ class AuditoryPeriphery(object):
     def _run_anf(self, anf_type, sg_module, fs, anf_num, accumulate):
         """ Run spike generator several times and format the output. """
 
-        sg_module.set_par('pulse_duration', 1.1/fs)
+        sg_module.set_par('pulse_duration', 1/fs)
 
         if accumulate:
             run_num = 1
