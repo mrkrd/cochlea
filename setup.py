@@ -12,12 +12,14 @@ setup(
     version = "1.0",
     author = "Marek Rudnicki",
     packages = ["traveling_waves"],
-    package_dir = {"traveling_waves": "src"},
+    package_dir = {"traveling_waves": "src/traveling_waves"},
     ext_package = "traveling_waves",
     ext_modules = [
         Extension("_tw",
-                  ["src/_tw.pyx", "src/bm_wave.c",
-                   "src/LCR4.c", "src/ihcrp.c"],
+                  ["src/traveling_waves/_tw.pyx",
+                   "src/traveling_waves/bm_wave.c",
+                   "src/traveling_waves/LCR4.c",
+                   "src/traveling_waves/ihcrp.c"],
                   include_dirs=[numpy_include])
         ],
     cmdclass = {"build_ext": build_ext}
