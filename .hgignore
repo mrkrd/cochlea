@@ -1,10 +1,4 @@
 syntax: glob
-*.o
-*.pyc
-*.mex
-*.mexa64
-*.so
-*.orig
-ffGn_test
+build
 _pycat.c
 _pycat.h
