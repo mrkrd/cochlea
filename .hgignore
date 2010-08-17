@@ -2,3 +2,5 @@ syntax: glob
 build
 _pycat.c
 _pycat.h
+*.mexa64
+*.orig
