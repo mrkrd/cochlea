@@ -49,7 +49,6 @@ cdef extern from "ihcrp.h":
 # import_array()
 
 
-# TODO: type check
 def bm_init(double fs,
             np.ndarray[np.float64_t, ndim=1] Ls,
             np.ndarray[np.float64_t, ndim=1] Rs,
