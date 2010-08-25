@@ -47,18 +47,7 @@ def run_bm(fs, signal, mode='x', enable_LCR4=True):
                       signal=signal)
 
     if enable_LCR4:
-
-        _tw.LCR4_init(fs=fs,
-                      freq_map=bm_pars.freq_map,
-                      Qmin=bm_pars.Qmin,
-                      SAT1=bm_pars.SAT1,
-                      SAT4=bm_pars.SAT4)
-
-
-        xBM = _tw.LCR4(xBM=xBM,
-                       Qmax=bm_pars.Qmax,
-                       Qmin=bm_pars.Qmin)
-
+        xBM = _tw.LCR4(fs, xBM)
 
         # Compensate for LCR4 delays
         i = np.tile(np.arange(orig_signal_len), 100).reshape( (100, orig_signal_len) ).T

@@ -1,41 +1,9 @@
+from __future__ import division
+
 import numpy as np
 cimport numpy as np
 
 
-# cdef extern from "numpy/arrayobject.h":
-#     void import_array()
-
-
-
-cdef extern from "bm_wave.h":
-    double bm_init_c(double f_s,
-                     double *Ls,
-                     double *Rs,
-                     double *Ct,
-                     double *Rbm,
-                     double *Cbm,
-                     double *Lbm,
-                     double Rh,
-                     double Lh)
-    void bm_wave_c(double input,
-                   double *x_BM,
-                   double *ampl_corr,
-                   double *Abm,
-                   double *Cbm)
-
-
-cdef extern from "LCR4.h":
-    void LCR4_init_c(double f_s,
-                     double *freq_map,
-                     double *Qmin,
-                     double *SAT1,
-                     double *SAT4)
-
-    void LCR4_c(double *xBM,
-                double *Qmax,
-                double *Qmin,
-                int first_sec,
-                int last_sec)
 
 
 cdef extern from "ihcrp.h":
@@ -46,64 +14,13 @@ cdef extern from "ihcrp.h":
 
 
 
-# import_array()
-
-
-# def bm_init(double fs,
-#             np.ndarray[np.float64_t, ndim=1] Ls,
-#             np.ndarray[np.float64_t, ndim=1] Rs,
-#             np.ndarray[np.float64_t, ndim=1] Ct,
-#             np.ndarray[np.float64_t, ndim=1] Rbm,
-#             np.ndarray[np.float64_t, ndim=1] Cbm,
-#             np.ndarray[np.float64_t, ndim=1] Lbm,
-#             double Rh, double Lh):
-
-#     cdef double *Ls_data = <double *>np.PyArray_DATA(Ls)
-#     cdef double *Rs_data = <double *>np.PyArray_DATA(Rs)
-#     cdef double *Ct_data = <double *>np.PyArray_DATA(Ct)
-#     cdef double *Rbm_data = <double *>np.PyArray_DATA(Rbm)
-#     cdef double *Cbm_data = <double *>np.PyArray_DATA(Cbm)
-#     cdef double *Lbm_data = <double *>np.PyArray_DATA(Lbm)
-
-#     bm_init_c(fs,
-#               Ls_data,
-#               Rs_data,
-#               Ct_data,
-#               Rbm_data,
-#               Cbm_data,
-#               Lbm_data,
-#               Rh,
-#               Lh)
-
-
-# def bm_wave(np.ndarray[np.float64_t, ndim=1] signal,
-#             np.ndarray[np.float64_t, ndim=1] ampl_corr,
-#             np.ndarray[np.float64_t, ndim=1] Abm,
-#             np.ndarray[np.float64_t, ndim=1] Cbm):
-
-#     xBM = np.zeros((len(signal), 100))
-
-#     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
-#     cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
-#     cdef double *ampl_corr_data = <double *>np.PyArray_DATA(ampl_corr)
-#     cdef double *Abm_data = <double *>np.PyArray_DATA(Abm)
-#     cdef double *Cbm_data = <double *>np.PyArray_DATA(Cbm)
-
-#     for i in range(len(signal)):
-#         bm_wave_c(signal_data[i],
-#                   &xBM_data[100*i],
-#                   ampl_corr_data,
-#                   Abm_data,
-#                   Cbm_data)
-
-#     return xBM
-
 
 import bm_pars
 
 def bm_wave(np.float64_t fs,
             np.ndarray[np.float64_t, ndim=1] signal):
 
+    assert fs == 48000.0
 
     cdef np.ndarray[np.float64_t] Ls = bm_pars.Ls
     cdef np.ndarray[np.float64_t] Rs = bm_pars.Rs
@@ -177,6 +94,7 @@ def bm_wave(np.float64_t fs,
     R_input = R14
     Zhel = 0
 
+    # Iterate over time
     for i in range(len(signal)):
         sample = signal[i]
         time_slice = xbm[i]
@@ -242,44 +160,216 @@ def bm_wave(np.float64_t fs,
     return xbm
 
 
-def LCR4_init(double fs,
-              np.ndarray[np.float64_t, ndim=1] freq_map,
-              np.ndarray[np.float64_t, ndim=1] Qmin,
-              np.ndarray[np.float64_t, ndim=1] SAT1,
-              np.ndarray[np.float64_t, ndim=1] SAT4):
 
-    cdef double *freq_map_data = <double *>np.PyArray_DATA(freq_map)
-    cdef double *Qmin_data = <double *>np.PyArray_DATA(Qmin)
-    cdef double *SAT1_data = <double *>np.PyArray_DATA(SAT1)
-    cdef double *SAT4_data = <double *>np.PyArray_DATA(SAT4)
+def LCR4(fs, xbm, sections=None):
 
-    LCR4_init_c(fs,
-                freq_map_data,
-                Qmin_data,
-                SAT1_data,
-                SAT4_data)
+    assert fs == 48000
+
+    if sections is None:
+        sections = range(100)
+
+    xbm_out = []
+
+    for sec in sections:
+        xbm_slice = xbm[:,sec]
+        xbm_out.append( _single_LCR4(fs, xbm_slice, sec) )
+
+    return np.array(xbm_out).T
+
+def _single_LCR4(np.float64_t fs,
+                 np.ndarray[np.float64_t] xbm,
+                 np.int sec):
+
+    assert fs == 48000
+
+    cdef np.ndarray[np.float64_t] freq_map = bm_pars.freq_map
+    cdef np.ndarray[np.float64_t] Qmin = bm_pars.Qmin
+    cdef np.ndarray[np.float64_t] Qmax = bm_pars.Qmax
+    cdef np.ndarray[np.float64_t] SAT1 = bm_pars.SAT1
+    cdef np.ndarray[np.float64_t] SAT4 = bm_pars.SAT4
+
+
+    tau = 1 / (2*np.pi*0.8e3)
+    R2 = 1 / (2*fs*tau)
+    R1 = 1
+
+    g_CLP = (R2-R1) / (R2+R1)
+
+    Rc_res = Qmin[sec] / (2*fs)
+    Rl_res = Rc_res * (fs/(np.pi*freq_map[sec]))**2
+
+    T4C = 0
+    T4L = 0
+    T5C = 0
+    T5L = 0
+    T6C = 0
+    T6L = 0
+    T7C = 0
+    T7L = 0
+
+    Qd = Qmin[sec] * np.ones(4)
+
+    p_SAT1 = SAT1[sec]
+    p_SAT4 = SAT4[sec]
+
+    p_SAT2 = 10**(np.log10(p_SAT4) + np.log10(p_SAT1/p_SAT4)*2/3)
+    p_SAT3 = 10**(np.log10(p_SAT4) + np.log10(p_SAT1/p_SAT4)/3)
+
+    Z_CLP1 = 0
+    Z_CLP2 = 0
+    Z_CLP3 = 0
+    Z_CLP4 = 0
+
+    xbm_out = np.zeros_like(xbm)
+
+    for i in range(len(xbm)):
+
+        ### Resonator 1
+        Rr11 = np.sqrt(Rl_res*Rc_res) / Qd[0]
+        Rr13 = Rr11 + Rl_res
+
+        Gr21 = 1 / Rr13
+        Gr23 = Gr21 + 1 / Rc_res
+
+        gr1 = Rr11 / Rr13
+        gr2 = Gr21 / Gr23
+
+        ### Filtering
+        b13 = -(xbm[i] + T4L)
+        b20 = -gr2*(T4C - b13)
+        b23 = b20 + T4C
+
+        b22 = b20+b23
+        b21 = b22+T4C-b13
+        a0 = b21-b13
+        b11 = xbm[i]-gr1*a0
+        b12 = -(b11+b21)
+
+        X2 = (b22+T4C)/2.
+        V2 = (T4C-b22)/(2.*Rc_res)
+
+        T4L = -b12
+        T4C = b22
+
+        rect = 1.- (2. / (1.+ np.exp( -p_SAT1*np.abs(X2)) ) -1.)
+        b2 = rect*(1. + g_CLP) - Z_CLP1*g_CLP
+        rect_LP = (b2 + Z_CLP1)/2.
+        Z_CLP1 = b2
+
+        Qd[0] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+
+        ### Resonator 2
+        # Calculating port values from old Qd-value
+        Rr11 = np.sqrt(Rl_res*Rc_res)/Qd[1] # sqrt(L/C)/Q
+        Rr13 = Rr11 + Rl_res
+
+        Gr21 = 1./Rr13
+        Gr23 = Gr21 + 1./Rc_res
+
+        gr1 = Rr11/Rr13
+        gr2 = Gr21/Gr23
+
+        ### Filtering
+        b13 = -(X2+T5L)
+        b20 = -gr2*(T5C-b13)
+        b23 = b20+T5C
+
+        b22 = b20+b23
+        b21 = b22+T5C-b13
+        a0 = b21-b13
+        b11 = X2-gr1*a0
+        b12 = -(b11+b21)
+
+        X3 = (b22+T5C)/2.
+        V3 = (T5C-b22)/(2.*Rc_res)
+
+        T5L = -b12
+        T5C = b22
+
+        rect = 1.- (2. / (1.+np.exp( -p_SAT2*np.abs(X3)) ) -1.)
+        b2 = rect*(1. + g_CLP) - Z_CLP2*g_CLP
+        rect_LP = (b2 + Z_CLP2)/2.
+        Z_CLP2 = b2
+
+        Qd[1] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+
+
+        ### Resonator 3
+        Rr11 = np.sqrt(Rl_res*Rc_res)/Qd[2]
+        Rr13 = Rr11 + Rl_res
+
+        Gr21 = 1./Rr13
+        Gr23 = Gr21 + 1./Rc_res
+
+        gr1 = Rr11/Rr13
+        gr2 = Gr21/Gr23
+
+        ### Filtering
+
+        b13 = -(X3+T6L)
+        b20 = -gr2*(T6C-b13)
+        b23 = b20+T6C
+
+        b22 = b20+b23
+        b21 = b22+T6C-b13
+        a0 = b21-b13
+        b11 = X3-gr1*a0
+        b12=-(b11+b21)
+
+        X4 = (b22+T6C)/2.
+        V4 = (T6C-b22)/(2.*Rc_res)
+
+
+        T6L = -b12
+        T6C = b22
+
+        rect = 1.- (2. / (1.+np.exp( -p_SAT3*np.abs(X4)) ) -1.)
+        b2 = rect*(1. + g_CLP) - Z_CLP3*g_CLP
+        rect_LP = (b2 + Z_CLP3)/2.
+        Z_CLP3 = b2
+
+        Qd[2] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+
+        ### Resonator 4
+        Rr11=np.sqrt(Rl_res*Rc_res)/Qd[3]
+        Rr13 = Rr11 + Rl_res
+
+        Gr21 = 1./Rr13
+        Gr23 = Gr21 + 1./Rc_res
+
+        gr1 = Rr11/Rr13
+        gr2 = Gr21/Gr23
+
+        ### Filtering
+        b13 = -(X4+T7L)
+        b20 = -gr2*(T7C-b13)
+        b23 = b20+T7C
+
+        b22 = b20+b23
+        b21 = b22+T7C-b13
+        a0 = b21-b13
+        b11 = X4-gr1*a0
+        b12 = -(b11+b21)
+
+        X5 = (b22+T7C)/2.
+        V5 = (T7C-b22)/(2.*Rc_res)
+
+        T7L = -b12
+        T7C = b22
+
+        rect = 1.- (2. / (1.+np.exp( -p_SAT4*np.abs(X5)) ) -1.)
+        b2 = rect*(1. + g_CLP) - Z_CLP4*g_CLP
+        rect_LP = (b2 + Z_CLP4)/2.
+        Z_CLP4 = b2
+
+        Qd[3] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
 
 
 
-def LCR4(np.ndarray[np.float64_t, ndim=2] xBM,
-         np.ndarray[np.float64_t, ndim=1] Qmax,
-         np.ndarray[np.float64_t, ndim=1] Qmin):
+        xbm_out[i] = X5
 
-    xBM = np.array(xBM)         # make a copy, changes are in-place
-    cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
-    cdef double *Qmin_data = <double *>np.PyArray_DATA(Qmin)
-    cdef double *Qmax_data = <double *>np.PyArray_DATA(Qmax)
+    return xbm_out
 
-    sample_num, section_num = (<object>xBM).shape
-
-    for i in range(sample_num):
-        LCR4_c(&xBM_data[i*100],
-                Qmax_data,
-                Qmin_data,
-                0,
-                100)
-
-    return xBM
 
 
 
