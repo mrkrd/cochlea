@@ -134,27 +134,25 @@ def bm_wave(np.float64_t fs,
     cdef np.ndarray[np.float64_t] b20 = np.zeros(100)
     cdef np.ndarray[np.float64_t] b23 = np.zeros(100)
 
+    cdef np.float64_t gh, R_input, Zhel
+    cdef np.float64_t R14, R44, G33, G23
+    cdef np.float64_t a10, b11, b12, b13, a40, b41, b42, b43
+    cdef np.float64_t b21, b22, b31, b32, ah0, bh1, bh2, a14
+
+
     cdef Py_ssize_t sec
-    cdef Py_ssize_t max_section = 99
     cdef Py_ssize_t i
 
-    cdef np.float64_t R14
-    cdef np.float64_t R44
-    cdef np.float64_t G33
-    cdef np.float64_t G23
-    cdef np.float64_t gh
-    cdef np.float64_t R_input
-    cdef np.float64_t Zhel
-
-    cdef Py_ssize_t signal_len = len(signal)
-    cdef np.ndarray[np.float64_t, ndim=2] xbm = np.zeros((signal_len, 100))
+    cdef np.ndarray[np.float64_t, ndim=2] xbm = np.zeros((len(signal), 100))
     cdef np.float64_t sample
     cdef np.ndarray[np.float64_t] time_slice
 
+    cdef Py_ssize_t sections = 100
+
 
     # Init gXX
-    for sec in range(max_section,-1,-1):
-        if sec == max_section:
+    for sec in range(sections-1,-1,-1):
+        if sec == sections-1:
             R14 = Rh + (2*fs*Lh)
             gh = Rh / R14
 
@@ -179,13 +177,13 @@ def bm_wave(np.float64_t fs,
     R_input = R14
     Zhel = 0
 
-    for i in range(signal_len):
+    for i in range(len(signal)):
         sample = signal[i]
         time_slice = xbm[i]
 
         # Backward wave
-        for sec in range(max_section,-1,-1):
-            if sec == max_section:
+        for sec in range(sections-1,-1,-1):
+            if sec == sections-1:
                 a21[sec] = Zhel
             else:
                 a21[sec] = -b14[sec+1]
@@ -193,7 +191,7 @@ def bm_wave(np.float64_t fs,
             b44[sec] = -(-Z42[sec] + Z43[sec])
 
             b30[sec] = -g3[sec]*(Z32[sec] - b44[sec])
-            b33[sec]  = Z32[sec] + b30[sec]
+            b33[sec] = Z32[sec] + b30[sec]
 
             b20[sec] = -g2[sec]*(b33[sec]-a21[sec])
             b23[sec] = b33[sec] + b20[sec]
@@ -201,7 +199,7 @@ def bm_wave(np.float64_t fs,
             b14[sec] = -(b23[sec] - Z13[sec])
 
         # Forward wave
-        for sec in range(100):
+        for sec in range(sections):
             if sec == 0:
                 a14 = 2*R_input*sample + b14[0]
             else:
