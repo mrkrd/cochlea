@@ -7,4 +7,5 @@ dist
 *.npy
 *.eps
 _tw.c
+_tw.html
 *.orig

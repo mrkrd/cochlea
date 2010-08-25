@@ -14,19 +14,8 @@ def main():
     ref = np.loadtxt('xBM_70.txt')
 
 
-    _tw.bm_init(fs,
-                bm_pars.Ls,
-                bm_pars.Rs,
-                bm_pars.Ct,
-                bm_pars.Rbm,
-                bm_pars.Cbm,
-                bm_pars.Lbm,
-                bm_pars.Rh, # helicotrema, end of BM
-                bm_pars.Lh) # end of BM
-    xBM = _tw.bm_wave(forward,
-                      bm_pars.ampl_corr,
-                      bm_pars.Abm,
-                      bm_pars.Cbm)
+    xBM = _tw.bm_wave(fs=48000,
+                      signal=forward)
     xBM = xBM[:,70]
 
 

@@ -43,21 +43,8 @@ def run_bm(fs, signal, mode='x', enable_LCR4=True):
         signal = np.append(signal,
                            np.zeros(delays.max()))
 
-    _tw.bm_init(fs=fs,
-                Ls=bm_pars.Ls,
-                Rs=bm_pars.Rs,
-                Ct=bm_pars.Ct,
-                Rbm=bm_pars.Rbm,
-                Cbm=bm_pars.Cbm,
-                Lbm=bm_pars.Lbm,
-                Rh=bm_pars.Rh, # helicotrema, end of BM
-                Lh=bm_pars.Lh) # end of BM
-
-    xBM = _tw.bm_wave(signal=signal,
-                      ampl_corr=bm_pars.ampl_corr,
-                      Abm=bm_pars.Abm,
-                      Cbm=bm_pars.Cbm)
-
+    xBM = _tw.bm_wave(fs=fs,
+                      signal=signal)
 
     if enable_LCR4:
 

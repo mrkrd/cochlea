@@ -49,55 +49,199 @@ cdef extern from "ihcrp.h":
 # import_array()
 
 
-def bm_init(double fs,
-            np.ndarray[np.float64_t, ndim=1] Ls,
-            np.ndarray[np.float64_t, ndim=1] Rs,
-            np.ndarray[np.float64_t, ndim=1] Ct,
-            np.ndarray[np.float64_t, ndim=1] Rbm,
-            np.ndarray[np.float64_t, ndim=1] Cbm,
-            np.ndarray[np.float64_t, ndim=1] Lbm,
-            double Rh, double Lh):
+# def bm_init(double fs,
+#             np.ndarray[np.float64_t, ndim=1] Ls,
+#             np.ndarray[np.float64_t, ndim=1] Rs,
+#             np.ndarray[np.float64_t, ndim=1] Ct,
+#             np.ndarray[np.float64_t, ndim=1] Rbm,
+#             np.ndarray[np.float64_t, ndim=1] Cbm,
+#             np.ndarray[np.float64_t, ndim=1] Lbm,
+#             double Rh, double Lh):
 
-    cdef double *Ls_data = <double *>np.PyArray_DATA(Ls)
-    cdef double *Rs_data = <double *>np.PyArray_DATA(Rs)
-    cdef double *Ct_data = <double *>np.PyArray_DATA(Ct)
-    cdef double *Rbm_data = <double *>np.PyArray_DATA(Rbm)
-    cdef double *Cbm_data = <double *>np.PyArray_DATA(Cbm)
-    cdef double *Lbm_data = <double *>np.PyArray_DATA(Lbm)
+#     cdef double *Ls_data = <double *>np.PyArray_DATA(Ls)
+#     cdef double *Rs_data = <double *>np.PyArray_DATA(Rs)
+#     cdef double *Ct_data = <double *>np.PyArray_DATA(Ct)
+#     cdef double *Rbm_data = <double *>np.PyArray_DATA(Rbm)
+#     cdef double *Cbm_data = <double *>np.PyArray_DATA(Cbm)
+#     cdef double *Lbm_data = <double *>np.PyArray_DATA(Lbm)
 
-    bm_init_c(fs,
-              Ls_data,
-              Rs_data,
-              Ct_data,
-              Rbm_data,
-              Cbm_data,
-              Lbm_data,
-              Rh,
-              Lh)
+#     bm_init_c(fs,
+#               Ls_data,
+#               Rs_data,
+#               Ct_data,
+#               Rbm_data,
+#               Cbm_data,
+#               Lbm_data,
+#               Rh,
+#               Lh)
 
 
-def bm_wave(np.ndarray[np.float64_t, ndim=1] signal,
-            np.ndarray[np.float64_t, ndim=1] ampl_corr,
-            np.ndarray[np.float64_t, ndim=1] Abm,
-            np.ndarray[np.float64_t, ndim=1] Cbm):
+# def bm_wave(np.ndarray[np.float64_t, ndim=1] signal,
+#             np.ndarray[np.float64_t, ndim=1] ampl_corr,
+#             np.ndarray[np.float64_t, ndim=1] Abm,
+#             np.ndarray[np.float64_t, ndim=1] Cbm):
 
-    xBM = np.zeros((len(signal), 100))
+#     xBM = np.zeros((len(signal), 100))
 
-    cdef double *signal_data = <double *>np.PyArray_DATA(signal)
-    cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
-    cdef double *ampl_corr_data = <double *>np.PyArray_DATA(ampl_corr)
-    cdef double *Abm_data = <double *>np.PyArray_DATA(Abm)
-    cdef double *Cbm_data = <double *>np.PyArray_DATA(Cbm)
+#     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
+#     cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
+#     cdef double *ampl_corr_data = <double *>np.PyArray_DATA(ampl_corr)
+#     cdef double *Abm_data = <double *>np.PyArray_DATA(Abm)
+#     cdef double *Cbm_data = <double *>np.PyArray_DATA(Cbm)
 
-    for i in range(len(signal)):
-        bm_wave_c(signal_data[i],
-                  &xBM_data[100*i],
-                  ampl_corr_data,
-                  Abm_data,
-                  Cbm_data)
+#     for i in range(len(signal)):
+#         bm_wave_c(signal_data[i],
+#                   &xBM_data[100*i],
+#                   ampl_corr_data,
+#                   Abm_data,
+#                   Cbm_data)
 
-    return xBM
+#     return xBM
 
+
+import bm_pars
+
+def bm_wave(np.float64_t fs,
+            np.ndarray[np.float64_t, ndim=1] signal):
+
+
+    cdef np.ndarray[np.float64_t] Ls = bm_pars.Ls
+    cdef np.ndarray[np.float64_t] Rs = bm_pars.Rs
+    cdef np.ndarray[np.float64_t] Ct = bm_pars.Ct
+    cdef np.ndarray[np.float64_t] Rbm = bm_pars.Rbm
+    cdef np.ndarray[np.float64_t] Cbm = bm_pars.Cbm
+    cdef np.ndarray[np.float64_t] Lbm = bm_pars.Lbm
+    cdef np.float64_t Rh = bm_pars.Rh
+    cdef np.float64_t Lh = bm_pars.Lh
+    cdef np.ndarray[np.float64_t] ampl_corr = bm_pars.ampl_corr
+    cdef np.ndarray[np.float64_t] Abm = bm_pars.Abm
+
+    cdef np.ndarray[np.float64_t] Z13 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] Z32 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] Z42 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] Z43 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] g11 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] g12 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] g2 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] g3 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] g41 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] g42 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] a21 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] b14 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] b44 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] b30 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] b33 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] b20 = np.zeros(100)
+    cdef np.ndarray[np.float64_t] b23 = np.zeros(100)
+
+    cdef Py_ssize_t sec
+    cdef Py_ssize_t max_section = 99
+    cdef Py_ssize_t i
+
+    cdef np.float64_t R14
+    cdef np.float64_t R44
+    cdef np.float64_t G33
+    cdef np.float64_t G23
+    cdef np.float64_t gh
+    cdef np.float64_t R_input
+    cdef np.float64_t Zhel
+
+    cdef Py_ssize_t signal_len = len(signal)
+    cdef np.ndarray[np.float64_t, ndim=2] xbm = np.zeros((signal_len, 100))
+    cdef np.float64_t sample
+    cdef np.ndarray[np.float64_t] time_slice
+
+
+    # Init gXX
+    for sec in range(max_section,-1,-1):
+        if sec == max_section:
+            R14 = Rh + (2*fs*Lh)
+            gh = Rh / R14
+
+        # Adaptor 4 (series)
+        R44 = Rbm[sec] + 2*fs*Lbm[sec] + 1/(2*fs*Cbm[sec])
+        g41[sec] = Rbm[sec] / R44
+        g42[sec] = 2*fs*Lbm[sec] / R44
+
+        # Adaptor 3 (parallel)
+        G33 = 1/R44 + 2*fs*Ct[sec]
+        g3[sec] = 1/(G33*R44)
+
+        # Adaptor 2 (parallel)
+        G23 = 1/R14 + G33
+        g2[sec] = 1 / (R14*G23)
+
+        # Adaptor 1 (series)
+        R14 = 1/G23 + Rs[sec] + 2*fs*Ls[sec]
+        g11[sec] = 1 / (G23*R14)
+        g12[sec] = Rs[sec] / R14
+
+    R_input = R14
+    Zhel = 0
+
+    for i in range(signal_len):
+        sample = signal[i]
+        time_slice = xbm[i]
+
+        # Backward wave
+        for sec in range(max_section,-1,-1):
+            if sec == max_section:
+                a21[sec] = Zhel
+            else:
+                a21[sec] = -b14[sec+1]
+
+            b44[sec] = -(-Z42[sec] + Z43[sec])
+
+            b30[sec] = -g3[sec]*(Z32[sec] - b44[sec])
+            b33[sec]  = Z32[sec] + b30[sec]
+
+            b20[sec] = -g2[sec]*(b33[sec]-a21[sec])
+            b23[sec] = b33[sec] + b20[sec]
+
+            b14[sec] = -(b23[sec] - Z13[sec])
+
+        # Forward wave
+        for sec in range(100):
+            if sec == 0:
+                a14 = 2*R_input*sample + b14[0]
+            else:
+                a14 = -b21
+
+            a10 = a14 - b14[sec]
+            b11 = b23[sec] - g11[sec]*a10
+            b12 = -g12[sec]*a10
+            b13 = -(b11 + b12 + a14)
+
+            b22 = b11 + b20[sec]
+            b21 = b22 + b33[sec] - a21[sec]
+
+            b22 = b11 + b20[sec]
+            b21 = b22 + b33[sec] - a21[sec]
+
+            b32 = b22 + b30[sec]
+            b31 = b32 + Z32[sec] - b44[sec]
+
+            a40 = b31 - b44[sec]
+            b41 = -g41[sec]*a40
+            b42 = -Z42[sec] - g42[sec]*a40
+            b43 = -(b41 + b42 + b31)
+
+            time_slice[sec] = (b43+Z43[sec])*Cbm[sec]/2/Abm[sec]*ampl_corr[sec]
+
+            Z13[sec] = b13
+            Z32[sec] = b32
+            Z42[sec] = b42
+            Z43[sec] = b43
+
+
+        # Helicotrema
+        ah0 = b21 - Zhel
+        bh1 = -gh * ah0
+        bh2 = -(bh1 + b21)
+        Zhel = bh2
+
+
+    return xbm
 
 
 def LCR4_init(double fs,
