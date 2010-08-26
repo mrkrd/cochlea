@@ -166,11 +166,18 @@ def run_LCR4(fs, xbm, sections=None):
 
     if sections is None:
         sections = range(100)
+    elif isinstance(sections, int):
+        sections = [sections]
+
+    if xbm.ndim == 1:
+        xbm = xbm.reshape(xbm.shape+(1,))
+
+    assert xbm.shape[1] == len(sections)
 
     xbm_out = []
-
-    for sec in sections:
-        xbm_slice = xbm[:,sec]
+    for i in range(len(sections)):
+        sec = sections[i]
+        xbm_slice = xbm[:,i]
         xbm_out.append( _run_single_LCR4(fs, xbm_slice, sec) )
 
     return np.array(xbm_out).T
@@ -395,10 +402,18 @@ def run_ihcrp(fs, xbm, sections=None):
 
     if sections is None:
         sections = range(100)
+    elif isinstance(sections, int):
+        sections = [sections]
+
+    if xbm.ndim == 1:
+        xbm = xbm.reshape(xbm.shape+(1,))
+
+    assert xbm.shape[1] == len(sections)
 
     uihc = []
-    for sec in sections:
-        xbm_slice = xbm[:,sec]
+    for i in range(len(sections)):
+        sec = sections[i]
+        xbm_slice = xbm[:,i]
         uihc.append( _run_single_ihcrp(fs, xbm_slice, sec) )
 
     return np.array(uihc).T
@@ -433,6 +448,22 @@ def _run_single_ihcrp(np.float64_t fs,
     cdef np.float64_t p_C_ST = 4.0 # IHC bundle compliance in m/N
     cdef np.float64_t p_F0_ST = 1.e3 # IHC bundle stiffness-fluid friction corner frequency to calculate R_ST (Ns/m)
 
+    cdef np.float64_t Z_ST, g_ST, uIHC_old
+    cdef np.float64_t dtOverC, gkEpk
+    cdef np.float64_t restingPotential_V0
+
+    cdef np.float64_t L_ST, R_ST, f0_ST
+    cdef np.float64_t dt
+
+    cdef np.float64_t leakageConductance_Ga,
+    cdef np.float64_t conductance_G
+    cdef np.float64_t potential_V
+    cdef np.float64_t ciliaAct
+    cdef np.float64_t u0, u1, s0, s1
+    cdef np.float64_t b1_ST, b2_ST, b3_ST
+    cdef np.float64_t xST
+
+    cdef Py_ssize_t i
 
     sections = 100
 
