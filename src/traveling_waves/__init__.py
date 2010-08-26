@@ -2,91 +2,14 @@ from __future__ import division
 
 import numpy as np
 import scipy.signal as dsp
-import _tw
+
 import bm_pars
 from bm_pars import real_freq_map, S_ST, S_ED, C_eardrum
+from _tw import *
 
-
-# np.fliplr are necessary for compatimility with DSAM
 
 # Input signal should be multiplied by this factor
 scaling_factor = S_ST * S_ED
-
-
-def run_bm(fs, signal, mode='x', enable_LCR4=True):
-    """ Simulate response of the Basilar membrane to audio siganl.
-
-    fs: sampling frequency
-    signal: audio signal sampled at 48000Hz (uPa)
-    mode: 'x' return BM displacement
-          'v' return BM velocity
-    enable_LCR4: if False skips LCR4 compression stage
-
-    return: BM displacement or velocity for 100 frequency sections
-            (real_freq_map)
-
-    """
-    assert fs == 48000
-
-    fs = float(fs)
-
-    signal = np.squeeze(signal)
-    assert signal.ndim == 1
-
-    # uPa -> Pa
-    signal = signal * 1e-6
-
-    if enable_LCR4:
-        # pad signal with max delay
-        orig_signal_len = len(signal)
-        delays = np.round(bm_pars.delay_time * fs)
-        signal = np.append(signal,
-                           np.zeros(delays.max()))
-
-    xBM = _tw.bm_wave(fs=fs,
-                      signal=signal)
-
-    if enable_LCR4:
-        xBM = _tw.LCR4(fs, xBM)
-
-        # Compensate for LCR4 delays
-        i = np.tile(np.arange(orig_signal_len), 100).reshape( (100, orig_signal_len) ).T
-        i = i + delays
-        i = i.astype(int)
-
-        j = np.arange(100)
-
-        xBM = xBM[i,j]
-
-
-    if mode == 'x':
-        outBM = xBM
-    elif mode == 'v':
-        outBM = np.diff(xBM, axis=0) * fs
-
-    return np.fliplr(outBM)
-
-
-
-
-def run_ihcrp(fs, xBM):
-    """ Run modified Shama DSAM module.
-
-    uIHC = run_ihcrp(fs, xBM)
-
-    fs: sampling frequency
-    xBM: BM displacement
-
-    uIHC: IHC potential
-    """
-    fs = float(fs)
-    _tw.ihcrp_init(fs)
-
-    xBM = np.fliplr(xBM)
-    uIHC = _tw.ihcrp(xBM, bm_pars.ciliaGain)
-    uIHC = np.fliplr(uIHC)
-
-    return uIHC
 
 
 

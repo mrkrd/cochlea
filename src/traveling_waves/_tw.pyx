@@ -4,23 +4,22 @@ import numpy as np
 cimport numpy as np
 
 
+cdef extern from "math.h":
+    double sqrt(double x)
+    double exp(double x)
+    double fabs(double x)
 
-
-cdef extern from "ihcrp.h":
-    double ihcrp_init_c(double f_s)
-    void ihcrp_c(double *uIHC,
-                 double *xBM,
-                 double *ciliaCouplingGain)
 
 
 
 
 import bm_pars
 
-def bm_wave(np.float64_t fs,
+def run_bm_wave(np.float64_t fs,
             np.ndarray[np.float64_t, ndim=1] signal):
 
     assert fs == 48000.0
+    signal = signal / 1e6       # uPa -> Pa
 
     cdef np.ndarray[np.float64_t] Ls = bm_pars.Ls
     cdef np.ndarray[np.float64_t] Rs = bm_pars.Rs
@@ -157,11 +156,11 @@ def bm_wave(np.float64_t fs,
         Zhel = bh2
 
 
-    return xbm
+    return np.fliplr(xbm)
 
 
 
-def LCR4(fs, xbm, sections=None):
+def run_LCR4(fs, xbm, sections=None):
 
     assert fs == 48000
 
@@ -172,15 +171,17 @@ def LCR4(fs, xbm, sections=None):
 
     for sec in sections:
         xbm_slice = xbm[:,sec]
-        xbm_out.append( _single_LCR4(fs, xbm_slice, sec) )
+        xbm_out.append( _run_single_LCR4(fs, xbm_slice, sec) )
 
     return np.array(xbm_out).T
 
-def _single_LCR4(np.float64_t fs,
-                 np.ndarray[np.float64_t] xbm,
-                 np.int sec):
+def _run_single_LCR4(np.float64_t fs,
+                     np.ndarray[np.float64_t] xbm,
+                     Py_ssize_t sec):
 
     assert fs == 48000
+
+    sec = 99 - sec         # DSAM convention (low channel -> low freq)
 
     cdef np.ndarray[np.float64_t] freq_map = bm_pars.freq_map
     cdef np.ndarray[np.float64_t] Qmin = bm_pars.Qmin
@@ -188,6 +189,22 @@ def _single_LCR4(np.float64_t fs,
     cdef np.ndarray[np.float64_t] SAT1 = bm_pars.SAT1
     cdef np.ndarray[np.float64_t] SAT4 = bm_pars.SAT4
 
+    cdef np.float64_t T4C, T4L, T5C, T5L, T6C, T6L
+    cdef np.float64_t T7C, T7L, Rtest, Rc_res, Rl_res
+    cdef np.float64_t Z_CLP1,Z_CLP2,Z_CLP3,Z_CLP4,g_CLP
+    cdef np.float64_t p_SAT1,p_SAT2,p_SAT3,p_SAT4
+    cdef np.ndarray[np.float64_t] Qd
+
+    cdef np.float64_t R1, R2, tau
+
+    cdef np.float64_t V2, V3, V4, V5
+    cdef np.float64_t X2, X3, X4, X5
+    cdef np.float64_t Rr11, Rr13, Gr21, Gr23, gr1, gr2
+    cdef np.float64_t b11, b12, b13, b20, b21, b22, b23, a0
+
+    cdef np.float64_t rect, rect_LP, b2
+
+    cdef Py_ssize_t i
 
     tau = 1 / (2*np.pi*0.8e3)
     R2 = 1 / (2*fs*tau)
@@ -225,7 +242,7 @@ def _single_LCR4(np.float64_t fs,
     for i in range(len(xbm)):
 
         ### Resonator 1
-        Rr11 = np.sqrt(Rl_res*Rc_res) / Qd[0]
+        Rr11 = sqrt(Rl_res*Rc_res) / Qd[0]
         Rr13 = Rr11 + Rl_res
 
         Gr21 = 1 / Rr13
@@ -245,14 +262,14 @@ def _single_LCR4(np.float64_t fs,
         b11 = xbm[i]-gr1*a0
         b12 = -(b11+b21)
 
-        X2 = (b22+T4C)/2.
-        V2 = (T4C-b22)/(2.*Rc_res)
+        X2 = (b22+T4C)/2
+        V2 = (T4C-b22)/(2*Rc_res)
 
         T4L = -b12
         T4C = b22
 
-        rect = 1.- (2. / (1.+ np.exp( -p_SAT1*np.abs(X2)) ) -1.)
-        b2 = rect*(1. + g_CLP) - Z_CLP1*g_CLP
+        rect = 1- (2. / (1+ exp( -p_SAT1*fabs(X2)) ) -1)
+        b2 = rect*(1 + g_CLP) - Z_CLP1*g_CLP
         rect_LP = (b2 + Z_CLP1)/2.
         Z_CLP1 = b2
 
@@ -260,19 +277,19 @@ def _single_LCR4(np.float64_t fs,
 
         ### Resonator 2
         # Calculating port values from old Qd-value
-        Rr11 = np.sqrt(Rl_res*Rc_res)/Qd[1] # sqrt(L/C)/Q
+        Rr11 = sqrt(Rl_res*Rc_res)/Qd[1] # sqrt(L/C)/Q
         Rr13 = Rr11 + Rl_res
 
-        Gr21 = 1./Rr13
-        Gr23 = Gr21 + 1./Rc_res
+        Gr21 = 1/Rr13
+        Gr23 = Gr21 + 1/Rc_res
 
         gr1 = Rr11/Rr13
         gr2 = Gr21/Gr23
 
         ### Filtering
-        b13 = -(X2+T5L)
-        b20 = -gr2*(T5C-b13)
-        b23 = b20+T5C
+        b13 = -(X2 + T5L)
+        b20 = -gr2*(T5C - b13)
+        b23 = b20 + T5C
 
         b22 = b20+b23
         b21 = b22+T5C-b13
@@ -286,8 +303,8 @@ def _single_LCR4(np.float64_t fs,
         T5L = -b12
         T5C = b22
 
-        rect = 1.- (2. / (1.+np.exp( -p_SAT2*np.abs(X3)) ) -1.)
-        b2 = rect*(1. + g_CLP) - Z_CLP2*g_CLP
+        rect = 1- (2. / (1+exp( -p_SAT2*fabs(X3)) ) -1)
+        b2 = rect*(1 + g_CLP) - Z_CLP2*g_CLP
         rect_LP = (b2 + Z_CLP2)/2.
         Z_CLP2 = b2
 
@@ -295,11 +312,11 @@ def _single_LCR4(np.float64_t fs,
 
 
         ### Resonator 3
-        Rr11 = np.sqrt(Rl_res*Rc_res)/Qd[2]
+        Rr11 = sqrt(Rl_res*Rc_res)/Qd[2]
         Rr13 = Rr11 + Rl_res
 
-        Gr21 = 1./Rr13
-        Gr23 = Gr21 + 1./Rc_res
+        Gr21 = 1/Rr13
+        Gr23 = Gr21 + 1/Rc_res
 
         gr1 = Rr11/Rr13
         gr2 = Gr21/Gr23
@@ -323,19 +340,19 @@ def _single_LCR4(np.float64_t fs,
         T6L = -b12
         T6C = b22
 
-        rect = 1.- (2. / (1.+np.exp( -p_SAT3*np.abs(X4)) ) -1.)
-        b2 = rect*(1. + g_CLP) - Z_CLP3*g_CLP
+        rect = 1- (2. / (1+exp( -p_SAT3*fabs(X4)) ) -1)
+        b2 = rect*(1 + g_CLP) - Z_CLP3*g_CLP
         rect_LP = (b2 + Z_CLP3)/2.
         Z_CLP3 = b2
 
         Qd[2] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
 
         ### Resonator 4
-        Rr11=np.sqrt(Rl_res*Rc_res)/Qd[3]
+        Rr11 = sqrt(Rl_res*Rc_res)/Qd[3]
         Rr13 = Rr11 + Rl_res
 
-        Gr21 = 1./Rr13
-        Gr23 = Gr21 + 1./Rc_res
+        Gr21 = 1/Rr13
+        Gr23 = Gr21 + 1/Rc_res
 
         gr1 = Rr11/Rr13
         gr2 = Gr21/Gr23
@@ -357,9 +374,9 @@ def _single_LCR4(np.float64_t fs,
         T7L = -b12
         T7C = b22
 
-        rect = 1.- (2. / (1.+np.exp( -p_SAT4*np.abs(X5)) ) -1.)
-        b2 = rect*(1. + g_CLP) - Z_CLP4*g_CLP
-        rect_LP = (b2 + Z_CLP4)/2.
+        rect = 1 - (2 / (1 + exp( -p_SAT4*fabs(X5)) ) - 1)
+        b2 = rect*(1 + g_CLP) - Z_CLP4*g_CLP
+        rect_LP = (b2 + Z_CLP4) / 2
         Z_CLP4 = b2
 
         Qd[3] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
@@ -372,25 +389,115 @@ def _single_LCR4(np.float64_t fs,
 
 
 
+def run_ihcrp(fs, xbm, sections=None):
 
-def ihcrp_init(double fs):
-    ihcrp_init_c(fs)
+    assert fs == 48000
+
+    if sections is None:
+        sections = range(100)
+
+    uihc = []
+    for sec in sections:
+        xbm_slice = xbm[:,sec]
+        uihc.append( _run_single_ihcrp(fs, xbm_slice, sec) )
+
+    return np.array(uihc).T
 
 
-def ihcrp(np.ndarray[np.float64_t, ndim=2] xBM,
-          np.ndarray[np.float64_t, ndim=1] ciliaGain):
 
-    sample_num, section_num = (<object>xBM).shape
+def _run_single_ihcrp(np.float64_t fs,
+                      np.ndarray[np.float64_t] xbm,
+                      Py_ssize_t sec):
 
-    uIHC = np.zeros_like(xBM)
+    assert fs == 48000
 
-    cdef double *xBM_data = <double *>np.PyArray_DATA(xBM)
-    cdef double *uIHC_data = <double *>np.PyArray_DATA(uIHC)
-    cdef double *ciliaGain_data = <double *>np.PyArray_DATA(ciliaGain)
+    sec = 99 - sec         # DSAM convention (low channel -> low freq)
 
-    for i in range(sample_num):
-        ihcrp_c(&uIHC_data[section_num*i],
-                 &xBM_data[section_num*i],
-                 ciliaGain_data)
+    cdef np.ndarray[np.float64_t] uIHC = np.zeros_like(xbm)
+    cdef np.ndarray[np.float64_t] ciliaCouplingGain = bm_pars.ciliaGain
+
+    cdef np.float64_t p_endocochlearPot_Et = 0.1
+    cdef np.float64_t p_reversalPot_Ek = -0.07045
+    cdef np.float64_t p_reversalPotCorrection = 0.04
+    cdef np.float64_t p_totalCapacitance_C = 6e-12
+    cdef np.float64_t p_restingConductance_G0 = 1.974e-09
+    cdef np.float64_t p_kConductance_Gk = 1.8e-08
+    cdef np.float64_t p_maxMConductance_Gmax = 8e-09
+    cdef np.float64_t p_ciliaTimeConst_tc = 0.00213
+    cdef np.float64_t p_referencePot = 0.0
+    cdef np.float64_t p_sensitivity_s0 = 85e-09
+    cdef np.float64_t p_sensitivity_s1 = 5e-09
+    cdef np.float64_t p_offset_u0 = 7e-09
+    cdef np.float64_t p_offset_u1 = 7e-09
+
+    cdef np.float64_t p_C_ST = 4.0 # IHC bundle compliance in m/N
+    cdef np.float64_t p_F0_ST = 1.e3 # IHC bundle stiffness-fluid friction corner frequency to calculate R_ST (Ns/m)
+
+
+    sections = 100
+
+    restingPotential_V0 = ((p_restingConductance_G0 *
+                            p_endocochlearPot_Et + p_kConductance_Gk *
+                            (p_reversalPot_Ek + p_endocochlearPot_Et *
+                             p_reversalPotCorrection)) /
+                           (p_restingConductance_G0 + p_kConductance_Gk))
+
+
+    dt = 1 / fs
+    dtOverC = dt / p_totalCapacitance_C
+    gkEpk = p_kConductance_Gk * (p_reversalPot_Ek +
+                                 p_endocochlearPot_Et * p_reversalPotCorrection)
+
+    Z_ST = 0
+
+    L_ST = 1 / p_C_ST            # v-U / F-I analogy !!!
+    f0_ST = 2000 * (( (2000/200)**(1/sections) )**(-sec)) # grade Fluid filter from 2000 to 200 Hz
+
+    R_ST = L_ST * 2 * np.pi * f0_ST     # Fluid friction on bundles Ns/m
+
+    g_ST = R_ST / (R_ST + 2*fs*L_ST)  # gamma
+
+    s0 = p_sensitivity_s0
+    u0 = p_offset_u0
+    s1 = p_sensitivity_s1
+    u1 = p_offset_u1
+
+
+    ciliaAct = 1.0 / (1.0 + exp(u0 / s0) * ( 1 + exp(u1 / s1)))
+    leakageConductance_Ga = (p_restingConductance_G0 -
+                             p_maxMConductance_Gmax * ciliaAct)
+
+    uIHC_old = restingPotential_V0
+
+    for i in range(len(xbm)):
+        b3_ST = -(xbm[i] + Z_ST)
+        b1_ST = xbm[i] + 2*g_ST*b3_ST
+        b2_ST = -(2*xbm[i] + 2*g_ST*b3_ST + Z_ST)
+        xST = -(b2_ST+Z_ST)/2
+
+        Z_ST = -b2_ST
+
+
+        xST *= ciliaCouplingGain[sec]
+
+
+        potential_V = uIHC_old
+
+        ciliaAct = 1 / (1 + exp((u0 - xST) / s0) *
+                        (1 + exp((u1 - xST) / s1)))
+
+        conductance_G = (p_maxMConductance_Gmax * ciliaAct +
+                         leakageConductance_Ga)
+
+
+        uIHC[i] = (potential_V - dtOverC *
+                   (conductance_G * (potential_V - p_endocochlearPot_Et) +
+                    p_kConductance_Gk * potential_V - gkEpk))
+
+
+        uIHC_old = uIHC[i]
 
     return uIHC
+
+
+

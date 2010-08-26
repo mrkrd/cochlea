@@ -16,10 +16,7 @@ setup(
     ext_package = "traveling_waves",
     ext_modules = [
         Extension("_tw",
-                  ["src/traveling_waves/_tw.pyx",
-                   "src/traveling_waves/bm_wave.c",
-                   "src/traveling_waves/LCR4.c",
-                   "src/traveling_waves/ihcrp.c"],
+                  ["src/traveling_waves/_tw.pyx"],
                   include_dirs=[numpy_include])
         ],
     cmdclass = {"build_ext": build_ext}

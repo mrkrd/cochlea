@@ -12,19 +12,19 @@ def main():
     t = np.arange(len(forward)) / fs * 1000
 
     ref = np.loadtxt('LCR4_70.txt')
+    sec = 99 - 70               # DSAM compatibility
 
+    xbm = _tw.run_bm_wave(fs=48000,
+                          signal=forward)
 
-    xbm = _tw.bm_wave(fs=48000,
-                      signal=forward)
+    xbm = xbm[:,sec]
 
-    xbm = xbm[:,70]
+    lcr4 = _tw._run_single_LCR4(fs, xbm, sec)
 
-    lcr4 = _tw._single_LCR4(fs, xbm, 70)
-
-    sel = range(400, 2000)
-    t = t[sel]
-    lcr4 = lcr4[sel]
-    ref = ref[sel]
+    idx = range(400, 2000)
+    t = t[idx]
+    lcr4 = lcr4[idx]
+    ref = ref[idx]
     p = biggles.FramedPlot()
     p.add( biggles.Curve(t, ref, color='red', width=3) )
     p.add( biggles.Curve(t, lcr4))

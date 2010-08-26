@@ -12,46 +12,26 @@ def main():
     t = np.arange(len(forward)) / fs * 1000
 
     ref = np.loadtxt('uIHC_70.txt')
+    sec = 99 - 70               # DSAM compatibility
 
+    xbm = _tw.run_bm_wave(fs=48000,
+                          signal=forward)
 
-    _tw.bm_init(fs,
-                bm_pars.Ls,
-                bm_pars.Rs,
-                bm_pars.Ct,
-                bm_pars.Rbm,
-                bm_pars.Cbm,
-                bm_pars.Lbm,
-                bm_pars.Rh, # helicotrema, end of BM
-                bm_pars.Lh) # end of BM
-    xBM = _tw.bm_wave(forward,
-                      bm_pars.ampl_corr,
-                      bm_pars.Abm,
-                      bm_pars.Cbm)
-    _tw.LCR4_init(fs,
-                  bm_pars.freq_map,
-                  bm_pars.Qmin,
-                  bm_pars.SAT1,
-                  bm_pars.SAT4)
-    LCR4 = _tw.LCR4(xBM,
-                    bm_pars.Qmax,
-                    bm_pars.Qmin)
-    _tw.ihcrp_init(fs)
-    uIHC = _tw.ihcrp(LCR4,
-                     bm_pars.ciliaGain)
+    xbm = xbm[:,sec]
 
+    lcr4 = _tw._run_single_LCR4(fs, xbm, sec)
 
+    uihc = _tw._run_single_ihcrp(fs, lcr4, sec)
 
-
-    uIHC = uIHC[:,70]
 
 
     sec = range(400, 1600)
     t = t[sec]
-    uIHC = uIHC[sec]
+    uihc = uihc[sec]
     ref = ref[sec]
     p = biggles.FramedPlot()
     p.add( biggles.Curve(t, ref, color='red', width=3) )
-    p.add( biggles.Curve(t, uIHC))
+    p.add( biggles.Curve(t, uihc))
     p.show()
 
 
