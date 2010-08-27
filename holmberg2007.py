@@ -74,15 +74,15 @@ class Holmberg2007(AuditoryPeriphery):
         if isinstance(cf, int):
             cf = float(cf)
 
-        # Only real numbers please.
-        assert isinstance(cf, float) | (cf is None)
-
         if isinstance(cf, float):
             real_freq_map = tw.bm_pars.real_freq_map
             assert cf in real_freq_map
             self._freq_idx = int(np.where(real_freq_map == cf)[0])
         elif cf is None:
             self._freq_idx = None
+        else:
+            assert False, "CF must be a real number or None"
+
 
 
     def get_freq_map(self):
@@ -114,12 +114,16 @@ class Holmberg2007(AuditoryPeriphery):
         sound = sound * tw.scaling_factor
 
         ### Basilar membrane
-        xBM = tw.run_bm(fs, sound, mode='x')
+        xbm = tw.run_bm_wave(fs, sound)
+
+        if self._freq_idx is not None:
+            xbm = xbm[:,self._freq_idx]
+
+        ### Amplification
+        LCR4 = tw.run_LCR4(fs, xbm, self._freq_idx)
 
         ### IHCRP
-        ihcrp = tw.run_ihcrp(fs, xBM)
-        if self._freq_idx is not None:
-            ihcrp = ihcrp[:,self._freq_idx]
+        ihcrp = tw.run_ihcrp(fs, LCR4, self._freq_idx)
 
 
         trains = []
@@ -152,7 +156,7 @@ def main():
     fs = 48000
     cf = tw.real_freq_map[38]
     print "CF:", cf
-    stimdb = 70
+    stimdb = 60
 
     ear = Holmberg2007((250,0,0), cf=cf)
 

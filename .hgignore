@@ -5,3 +5,4 @@ syntax: glob
 *.eps
 *.png
 *.pdf
+*.orig
