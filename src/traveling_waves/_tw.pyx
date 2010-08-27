@@ -200,7 +200,7 @@ def _run_single_LCR4(np.float64_t fs,
     cdef np.float64_t T7C, T7L, Rtest, Rc_res, Rl_res
     cdef np.float64_t Z_CLP1,Z_CLP2,Z_CLP3,Z_CLP4,g_CLP
     cdef np.float64_t p_SAT1,p_SAT2,p_SAT3,p_SAT4
-    cdef np.ndarray[np.float64_t] Qd
+    cdef np.float64_t Qd0, Qd1, Qd2, Qd3
 
     cdef np.float64_t R1, R2, tau
 
@@ -231,7 +231,10 @@ def _run_single_LCR4(np.float64_t fs,
     T7C = 0
     T7L = 0
 
-    Qd = Qmin[sec] * np.ones(4)
+    Qd0 = Qmin[sec]
+    Qd1 = Qmin[sec]
+    Qd2 = Qmin[sec]
+    Qd3 = Qmin[sec]
 
     p_SAT1 = SAT1[sec]
     p_SAT4 = SAT4[sec]
@@ -249,7 +252,7 @@ def _run_single_LCR4(np.float64_t fs,
     for i in range(len(xbm)):
 
         ### Resonator 1
-        Rr11 = sqrt(Rl_res*Rc_res) / Qd[0]
+        Rr11 = sqrt(Rl_res*Rc_res) / Qd0
         Rr13 = Rr11 + Rl_res
 
         Gr21 = 1 / Rr13
@@ -280,11 +283,11 @@ def _run_single_LCR4(np.float64_t fs,
         rect_LP = (b2 + Z_CLP1)/2.
         Z_CLP1 = b2
 
-        Qd[0] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+        Qd0 = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
 
         ### Resonator 2
         # Calculating port values from old Qd-value
-        Rr11 = sqrt(Rl_res*Rc_res)/Qd[1] # sqrt(L/C)/Q
+        Rr11 = sqrt(Rl_res*Rc_res) / Qd1 # sqrt(L/C)/Q
         Rr13 = Rr11 + Rl_res
 
         Gr21 = 1/Rr13
@@ -315,11 +318,11 @@ def _run_single_LCR4(np.float64_t fs,
         rect_LP = (b2 + Z_CLP2)/2.
         Z_CLP2 = b2
 
-        Qd[1] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+        Qd1 = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
 
 
         ### Resonator 3
-        Rr11 = sqrt(Rl_res*Rc_res)/Qd[2]
+        Rr11 = sqrt(Rl_res*Rc_res)/Qd2
         Rr13 = Rr11 + Rl_res
 
         Gr21 = 1/Rr13
@@ -329,7 +332,6 @@ def _run_single_LCR4(np.float64_t fs,
         gr2 = Gr21/Gr23
 
         ### Filtering
-
         b13 = -(X3+T6L)
         b20 = -gr2*(T6C-b13)
         b23 = b20+T6C
@@ -352,10 +354,10 @@ def _run_single_LCR4(np.float64_t fs,
         rect_LP = (b2 + Z_CLP3)/2.
         Z_CLP3 = b2
 
-        Qd[2] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+        Qd2 = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
 
         ### Resonator 4
-        Rr11 = sqrt(Rl_res*Rc_res)/Qd[3]
+        Rr11 = sqrt(Rl_res*Rc_res)/Qd3
         Rr13 = Rr11 + Rl_res
 
         Gr21 = 1/Rr13
@@ -386,7 +388,7 @@ def _run_single_LCR4(np.float64_t fs,
         rect_LP = (b2 + Z_CLP4) / 2
         Z_CLP4 = b2
 
-        Qd[3] = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
+        Qd3 = (Qmax[sec]-Qmin[sec])*rect_LP+Qmin[sec]
 
 
 
@@ -465,7 +467,7 @@ def _run_single_ihcrp(np.float64_t fs,
 
     cdef Py_ssize_t i
 
-    sections = 100
+    cdef int sections = 100
 
     restingPotential_V0 = ((p_restingConductance_G0 *
                             p_endocochlearPot_Et + p_kConductance_Gk *
