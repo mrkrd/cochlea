@@ -54,8 +54,10 @@ import_array()
 cdef public double* generate_random_numbers(long length):
     arr = np.random.rand(length)
 
-    cdef double *data_ptr = <double *>np.PyArray_DATA(arr)
+    if not arr.flags['C_CONTIGUOUS']:
+        arr = arr.copy(order='C')
 
+    cdef double *data_ptr = <double *>np.PyArray_DATA(arr)
     cdef double *out_ptr = <double *>malloc(length * sizeof(double))
     memcpy(out_ptr, data_ptr, length*sizeof(double))
 
@@ -89,6 +91,8 @@ cdef public double* decimate(int k, double *signal, int q):
     b = dsp.firwin(q, 1./q, window='hamming')
     decimated = np.sum(decimated*b, axis=1)
 
+    if not decimated.flags['C_CONTIGUOUS']:
+        decimated = decimated.copy(order='C')
 
     # Copy data to output array
     cdef double *decimated_ptr = <double *>np.PyArray_DATA(decimated)
@@ -106,6 +110,9 @@ cdef public double* ffGn(int N, double tdres, double Hinput, double mu, bint wit
     else:
         a = np.zeros(N)
 
+    if not a.flags['C_CONTIGUOUS']:
+        a = a.copy(order='C')
+
     # Copy data to output array
     cdef double *ptr = <double *>np.PyArray_DATA(a)
     cdef double *out_ptr = <double *>malloc(len(a)*sizeof(double))
@@ -115,7 +122,6 @@ cdef public double* ffGn(int N, double tdres, double Hinput, double mu, bint wit
 
 
 
-# TODO: type check
 def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
             double cf,
             double fs,
