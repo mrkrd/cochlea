@@ -110,6 +110,7 @@ class Zilany2009(object):
             self._freq_map = [cf]
         elif isinstance(cf, tuple):
             # Based on GenerateGreenwood_CFList() from DSAM
+            # Liberman (1982)
             aA = 456
             k = 0.8
             a = 2.1
