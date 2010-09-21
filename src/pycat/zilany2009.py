@@ -8,7 +8,7 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 
 import _pycat
-
+import thorns as th
 
 class Zilany2009(object):
     def __init__(self, anf_num=(1,1,1), cf=1000,
@@ -18,6 +18,7 @@ class Zilany2009(object):
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
         powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
+        with_ffGn: enable/disable Gausian noise
 
         """
         self.name = 'Zilany2009'
@@ -32,10 +33,6 @@ class Zilany2009(object):
         self._cohc = 1
         self._cihc = 1
 
-        self._train_type = [('typ', 'S3'),
-                            ('cf', float),
-                            ('spikes', np.ndarray)]
-
         self.set_freq(cf)
 
 
@@ -48,7 +45,7 @@ class Zilany2009(object):
         """
         # TODO: implement storing of spikes in a file/db and reloading them as needed
 
-        trains = []
+        trains = th.SpikeTrains()
         for cf in self._freq_map:
             # Run IHC model
             vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
@@ -75,8 +72,6 @@ class Zilany2009(object):
                                    anf_num=self._lsr_num)
                 trains.extend(tr)
 
-        trains = np.array(trains, dtype=self._train_type)
-
         return trains
 
 
@@ -84,7 +79,7 @@ class Zilany2009(object):
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
         synout = None
-        anf_trains = []
+        anf_trains = th.SpikeTrains()
         for anf_id in range(anf_num):
             if (synout is None) or (self._with_ffGn):
                 synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
@@ -94,7 +89,7 @@ class Zilany2009(object):
             spikes = _pycat.run_spike_generator(fs=fs,
                                                 synout=synout)
             spikes = spikes[spikes != 0] * 1000 # s -> ms
-            anf_trains.append( (anf_type, cf, spikes) )
+            anf_trains.append(spikes, cf=cf, typ=anf_type)
 
         return anf_trains
 
@@ -147,11 +142,11 @@ def main():
 
     anf = ear.run(fs, s)
 
-    th.plot_raster(anf['spikes']).show()
+    th.plot_raster(anf).show()
 
-    p = th.plot_psth(anf[anf['typ']=='hsr']['spikes'], color='black')
-    th.plot_psth(anf[anf['typ']=='msr']['spikes'], color='red', plot=p)
-    th.plot_psth(anf[anf['typ']=='lsr']['spikes'], color='blue', plot=p)
+    p = th.plot_psth(anf.where(typ='hsr'), color='black')
+    th.plot_psth(anf.where(typ='msr'), color='red', plot=p)
+    th.plot_psth(anf.where(typ='lsr'), color='blue', plot=p)
     p.show()
 
 
