@@ -18,9 +18,6 @@ def par_dir(par_file):
 
 class AuditoryPeriphery(object):
 
-    _train_type = [('typ', 'S3'),
-                   ('cf', float),
-                   ('spikes', np.ndarray)]
 
     def __init__(self):
         pass
@@ -45,7 +42,7 @@ class AuditoryPeriphery(object):
             sg_module.set_par('num_fibres', 1)
 
         freq_map = self.get_freq_map()
-        anf_trains = []
+        anf_trains = th.SpikeTrains()
         for anf_id in range(run_num):
             sg_module.run()
 
@@ -53,7 +50,7 @@ class AuditoryPeriphery(object):
             anf_spikes = th.signal_to_spikes(fs, anf_signal)
 
             for freq, train in zip(freq_map, anf_spikes):
-                anf_trains.append( (anf_type, freq, train) )
+                anf_trains.append(train, typ=anf_type, cf=freq)
 
         return anf_trains
 

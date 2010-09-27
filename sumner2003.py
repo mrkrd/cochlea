@@ -15,6 +15,7 @@ import numpy as np
 import thorns as th
 import dsam
 from auditory_periphery import AuditoryPeriphery, par_dir
+import thorns as th
 
 class Sumner2003(AuditoryPeriphery):
     def __init__(self, anf_num=(1,1,1), cf=1000, accumulate=False):
@@ -146,7 +147,7 @@ class Sumner2003(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        trains = []
+        trains = th.SpikeTrains()
         if self._hsr_num > 0:
             self.ihc_hsr_module.run()
             tr = self._run_anf('hsr', self.sg_hsr_module,
@@ -164,8 +165,6 @@ class Sumner2003(AuditoryPeriphery):
             tr = self._run_anf('lsr', self.sg_lsr_module,
                                fs, self._lsr_num, self._accumulate)
             trains.extend(tr)
-
-        trains = np.array(trains, dtype=self._train_type)
 
         return trains
 
@@ -186,15 +185,15 @@ def main():
 
     anf = ear.run(fs, s)
 
-    p = th.plot_raster(anf['spikes'])
+    p = th.plot_raster(anf)
     p.show()
-    p = th.plot_psth(anf['spikes'])
+    p = th.plot_psth(anf)
     p.show()
-    p = th.plot_isih(anf['spikes'], bin_size=0.1)
+    p = th.plot_isih(anf, bin_size=0.1)
     p.xrange = (0, 10)
     p.show()
 
-    print th.calc_isih(anf['spikes'], bin_size=0.1)[1][0]
+    print th.calc_isih(anf, bin_size=0.1)[1][0]
 
 
     # ear = Sumner2003((1,0,0), cf=(100, 10000, 100))

@@ -15,6 +15,7 @@ import numpy as np
 
 from auditory_periphery import par_dir, AuditoryPeriphery
 import traveling_waves as tw
+import thorns as th
 import dsam
 
 
@@ -126,7 +127,7 @@ class Holmberg2007(AuditoryPeriphery):
         ihcrp = tw.run_ihcrp(fs, LCR4, self._freq_idx)
 
 
-        trains = []
+        trains = th.SpikeTrains()
         if self._hsr_num > 0:
             self.ihc_hsr_module.run(fs, ihcrp)
             tr = self._run_anf('hsr', self.sg_hsr_module,
@@ -145,7 +146,6 @@ class Holmberg2007(AuditoryPeriphery):
                                fs, self._lsr_num, self._accumulate)
             trains.extend(tr)
 
-        trains = np.array(trains, dtype=self._train_type)
 
         return trains
 
@@ -169,8 +169,8 @@ def main():
 
     anf = ear.run(fs, s)
 
-    th.plot_raster(anf['spikes']).show()
-    th.plot_psth(anf['spikes'], bin_size=1).show()
+    th.plot_raster(anf).show()
+    th.plot_psth(anf, bin_size=1).show()
 
 
     # ear = Holmberg2007((1,0,0))
