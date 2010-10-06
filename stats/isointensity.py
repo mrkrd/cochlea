@@ -61,15 +61,17 @@ def calc_isointensity_curves(model,
 def main():
     import pycat
     model = pycat.Zilany2009
-    pars = {'fs'100e3,
+    pars = {'fs':100e3,
             'powerlaw_implnt':'approx',
             'with_ffGn':False}
 
     # import cochlea
     # model = cochlea.Sumner2003
 
-    # import cochlea
-    # model = cochlea.Holmberg2007
+    import cochlea
+    model = cochlea.Holmberg2007
+    pars = {'fs':48000}
+
 
     import traveling_waves as tw
     cf = tw.real_freq_map[75]
