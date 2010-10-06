@@ -150,7 +150,16 @@ class Holmberg2007(AuditoryPeriphery):
         return trains
 
 
+    @classmethod
+    def plot_rate_intensity(cls):
+        ear = Holmberg2007()
+        print ear
+
+
 def main():
+    p = Holmberg2007.plot_rate_intensity()
+    exit()
+
     import thorns as th
 
     fs = 48000
@@ -177,6 +186,8 @@ def main():
     # anf = ear.run(fs, s)
     # th.plot_raster(anf['spikes']).show()
     # th.plot_psth(anf['spikes'], bin_size=1).show()
+
+
 
 
 

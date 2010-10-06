@@ -27,15 +27,15 @@ def _run_model( (model, dbspl) ):
                                 dbspl=dbspl)
     anf = ear.run(fs, s)
 
-    hsr = anf[anf['typ']=='hsr']['spikes']
+    hsr = anf[anf['typ']=='hsr']
     hsr = th.trim(hsr, onset)
     rate_hsr = th.calc_rate(hsr, stimulus_duration=(tmax-onset))
 
-    msr = anf[anf['typ']=='msr']['spikes']
+    msr = anf[anf['typ']=='msr']
     msr = th.trim(msr, onset)
     rate_msr = th.calc_rate(msr, stimulus_duration=(tmax-onset))
 
-    lsr = anf[anf['typ']=='lsr']['spikes']
+    lsr = anf[anf['typ']=='lsr']
     lsr = th.trim(lsr, onset)
     rate_lsr = th.calc_rate(lsr, stimulus_duration=(tmax-onset))
 
