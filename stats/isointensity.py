@@ -61,7 +61,8 @@ def calc_isointensity_curves(model,
 def main():
     import pycat
     model = pycat.Zilany2009
-    pars = {'powerlaw_implnt':'approx',
+    pars = {'fs'100e3,
+            'powerlaw_implnt':'approx',
             'with_ffGn':False}
 
     # import cochlea
@@ -76,7 +77,7 @@ def main():
     # print _run_model( (model, cf, 48000, 3000, 50, {}) )
     # exit()
 
-    rates = calc_isointensity_curves(model, cf, fs=100e3, **pars)
+    rates = calc_isointensity_curves(model, cf, **pars)
     print rates
 
     import biggles
