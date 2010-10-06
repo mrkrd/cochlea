@@ -1,3 +1,9 @@
+from __future__ import division
+
+__author__ = "Marek Rudnicki"
+
+import numpy as np
+
 from dsam import set_dbspl
 
 from sumner2002 import Sumner2002
