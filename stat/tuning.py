@@ -5,9 +5,13 @@ from __future__ import division
 __author__ = "Marek Rudnicki"
 
 import numpy as np
+import os
+
+import thorns as th
+import thorns.waves as wv
 
 
-def _calc_point( (model, cf, freq, mean_rate, sd_rate, kwargs) ):
+def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, kwargs) ):
     print os.getpid()
 
     tmax = 250                  # ms
@@ -16,7 +20,7 @@ def _calc_point( (model, cf, freq, mean_rate, sd_rate, kwargs) ):
     threshold_rate = mean_rate + sd_rate
     trend = None
     no_change = True
-
+    dbspl = 0
     ear = model((1000, 0, 0), cf=cf, **kwargs)
 
 
@@ -49,17 +53,32 @@ def _calc_point( (model, cf, freq, mean_rate, sd_rate, kwargs) ):
     return freq, threshold
 
 
-def _calc_spont_rate(model, **kwargs):
+def _calc_spont_rate(model, fs, kwargs):
 
+    ear = model((1000, 0, 0), cf=1000, **kwargs)
 
-    ear = model((1000, 0, 0), **kwargs)
+    tmax = 250
+
+    s = np.zeros(fs*tmax/1000)
+
+    anf = ear.run(fs, s)
+
+    rates = [th.calc_rate([train], stimulus_duration=tmax) for train in anf]
+    rates = np.array(rates)
+
+    return rates.mean(), rates.std()
 
 
 def main():
     import pycat
+    model = pycat.Zilany2009
+    fs = 100e3
+    pars = { 'powerlaw_implnt':'approx',
+             'with_ffGn':False }
+    cf = 4000
 
-    ear =
-
+    mean,sd = _calc_spont_rate(model, fs=fs, kwargs=pars)
+    print _calc_point( (model, fs, cf, 3500, mean, sd, pars) )
 
 if __name__ == "__main__":
     main()
