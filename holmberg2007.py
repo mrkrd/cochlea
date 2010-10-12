@@ -20,16 +20,23 @@ import dsam
 
 
 class Holmberg2007(AuditoryPeriphery):
-    def __init__(self, anf_num=(1,1,1), cf=None, accumulate=False):
+    name = "Holmberg2007"
+
+    def __init__(self, anf_num=(1,1,1),
+                 cf=None,
+                 accumulate=False,
+                 approx_freq=False):
         """ Auditory periphery model from Marcus Holmberg (2007)
 
         anf_num: (hsr_num, msr_num, lsr_num)
-        cf: CF
-        accumulate: if True, spikes for all fibers are calculated at once
+        cf: CF (if None all 100 channels are computed)
+        accumulate: if True, spikes for all fibers are calculated at once.
+        approx_freq: if True, calculate channel that is the closest to the given `cf'
+                     No assertion error will be generated.
 
         """
-        self.name = "Holmberg2007"
 
+        self.approx_freq = approx_freq
         self.set_freq(cf)
 
         self._hsr_num = anf_num[0]
@@ -76,9 +83,12 @@ class Holmberg2007(AuditoryPeriphery):
             cf = float(cf)
 
         if isinstance(cf, float):
-            real_freq_map = tw.bm_pars.real_freq_map
-            assert cf in real_freq_map
-            self._freq_idx = int(np.where(real_freq_map == cf)[0])
+            if self.approx_freq:
+                self._freq_idx = tw.find_closest_freq_idx_in_map(cf)
+            else:
+                real_freq_map = tw.bm_pars.real_freq_map
+                assert cf in real_freq_map
+                self._freq_idx = int(np.where(real_freq_map == cf)[0])
         elif cf is None:
             self._freq_idx = None
         else:
@@ -157,13 +167,10 @@ class Holmberg2007(AuditoryPeriphery):
 
 
 def main():
-    p = Holmberg2007.plot_rate_intensity()
-    exit()
-
     import thorns as th
 
     fs = 48000
-    cf = tw.real_freq_map[38]
+    cf = tw.find_closest_freq_in_map(1000)
     print "CF:", cf
     stimdb = 60
 

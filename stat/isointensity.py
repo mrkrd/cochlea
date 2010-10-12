@@ -14,8 +14,8 @@ import thorns as th
 def _run_model( (model, cf, fs, freq, dbspl, kwargs) ):
     print os.getpid(), freq, dbspl
 
-    tmax = 100
-    onset = 10
+    tmax = 250
+    onset = 30
 
     ear = model((1000, 1000, 1000), cf=cf, **kwargs)
     # ear = model((250, 0, 0), cf=cf,
@@ -67,18 +67,20 @@ def calc_isointensity_curves(model,
 
 
 def main():
-    import pycat
-    model = pycat.Zilany2009
-    pars = {'fs':100e3,
-            'powerlaw_implnt':'approx',
-            'with_ffGn':False}
+    # import pycat
+    # model = pycat.Zilany2009
+    # pars = { 'powerlaw_implnt':'approx',
+    #          'with_ffGn':False }
+    # fs = 100e3
 
-    # import cochlea
-    # model = cochlea.Sumner2003
+    import cochlea
+    model = cochlea.Sumner2003
+    pars = {}
+    fs = 100e3
 
     # import cochlea
     # model = cochlea.Holmberg2007
-    # pars = {'fs':48000}
+    # fs = 48000
 
 
     import traveling_waves as tw
@@ -88,7 +90,9 @@ def main():
     # print _run_model( (model, cf, 48000, 3000, 50, {}) )
     # exit()
 
-    rates = calc_isointensity_curves(model, cf, **pars)
+    rates = calc_isointensity_curves(model, cf,
+                                     fs=fs,
+                                     **pars)
     print rates
 
     import biggles
@@ -96,7 +100,7 @@ def main():
     p.xlog = 1
     for dbspl in np.unique(rates['dbspl']):
         selected = rates[ rates['dbspl']==dbspl ]
-        p.add( biggles.Curve(selected['freq'], selected['lsr_rate']) )
+        p.add( biggles.Curve(selected['freq'], selected['hsr_rate']) )
 
     p.show()
 
