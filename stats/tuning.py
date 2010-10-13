@@ -6,12 +6,13 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 import os
+import multiprocessing
 
 import thorns as th
 import thorns.waves as wv
 
 
-def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, kwargs) ):
+def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, pars) ):
     print os.getpid()
 
     tmax = 250                  # ms
@@ -21,7 +22,7 @@ def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, kwargs) ):
     trend = None
     no_change = True
     dbspl = 0
-    ear = model((1000, 0, 0), cf=cf, **kwargs)
+    ear = model((1000, 0, 0), cf=cf, **pars)
 
 
     while no_change:
@@ -53,9 +54,9 @@ def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, kwargs) ):
     return freq, threshold
 
 
-def _calc_spont_rate(model, fs, kwargs):
+def _calc_spont_rate(model, fs, pars):
 
-    ear = model((1000, 0, 0), cf=1000, **kwargs)
+    ear = model((1000, 0, 0), cf=1000, **pars)
 
     tmax = 250
 
@@ -69,6 +70,33 @@ def _calc_spont_rate(model, fs, kwargs):
     return rates.mean(), rates.std()
 
 
+
+def calc_tuning(model,
+                cf,
+                fs=100e3,
+                freqs=np.logspace(np.log10(500), np.log10(6000), 32),
+                **pars):
+
+    mean,sd = _calc_spont_rate(model, fs=fs, pars=pars)
+
+    space = [(model, fs, cf, freq, mean_rate, sd_rate, pars)
+             for m in [model]
+             for fs in [fs]
+             for cf in [cf]
+             for freq in freqs
+             for mean_rate in [mean]
+             for sd_rate in [sd]
+             for pars in [pars]]
+
+    pool = multiprocessing.Pool()
+    thresholds = pool.map(_calc_point, space)
+
+    thresholds = np.rec.array(thresholds, names='freq,threshold')
+
+    return thresholds
+
+
+
 def main():
     import pycat
     model = pycat.Zilany2009
@@ -77,8 +105,16 @@ def main():
              'with_ffGn':False }
     cf = 4000
 
-    mean,sd = _calc_spont_rate(model, fs=fs, kwargs=pars)
+    mean,sd = _calc_spont_rate(model, fs=fs, pars=pars)
     print _calc_point( (model, fs, cf, 3500, mean, sd, pars) )
+
+
+    print '==========================================='
+    print calc_tuning(model, cf=cf, fs=fs,
+                      freqs=[3500, 4000],
+                      **pars)
+
+
 
 if __name__ == "__main__":
     main()
