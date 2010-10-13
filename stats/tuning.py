@@ -13,7 +13,7 @@ import thorns.waves as wv
 
 
 def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, pars) ):
-    print os.getpid()
+    print os.getpid(), cf, freq
 
     tmax = 250                  # ms
     onset = 30                  # ms
@@ -21,7 +21,7 @@ def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, pars) ):
     threshold_rate = mean_rate + sd_rate
     trend = None
     no_change = True
-    dbspl = 0
+    dbspl = 50
     ear = model((1000, 0, 0), cf=cf, **pars)
 
 
@@ -56,7 +56,9 @@ def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, pars) ):
 
 def _calc_spont_rate(model, fs, pars):
 
-    ear = model((1000, 0, 0), cf=1000, **pars)
+    cf = 1040.9121763855800963938236236572265625
+
+    ear = model((1000, 0, 0), cf=cf, **pars)
 
     tmax = 250
 
