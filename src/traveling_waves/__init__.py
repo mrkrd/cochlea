@@ -73,4 +73,4 @@ def set_dbspl(dB, signal):
 def find_closest_freq_idx_in_map(freq):
     m = np.abs(real_freq_map - freq)
 
-    return np.argmin(m)
+    return int(np.argmin(m))
