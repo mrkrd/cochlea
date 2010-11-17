@@ -70,3 +70,7 @@ def set_dbspl(dB, signal):
     return signal * r * 1e6     # uPa
 
 
+def find_closest_freq_idx_in_map(freq):
+    m = np.abs(real_freq_map - freq)
+
+    return np.argmin(m)

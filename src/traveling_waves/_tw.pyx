@@ -16,7 +16,7 @@ cdef extern from "math.h":
 import bm_pars
 
 def run_bm_wave(np.float64_t fs,
-            np.ndarray[np.float64_t, ndim=1] signal):
+                np.ndarray[np.float64_t, ndim=1] signal):
 
     assert fs == 48000.0
     signal = signal / 1e6       # uPa -> Pa
