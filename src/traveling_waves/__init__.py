@@ -74,3 +74,8 @@ def find_closest_freq_idx_in_map(freq):
     m = np.abs(real_freq_map - freq)
 
     return int(np.argmin(m))
+
+
+def find_closest_freq_in_map(freq):
+    idx = find_closest_freq_idx_in_map(freq)
+    return real_freq_map[idx]
