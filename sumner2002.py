@@ -147,7 +147,7 @@ class Sumner2002(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        trains = []
+        trains = th.SpikeTrains()
         if self._hsr_num > 0:
             self.ihc_hsr_module.run()
             tr = self._run_anf('hsr', self.sg_hsr_module,
@@ -166,7 +166,6 @@ class Sumner2002(AuditoryPeriphery):
                                fs, self._lsr_num, self._accumulate)
             trains.extend(tr)
 
-        trains = np.array(trains, dtype=self._train_type)
 
         return trains
 
@@ -187,11 +186,11 @@ def main():
 
     anf = ear.run(fs, s)
 
-    p = th.plot_raster(anf['spikes'])
+    p = th.plot_raster(anf)
     p.show()
-    p = th.plot_psth(anf['spikes'])
+    p = th.plot_psth(anf)
     p.show()
-    p = th.plot_isih(anf['spikes'], bin_size=0.1)
+    p = th.plot_isih(anf, bin_size=0.1)
     p.xrange = (0, 10)
     p.show()
 
