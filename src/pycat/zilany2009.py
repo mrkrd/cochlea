@@ -12,7 +12,8 @@ import thorns as th
 
 class Zilany2009(object):
     def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='actual', with_ffGn=True):
+                 powerlaw_implnt='actual', with_ffGn=True,
+                 seed=None):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -22,6 +23,8 @@ class Zilany2009(object):
 
         """
         self.name = 'Zilany2009'
+
+        np.random.seed(seed)
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
