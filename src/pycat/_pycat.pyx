@@ -147,7 +147,6 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     # Compatibility with DSAM
     signal = signal * 1e-6
 
-
     # Input sound
     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
 
@@ -156,7 +155,7 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     cdef double *ihcout_data = <double *>np.PyArray_DATA(ihcout)
 
 
-    IHCAN(signal_data, cf, 1, 1.0/fs, len(signal), cohc, cihc, ihcout_data);
+    IHCAN(signal_data, cf, 1, 1.0/fs, len(signal), cohc, cihc, ihcout_data)
 
 
     return ihcout
