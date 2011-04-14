@@ -34,11 +34,9 @@ void IHCAN(double *px,
 	   double cihc,
 	   double *ihcout)
 {
-
-     /*variables for middle-ear model */
-     double megainmax=43;
-     double *mey1, *mey2, *mey3, meout,c1filterouttmp,c2filterouttmp,c1vihctmp,c2vihctmp;
-     double fp,C,m11,m12,m21,m22,m23,m24,m25,m26,m31,m32,m33,m34,m35,m36;
+     double meout;
+     double c1filterouttmp, c2filterouttmp;
+     double c1vihctmp, c2vihctmp;
 
      /*variables for the signal-path, control-path and onward */
      double *ihcouttmp,*tmpgain;
@@ -69,10 +67,6 @@ void IHCAN(double *px,
 
      /* Allocate dynamic memory for the temporary variables */
      ihcouttmp  = (double*)calloc(totalstim*nrep,sizeof(double));
-
-     mey1 = (double*)calloc(totalstim,sizeof(double));
-     mey2 = (double*)calloc(totalstim,sizeof(double));
-     mey3 = (double*)calloc(totalstim,sizeof(double));
 
      tmpgain = (double*)calloc(totalstim,sizeof(double));
 
@@ -115,41 +109,12 @@ void IHCAN(double *px,
      ihcasym  = 3.0;
      /*===============================================================*/
      /*===============================================================*/
-     /* Prewarping and related constants for the middle ear */
-     fp = 1e3;  /* prewarping frequency 1 kHz */
-     C  = TWOPI*fp/tan(TWOPI/2*fp*tdres);
-     m11 = C/(C + 693.48);                    m12 = (693.48 - C)/C;
-     m21 = 1/(pow(C,2) + 11053*C + 1.163e8);  m22 = -2*pow(C,2) + 2.326e8;    m23 = pow(C,2) - 11053*C + 1.163e8;
-     m24 = pow(C,2) + 1356.3*C + 7.4417e8;    m25 = -2*pow(C,2) + 14.8834e8;  m26 = pow(C,2) - 1356.3*C + 7.4417e8;
-     m31 = 1/(pow(C,2) + 4620*C + 909059944); m32 = -2*pow(C,2) + 2*909059944; m33 = pow(C,2) - 4620*C + 909059944;
-     m34 = 5.7585e5*C + 7.1665e7;             m35 = 14.333e7;                 m36 = 7.1665e7 - 5.7585e5*C;
 
      for (n=0;n<totalstim;n++) /* Start of the loop */
      {
-	  if (n==0)  /* Start of the middle-ear filtering section  */
-	  {
-	       mey1[0]  = m11*px[0];
-	       mey2[0]  = mey1[0]*m24*m21;
-	       mey3[0]  = mey2[0]*m34*m31;
-	       meout = mey3[0]/megainmax ;
-	  }
+	  meout = px[n];
 
-	  else if (n==1)
-	  {
-	       mey1[1]  = m11*(-m12*mey1[0] + px[1]       - px[0]);
-	       mey2[1]  = m21*(-m22*mey2[0] + m24*mey1[1] + m25*mey1[0]);
-	       mey3[1]  = m31*(-m32*mey3[0] + m34*mey2[1] + m35*mey2[0]);
-	       meout = mey3[1]/megainmax;
-	  }
-	  else
-	  {
-	       mey1[n]  = m11*(-m12*mey1[n-1]  + px[n]         - px[n-1]);
-	       mey2[n]  = m21*(-m22*mey2[n-1] - m23*mey2[n-2] + m24*mey1[n] + m25*mey1[n-1] + m26*mey1[n-2]);
-	       mey3[n]  = m31*(-m32*mey3[n-1] - m33*mey3[n-2] + m34*mey2[n] + m35*mey2[n-1] + m36*mey2[n-2]);
-	       meout = mey3[n]/megainmax;
-	  }; 	/* End of the middle-ear filtering section */
-
-		/* Control-path filter */
+	  /* Control-path filter */
 
 	  wbout1 = WbGammaTone(meout,tdres,centerfreq,n,tauwb,wbgain,wborder);
 	  wbout  = pow((tauwb/TauWBMax),wborder)*wbout1*10e3*__max(1,cf/5e3);
@@ -217,7 +182,6 @@ void IHCAN(double *px,
      /* Freeing dynamic memory allocated earlier */
 
      free(ihcouttmp);
-     free(mey1); free(mey2); free(mey3);
      free(tmpgain);
 
 } /* End of the SingleAN function */
@@ -810,7 +774,7 @@ double Synapse(double *ihcout,
 
      double *randNums;
 
-     double *sampIHC, *ihcDims;
+     double *sampIHC;
 
      exponOut = (double*)calloc((long) ceil(totalstim*nrep),sizeof(double));
      powerLawIn = (double*)calloc((long) ceil(totalstim*nrep+3*delaypoint),sizeof(double));
@@ -1035,7 +999,7 @@ int SpikeGenerator(double *synouttmp,
      double	deadtimeRnd, endOfLastDeadtime, refracMult0, refracMult1, refracValue0, refracValue1;
      double	Xsum, unitRateIntrvl, countTime, DT;
 
-     double *randNums, *randDims;
+     double *randNums;
 
      c0      = 0.5;
      s0      = 0.001;

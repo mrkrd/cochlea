@@ -122,6 +122,43 @@ cdef public double* ffGn(int N, double tdres, double Hinput, double mu, bint wit
 
 
 
+def run_me(np.ndarray[np.float64_t, ndim=1] signal,
+           double fs):
+    # /*variables for middle-ear model */
+    megainmax=43;
+    # double *mey1, *mey2, *mey3, meout,c1filterouttmp,c2filterouttmp,c1vihctmp,c2vihctmp;
+    # double fp,C,m11,m12,m21,m22,m23,m24,m25,m26,m31,m32,m33,m34,m35,m36;
+    tdres = 1 / fs
+
+    fp = 1e3 # /* prewarping frequency 1 kHz */
+    C = 2*np.pi*fp/np.tan(np.pi*fp*tdres)
+
+    m11 = C/(C + 693.48)
+    m12 = (693.48 - C)/C
+
+    m21 = 1/(C**2 + 11053*C + 1.163e8)
+    m22 = -2*C**2 + 2.326e8
+    m23 = C**2 - 11053*C + 1.163e8
+    m24 = C**2 + 1356.3*C + 7.4417e8
+    m25 = -2*C**2 + 14.8834e8
+    m26 = C**2 - 1356.3*C + 7.4417e8
+
+    m31 = 1/(C**2 + 4620*C + 909059944)
+    m32 = -2*C**2 + 2*909059944
+    m33 = C**2 - 4620*C + 909059944
+    m34 = 5.7585e5*C + 7.1665e7
+    m35 = 14.333e7
+    m36 = 7.1665e7 - 5.7585e5*C
+
+    mey1 = dsp.lfilter([1,-1], [1/m11,m12], signal)
+    mey2 = dsp.lfilter([m24,m25,m26], [1/m21,m22,m23], mey1)
+    mey3 = dsp.lfilter([m34,m35,m36], [1/m31,m32,m33], mey2)
+
+    meout = mey3 / megainmax
+
+    return meout
+
+
 def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
             double cf,
             double fs,
@@ -130,7 +167,7 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     """
     Run BM / IHC model.
 
-    signal: input sound in uPa
+    signal: output of the middle ear filter [uPa]
     cf: characteristic frequency
     fs: sampling frequency
     cohc, cihc: degeneration parameters for IHC and OHC cells

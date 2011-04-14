@@ -50,8 +50,11 @@ class Zilany2009(object):
 
         trains = th.SpikeTrains()
         for cf in self._freq_map:
+            # Run Middle Ear filter
+            meout = _pycat.run_me(signal=sound, fs=fs)
+
             # Run IHC model
-            vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
+            vihc = _pycat.run_ihc(signal=meout, cf=cf, fs=fs,
                                   cohc=self._cohc, cihc=self._cihc)
 
             # Run HSR synapse

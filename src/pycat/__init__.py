@@ -1,3 +1,4 @@
+from _pycat import run_me
 from _pycat import run_ihc
 from _pycat import run_synapse
 from _pycat import run_spike_generator
