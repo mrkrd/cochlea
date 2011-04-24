@@ -15,6 +15,8 @@ scaling_factor = S_ST * S_ED
 
 def run_middle_ear_filter_orig(fs, signal):
     """ Middle ear filter designed using digital wave techinique. """
+    assert fs == 48000
+
     R2_ME = 1. / (2. * fs * C_eardrum)
     R1 = 1. / (2. * np.pi * C_eardrum * 1e3)
 
@@ -35,6 +37,8 @@ def run_middle_ear_filter_orig(fs, signal):
 
 def run_middle_ear_filter(fs, signal):
     """ Middle ear filter model. """
+    assert fs == 48000
+
     # Digital wave filter coefficients
     R2_ME = 1. / (2. * fs * C_eardrum)
     R1 = 1. / (2. * np.pi * C_eardrum * 1e3)
