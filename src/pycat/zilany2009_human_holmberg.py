@@ -11,10 +11,9 @@ import _pycat
 import thorns as th
 import traveling_waves as tw
 
-class Zilany2009(object):
+class Zilany2009_Human_Holmberg(object):
     def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='actual', with_ffGn=True,
-                 seed=None):
+                 powerlaw_implnt='actual', with_ffGn=True):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -24,8 +23,6 @@ class Zilany2009(object):
 
         """
         self.name = 'Zilany2009'
-
-        np.random.seed(seed)
 
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
@@ -40,21 +37,21 @@ class Zilany2009(object):
         self.set_freq(cf)
 
 
-    def run(self, fs, sound):
+    def run(self, fs, sound, seed=None, me_scaling=1):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
         sound: input signal
 
         """
-        # TODO: implement storing of spikes in a file/db and reloading them as needed
+        np.random.seed(seed)
 
         trains = th.SpikeTrains()
         for cf in self._freq_map:
             # Run Outer/Middle Ear filter
             sound = tw.run_outer_ear_filter(fs, sound)
             sound = tw.run_middle_ear_filter(fs, sound)
-            sound = sound * scaling_factor
+            sound = sound * me_scaling
 
             # Run IHC model
             vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
