@@ -34,11 +34,7 @@ def run_middle_ear_filter_orig(fs, signal):
     return out
 
 
-
-def run_middle_ear_filter(fs, signal):
-    """ Middle ear filter model. """
-    assert fs == 48000
-
+def _calc_middle_ear_coefs(fs):
     # Digital wave filter coefficients
     R2_ME = 1. / (2. * fs * C_eardrum)
     R1 = 1. / (2. * np.pi * C_eardrum * 1e3)
@@ -49,8 +45,18 @@ def run_middle_ear_filter(fs, signal):
     b = [(-1-g1_ME), (1+g1_ME)]
     a = [R2_ME, R2_ME*g1_ME]
 
+    return b, a
+
+
+def run_middle_ear_filter(fs, signal):
+    """ Middle ear filter model. """
+    b,a = _calc_middle_ear_coefs(fs)
+
     return dsp.lfilter(b, a, signal)
 
+
+def _calc_outher_ear_coefs(fs):
+    pass
 
 def run_outer_ear_filter(fs, signal):
     assert fs == 48000
