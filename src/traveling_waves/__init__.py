@@ -55,14 +55,21 @@ def run_middle_ear_filter(fs, signal):
     return dsp.lfilter(b, a, signal)
 
 
-def _calc_outher_ear_coefs(fs):
-    pass
+def _calc_outer_ear_coefs(fs):
+    if fs == 48000:
+        a = bm_pars.outer_ear_a_48kHz
+        b = bm_pars.outer_ear_b_48kHz
+    elif fs == 100000:
+        a = bm_pars.outer_ear_a_100kHz
+        b = bm_pars.outer_ear_b_100kHz
+    else:
+        assert False, "Invalid sampling frequency: fs"
+
+    return b, a
+
 
 def run_outer_ear_filter(fs, signal):
-    assert fs == 48000
-
-    a = bm_pars.outer_ear_a
-    b = bm_pars.outer_ear_b
+    b, a = _calc_outer_ear_coefs(fs)
 
     return dsp.lfilter(b, a, signal)
 

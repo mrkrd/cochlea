@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import traveling_waves as tw
 
 def calc_curve(fs):
-    b, a = tw._calc_middle_ear_coefs(fs)
+    b, a = tw._calc_outer_ear_coefs(fs)
 
     h, w = sp.signal.freqz(b, a)
 
