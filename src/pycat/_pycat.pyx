@@ -217,7 +217,7 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
 
     return: PSTH from ANF
     """
-    assert (cf => 80) and (cf < 40e3), "Wrong CF: 80 <= cf < 40e3"
+    assert (cf >= 80) and (cf < 40e3), "Wrong CF: 80 <= cf < 40e3"
     assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
     assert anf_type in ['hsr', 'msr', 'lsr'], "anf_type not hsr/msr/lsr"
     assert powerlaw_implnt in ['actual', 'approx'], "powerlaw_implnt not actual/approx"
