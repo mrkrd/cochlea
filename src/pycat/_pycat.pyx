@@ -175,7 +175,7 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     return: IHC receptor potential
 
     """
-    assert (cf > 80) and (cf < 40e3), "Wrong CF: 80 < cf < 40e3"
+    assert (cf >= 80) and (cf < 40e3), "Wrong CF: 80 < cf < 40e3"
     assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
     assert (cohc >= 0) and (cohc <= 1), "0 <= cohc <= 1"
     assert (cihc >= 0) and (cihc <= 1), "0 <= cihc <= 1"
