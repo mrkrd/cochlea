@@ -139,7 +139,7 @@ class Sumner2002_Vesicles(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        trains = th.SpikeTrains()
+        trains = th.Trains()
         if self._hsr_num > 0:
             tr = self._run_ihc('hsr', self.ihc_hsr_module,
                                fs, self._hsr_num)
@@ -165,7 +165,7 @@ class Sumner2002_Vesicles(AuditoryPeriphery):
         """ Skip spike generator several times and format the output. """
 
         freq_map = self.get_freq_map()
-        anf_trains = th.SpikeTrains()
+        anf_trains = th.Trains()
         for anf_id in range(anf_num):
             ihc_module.run()
             vesicle_signal = ihc_module.get_signal()
@@ -199,12 +199,6 @@ def main():
 
 
 
-    # ear = Sumner2002((1,0,0), cf=(100, 10000, 100))
-    # anf = ear.run(fs, s)
-    # p = th.plot_raster(anf['spikes'])
-    # p.show()
-    # p = th.plot_psth(anf['spikes'])
-    # p.show()
 
 
 

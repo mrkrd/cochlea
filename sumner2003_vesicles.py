@@ -199,13 +199,6 @@ def main():
 
 
 
-    # ear = Sumner2003((1,0,0), cf=(100, 10000, 100))
-    # anf = ear.run(fs, s)
-    # p = th.plot_raster(anf['spikes'])
-    # p.show()
-    # p = th.plot_psth(anf['spikes'])
-    # p.show()
-
 
 
 if __name__ == "__main__":

@@ -147,7 +147,7 @@ class Sumner2003(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        trains = th.SpikeTrains()
+        trains = th.Trains()
         if self._hsr_num > 0:
             self.ihc_hsr_module.run()
             tr = self._run_anf('hsr', self.sg_hsr_module,
@@ -193,15 +193,7 @@ def main():
     p.xrange = (0, 10)
     p.show()
 
-    print th.calc_isih(anf, bin_size=0.1)[1][0]
 
-
-    # ear = Sumner2003((1,0,0), cf=(100, 10000, 100))
-    # anf = ear.run(fs, s)
-    # p = th.plot_raster(anf['spikes'])
-    # p.show()
-    # p = th.plot_psth(anf['spikes'])
-    # p.show()
 
 
 

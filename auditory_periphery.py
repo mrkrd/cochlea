@@ -42,7 +42,7 @@ class AuditoryPeriphery(object):
             sg_module.set_par('num_fibres', 1)
 
         freq_map = self.get_freq_map()
-        anf_trains = th.SpikeTrains()
+        anf_trains = th.Trains()
         for anf_id in range(run_num):
             sg_module.run()
 
