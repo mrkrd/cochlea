@@ -48,7 +48,7 @@ class Zilany2009(object):
         """
         # TODO: implement storing of spikes in a file/db and reloading them as needed
 
-        trains = th.SpikeTrains()
+        trains = th.Trains()
         for cf in self._freq_map:
             # Run Middle Ear filter
             meout = _pycat.run_me(signal=sound, fs=fs)
@@ -85,7 +85,7 @@ class Zilany2009(object):
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
         synout = None
-        anf_trains = th.SpikeTrains()
+        anf_trains = th.Trains()
         for anf_id in range(anf_num):
             if (synout is None) or (self._with_ffGn):
                 synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,

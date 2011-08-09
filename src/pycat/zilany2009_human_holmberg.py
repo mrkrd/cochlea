@@ -46,7 +46,7 @@ class Zilany2009_Human_Holmberg(object):
         """
         np.random.seed(seed)
 
-        trains = th.SpikeTrains()
+        trains = th.Trains()
         for cf in self._freq_map:
             # Run Outer/Middle Ear filter
             sound = tw.run_outer_ear_filter(fs, sound)
@@ -85,7 +85,7 @@ class Zilany2009_Human_Holmberg(object):
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
         synout = None
-        anf_trains = th.SpikeTrains()
+        anf_trains = th.Trains()
         for anf_id in range(anf_num):
             if (synout is None) or (self._with_ffGn):
                 synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
