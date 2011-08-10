@@ -1,10 +1,8 @@
-#!/usr/bin/env python
-
-"""
-Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
+"""Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
 R. (2002). A revised model of the inner-hair cell and auditory-nerve
 complex. The Journal of the Acoustical Society of America,
 111(5):2178-2188.
+
 """
 
 from __future__ import division
