@@ -11,6 +11,8 @@ import _pycat
 import thorns as th
 
 class Zilany2009(object):
+    name = 'Zilany2009'
+
     def __init__(self, anf_num=(1,1,1), cf=1000,
                  powerlaw_implnt='actual', with_ffGn=True,
                  seed=None):
@@ -22,8 +24,6 @@ class Zilany2009(object):
         with_ffGn: enable/disable Gausian noise
 
         """
-        self.name = 'Zilany2009'
-
         np.random.seed(seed)
 
         self._hsr_num = anf_num[0]

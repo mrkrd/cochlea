@@ -12,6 +12,8 @@ import thorns as th
 import traveling_waves as tw
 
 class Zilany2009_Human_Holmberg(object):
+    name = 'Zilany2009_Human_Holmberg'
+
     def __init__(self, anf_num=(1,1,1), cf=1000,
                  powerlaw_implnt='actual', with_ffGn=True):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
@@ -22,8 +24,6 @@ class Zilany2009_Human_Holmberg(object):
         with_ffGn: enable/disable Gausian noise
 
         """
-        self.name = 'Zilany2009'
-
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
         self._lsr_num = anf_num[2]
