@@ -37,7 +37,7 @@ class Zilany2009_Human_Holmberg(object):
         self.set_freq(cf)
 
 
-    def run(self, fs, sound, seed=None, me_scaling=1):
+    def run(self, fs, sound, seed=None, me_scaling=0.0261033984163):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
