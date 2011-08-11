@@ -18,7 +18,7 @@ def calc_threshold_rate(model, model_pars):
     else:
         fs = 100e3
 
-    ear = model((1000, 0, 0),
+    ear = model((10000, 0, 0),
                 cf=1000,
                 **model_pars)
 
@@ -43,7 +43,7 @@ def error_function(dbspl, model, model_pars, cf, threshold_rate):
     tone_duration = 250     # ms
     onset = 15                  # ms
 
-    ear = model((1000, 0, 0),
+    ear = model((10000, 0, 0),
                 cf=cf,
                 **model_pars)
 
@@ -72,7 +72,7 @@ def calc_threshold( (model, freq, model_pars) ):
                               x1=-10,
                               x2=100,
                               args=(model, model_pars, freq, threshold_rate),
-                              xtol=0.01)
+                              xtol=0.1)
 
     return freq, dbspl_opt
 
@@ -82,7 +82,7 @@ def calc_threshold( (model, freq, model_pars) ):
 
 
 def calc_thresholds(model,
-                    freqs=np.logspace(np.log10(100), np.log10(10000), 32),
+                    freqs=np.logspace(np.log10(100), np.log10(16000), 32),
                     model_pars={}):
 
     pool = multiprocessing.Pool()

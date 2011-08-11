@@ -13,7 +13,7 @@ import thorns.waves as wv
 
 
 def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, pars) ):
-    print os.getpid(), cf, freq
+    print os.getpid(), model.name, cf, freq
 
     tmax = 250                  # ms
     onset = 30                  # ms
@@ -50,6 +50,9 @@ def _calc_point( (model, fs, cf, freq, mean_rate, sd_rate, pars) ):
                 threshold = dbspl
             trend = 'up'
 
+        if dbspl > 120:
+            threshold = np.nan
+            break
 
     return freq, threshold
 
