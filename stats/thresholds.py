@@ -72,7 +72,7 @@ def calc_threshold( (model, freq, model_pars) ):
                               x1=-10,
                               x2=100,
                               args=(model, model_pars, freq, threshold_rate),
-                              xtol=0.1)
+                              xtol=0.01)
 
     return freq, dbspl_opt
 
