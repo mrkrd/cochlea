@@ -48,7 +48,7 @@ class Zilany2009(object):
         """
         # TODO: implement storing of spikes in a file/db and reloading them as needed
 
-        trains = th.Trains()
+        trains = []
         for cf in self._freq_map:
             # Run Middle Ear filter
             meout = _pycat.run_me(signal=sound, fs=fs)
@@ -78,6 +78,12 @@ class Zilany2009(object):
                                    anf_num=self._lsr_num)
                 trains.extend(tr)
 
+        trains = np.array(trains,
+                          dtype=[('spikes', np.ndarray),
+                                 ('duration', float),
+                                 ('cf', float),
+                                 ('anf_type', '|S3'),
+                                 ('anf_cnt', int)])
         return trains
 
 
@@ -85,8 +91,9 @@ class Zilany2009(object):
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
         synout = None
-        anf_trains = th.Trains()
-        for anf_id in range(anf_num):
+        duration = 1000 * len(vihc) / fs # ms
+        anf_trains = []
+        for anf_cnt in range(anf_num):
             if (synout is None) or (self._with_ffGn):
                 synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
                                             anf_type=anf_type,
@@ -95,7 +102,11 @@ class Zilany2009(object):
             spikes = _pycat.run_spike_generator(fs=fs,
                                                 synout=synout)
             spikes = spikes[spikes != 0] * 1000 # s -> ms
-            anf_trains.append(spikes, cf=cf, typ=anf_type)
+            anf_trains.append( (spikes,
+                                duration,
+                                cf,
+                                anf_type,
+                                anf_cnt) )
 
         return anf_trains
 
@@ -136,7 +147,7 @@ def main():
     cf = 10000
     stimdb = 20
 
-    ear = Zilany2009((100,100,100), cf=cf,
+    ear = Zilany2009((100,100,100), cf=(80, 16000, 100),
                      powerlaw_implnt='approx',
                      with_ffGn=True)
 
@@ -147,13 +158,16 @@ def main():
     s = np.concatenate( (s, z) )
 
     anf = ear.run(fs, s)
+    print
+    print "XXXXXXXXXXXXXX"
+    print anf[ anf['anf_cnt'] < 5 ]
 
-    th.plot_raster(anf).show()
+    # th.plot.raster(anf).show()
 
-    p = th.plot_psth(anf.where(typ='hsr'), color='black')
-    th.plot_psth(anf.where(typ='msr'), color='red', plot=p)
-    th.plot_psth(anf.where(typ='lsr'), color='blue', plot=p)
-    p.show()
+    # p = th.plot_psth(anf.where(typ='hsr'), color='black')
+    # th.plot_psth(anf.where(typ='msr'), color='red', plot=p)
+    # th.plot_psth(anf.where(typ='lsr'), color='blue', plot=p)
+    # p.show()
 
 
 if __name__ == "__main__":
