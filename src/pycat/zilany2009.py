@@ -1,5 +1,12 @@
-# Description: Model of auditory periphery of: Zilany, M.S.A., Bruce,
-# I.C., Nelson, P.C., and Carney, L.H. (manuscript in preparation) 2009
+#!/usr/bin/env python
+
+"""Zilany, M. S. A., Bruce, I. C., Nelson, P. C., and Carney,
+L. H. (2009). A phenomenological model of the synapse between the
+inner hair cell and auditory nerve: long-term adaptation with
+power-law dynamics. The Journal of the Acoustical Society of America,
+126(5):2390-2412.
+
+"""
 
 from __future__ import division
 
@@ -147,6 +154,7 @@ class Zilany2009(object):
 
 def main():
     import thorns as th
+    import thorns.waves as wv
 
     fs = 100000
     cf = 10000
@@ -156,21 +164,24 @@ def main():
                      powerlaw_implnt='approx',
                      with_ffGn=False)
 
-    t = np.arange(0, 0.05, 1/fs)
-    s = np.sin(2 * np.pi * t * cf)
-    s = _pycat.set_dbspl(stimdb, s)
-    z = np.zeros_like(s)
-    s = np.concatenate( (s, z) )
+    s = wv.generate_ramped_tone(fs,
+                                freq=cf,
+                                tone_duration=50,
+                                ramp_duration=2.5,
+                                pad_duration=20,
+                                dbspl=stimdb)
 
     anf = ear.run(fs, s)
 
     th.plot.raster(anf).show()
 
     hsr = anf[ anf['anf_type']=='hsr' ]
+    msr = anf[ anf['anf_type']=='msr' ]
+    lsr = anf[ anf['anf_type']=='lsr' ]
 
     p = th.plot.psth(hsr, color='black')
-    th.plot.psth(th.sel(anf, anf_type='msr'), color='red', plot=p)
-    th.plot.psth(th.sel(anf, anf_type='lsr'), color='blue', plot=p)
+    th.plot.psth(msr, color='red', plot=p)
+    th.plot.psth(lsr, color='blue', plot=p)
     p.show()
 
 
