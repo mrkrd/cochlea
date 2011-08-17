@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-"""
-Holmberg, M. (2007). Speech Encoding in the Human Auditory Periphery:
-Modeling and Quantitative Assessment by Means of Automatic Speech
-Recognition. PhD thesis, Technical University Darmstadt.
+"""Holmberg, M. (2007). Speech Encoding in the Human Auditory
+Periphery: Modeling and Quantitative Assessment by Means of Automatic
+Speech Recognition. PhD thesis, Technical University Darmstadt.
+
 """
 
 
@@ -15,7 +15,6 @@ import numpy as np
 
 from auditory_periphery import par_dir, AuditoryPeriphery
 import traveling_waves as tw
-import thorns as th
 import dsam
 
 
@@ -137,7 +136,7 @@ class Holmberg2007(AuditoryPeriphery):
         ihcrp = tw.run_ihcrp(fs, LCR4, self._freq_idx)
 
 
-        trains = th.Trains()
+        trains = []
         if self._hsr_num > 0:
             self.ihc_hsr_module.run(fs, ihcrp)
             tr = self._run_anf('hsr', self.sg_hsr_module,
@@ -157,7 +156,9 @@ class Holmberg2007(AuditoryPeriphery):
             trains.extend(tr)
 
 
-        return trains
+        spike_trains = np.rec.array(trains, dtype=self._anf_dtype)
+        return spike_trains
+
 
 
     @classmethod
@@ -168,6 +169,7 @@ class Holmberg2007(AuditoryPeriphery):
 
 def main():
     import thorns as th
+    import thorns.waves as wv
 
     fs = 48000
     cf = tw.find_closest_freq_in_map(1000)
@@ -176,17 +178,18 @@ def main():
 
     ear = Holmberg2007((250,0,0), cf=cf)
 
-    t = np.arange(0, 0.1, 1/fs)
-    s = np.sin(2 * np.pi * t * cf)
-    s = dsam.set_dbspl(stimdb, s)
-    z = np.zeros( np.ceil(len(t)/4) )
-    s = np.concatenate( (z, s, z) )
 
+    s = wv.generate_ramped_tone(fs,
+                                freq=cf,
+                                tone_duration=50,
+                                ramp_duration=2.5,
+                                pad_duration=20,
+                                dbspl=stimdb)
 
     anf = ear.run(fs, s)
 
-    th.plot_raster(anf).show()
-    th.plot_psth(anf, bin_size=1).show()
+    th.plot.raster(anf).show()
+    th.plot.psth(anf, bin_size=1).show()
 
 
 

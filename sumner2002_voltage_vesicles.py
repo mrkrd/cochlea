@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-"""
-Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
+"""Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
 R. (2002). A revised model of the inner-hair cell and auditory-nerve
 complex. The Journal of the Acoustical Society of America,
 111(5):2178-2188.
 
 Input is the IHC depolarization (V) and output are vesicle timings.
+
 """
 
 from __future__ import division
@@ -77,9 +77,9 @@ class Sumner2002_Voltage_Vesicles(AuditoryPeriphery):
                                fs, voltage, self._lsr_num)
             trains.extend(tr)
 
-        trains = np.array(trains, dtype=self._train_type)
 
-        return trains
+        spike_trains = np.rec.array(trains, dtype=self._anf_dtype)
+        return spike_trains
 
 
 

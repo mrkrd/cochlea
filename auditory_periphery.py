@@ -18,6 +18,11 @@ def par_dir(par_file):
 
 class AuditoryPeriphery(object):
 
+    _anf_dtype = [('spikes', np.ndarray),
+                  ('duration', float),
+                  ('cf', float),
+                  ('anf_type', '|S3'),
+                  ('anf_idx', int)]
 
     def __init__(self):
         pass
@@ -34,6 +39,8 @@ class AuditoryPeriphery(object):
 
         sg_module.set_par('pulse_duration', 1.1/fs)
 
+        assert not accumulate, "Deprecated, `accumulate' is now disabled"
+
         if accumulate:
             run_num = 1
             sg_module.set_par('num_fibres', anf_num)
@@ -42,17 +49,21 @@ class AuditoryPeriphery(object):
             sg_module.set_par('num_fibres', 1)
 
         freq_map = self.get_freq_map()
-        anf_trains = th.Trains()
-        for anf_id in range(run_num):
+        trains = []
+        for anf_idx in range(run_num):
             sg_module.run()
 
             anf_signal = sg_module.get_signal()
-            anf_spikes = th.signal_to_spikes(fs, anf_signal)
+            anf_spikes = th.signal_to_trains(anf_signal, fs)
 
-            for freq, train in zip(freq_map, anf_spikes):
-                anf_trains.append(train, typ=anf_type, cf=freq)
+            for cf, train in zip(freq_map, anf_spikes):
+                trains.append( (train['spikes'],
+                                train['duration'],
+                                cf,
+                                anf_type,
+                                anf_idx) )
 
-        return anf_trains
+        return trains
 
 
 

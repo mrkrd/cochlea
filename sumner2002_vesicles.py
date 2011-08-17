@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-"""
-Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
+"""Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
 R. (2002). A revised model of the inner-hair cell and auditory-nerve
 complex. The Journal of the Acoustical Society of America,
 111(5):2178-2188.
 
 Vesicle release version.
+
 """
 
 from __future__ import division
@@ -139,7 +139,7 @@ class Sumner2002_Vesicles(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        trains = th.Trains()
+        trains = []
         if self._hsr_num > 0:
             tr = self._run_ihc('hsr', self.ihc_hsr_module,
                                fs, self._hsr_num)
@@ -156,8 +156,9 @@ class Sumner2002_Vesicles(AuditoryPeriphery):
             trains.extend(tr)
 
 
-        return trains
 
+        spike_trains = np.rec.array(trains, dtype=self._anf_dtype)
+        return spike_trains
 
 
 
@@ -165,36 +166,45 @@ class Sumner2002_Vesicles(AuditoryPeriphery):
         """ Skip spike generator several times and format the output. """
 
         freq_map = self.get_freq_map()
-        anf_trains = th.Trains()
-        for anf_id in range(anf_num):
+        trains = []
+        for anf_idx in range(anf_num):
             ihc_module.run()
+
             vesicle_signal = ihc_module.get_signal()
-            vesicles = th.signal_to_spikes(fs, vesicle_signal)
+            vesicles = th.signal_to_trains(vesicle_signal, fs)
 
-            for freq, train in zip(freq_map, vesicles):
-                anf_trains.append(train, typ=anf_type, cf=freq)
+            for cf, train in zip(freq_map, vesicles):
+                trains.append( (train['spikes'],
+                                train['duration'],
+                                cf,
+                                anf_type,
+                                anf_idx) )
 
-        return anf_trains
+        return trains
 
 
 
 def main():
+    import thorns.waves as wv
+
     fs = 100000
     cf = 1000
     stimdb = 70
 
     ear = Sumner2002_Vesicles((250,0,0), cf=cf)
 
-    t = np.arange(0, 0.1, 1/fs)
-    s = np.sin(2 * np.pi * t * cf)
-    s = dsam.set_dbspl(stimdb, s)
-    z = np.zeros(np.ceil(len(t)/3))
-    s = np.concatenate( (z, s, z) )
+
+    s = wv.generate_ramped_tone(fs,
+                                freq=cf,
+                                tone_duration=50,
+                                ramp_duration=2.5,
+                                pad_duration=20,
+                                dbspl=stimdb)
 
     anf = ear.run(fs, s)
-    p = th.plot_raster(anf)
+    p = th.plot.raster(anf)
     p.show()
-    p = th.plot_psth(anf)
+    p = th.plot.psth(anf)
     p.show()
 
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """Sumner, C. J., Lopez-Poveda, E. A., O'Mard, L. P., and Meddis,
 R. (2002). A revised model of the inner-hair cell and auditory-nerve
 complex. The Journal of the Acoustical Society of America,
@@ -11,7 +13,6 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 
-import thorns as th
 import dsam
 from auditory_periphery import AuditoryPeriphery, par_dir
 
@@ -145,7 +146,7 @@ class Sumner2002(AuditoryPeriphery):
         self.bm_module.run()
         self.ihcrp_module.run()
 
-        trains = th.Trains()
+        trains = []
         if self._hsr_num > 0:
             self.ihc_hsr_module.run()
             tr = self._run_anf('hsr', self.sg_hsr_module,
@@ -165,31 +166,36 @@ class Sumner2002(AuditoryPeriphery):
             trains.extend(tr)
 
 
-        return trains
+        spike_trains = np.rec.array(trains, dtype=self._anf_dtype)
+        return spike_trains
 
 
 
 def main():
+    import thorns as th
+    import thorns.waves as wv
+
     fs = 100000
     cf = 10000
     stimdb = 70
 
     ear = Sumner2002((250,0,0), cf=cf)
 
-    t = np.arange(0, 0.1, 1/fs)
-    s = np.sin(2 * np.pi * t * cf)
-    s = dsam.set_dbspl(stimdb, s)
-    z = np.zeros(np.ceil(len(t)/3))
-    s = np.concatenate( (z, s, z) )
+
+    s = wv.generate_ramped_tone(fs,
+                                freq=cf,
+                                tone_duration=50,
+                                ramp_duration=2.5,
+                                pad_duration=20,
+                                dbspl=stimdb)
 
     anf = ear.run(fs, s)
 
-    p = th.plot_raster(anf)
+    p = th.plot.raster(anf)
     p.show()
-    p = th.plot_psth(anf)
+    p = th.plot.psth(anf)
     p.show()
-    p = th.plot_isih(anf, bin_size=0.1)
-    p.xrange = (0, 10)
+    p = th.plot.isih(anf, bin_size=0.1)
     p.show()
 
 
