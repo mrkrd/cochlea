@@ -83,7 +83,7 @@ class Zilany2009(object):
                                  ('duration', float),
                                  ('cf', float),
                                  ('anf_type', '|S3'),
-                                 ('anf_cnt', int)])
+                                 ('anf_idx', int)])
         return trains
 
 
@@ -93,33 +93,33 @@ class Zilany2009(object):
         synout = None
         duration = 1000 * len(vihc) / fs # ms
         anf_trains = []
-        for anf_cnt in range(anf_num):
-            if (synout is None) or (self._with_ffGn):
+        for anf_idx in range(anf_num):
+            if (synout is None) or self._with_ffGn:
                 synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
                                             anf_type=anf_type,
                                             powerlaw_implnt=self._powerlaw_implnt,
                                             with_ffGn=self._with_ffGn)
+
             spikes = _pycat.run_spike_generator(fs=fs,
                                                 synout=synout)
+
             spikes = spikes[spikes != 0] * 1000 # s -> ms
             anf_trains.append( (spikes,
                                 duration,
                                 cf,
                                 anf_type,
-                                anf_cnt) )
+                                anf_idx) )
 
         return anf_trains
 
 
     def set_freq(self, cf):
         """ Set signle or range of CF for the model."""
-        if isinstance(cf, int):
-            cf = float(cf)
-        assert (isinstance(cf, tuple) or
-                isinstance(cf, float))
 
         if isinstance(cf, float):
             self._freq_map = [cf]
+        elif isinstance(cf, int):
+            self._freq_map = [float(cf)]
         elif isinstance(cf, tuple):
             # Based on GenerateGreenwood_CFList() from DSAM
             # Liberman (1982)
@@ -134,6 +134,11 @@ class Zilany2009(object):
 
             x_map = np.linspace(xmin, xmax, freq_num)
             self._freq_map = aA * ( 10**( a*x_map ) - k)
+        elif isinstance(cf, list):
+            self._freq_map = cf
+        else:
+            assert False, "CF must be int, float, tuple or list"
+
 
     def get_freq_map(self):
         return self._freq_map
@@ -147,9 +152,9 @@ def main():
     cf = 10000
     stimdb = 20
 
-    ear = Zilany2009((100,100,100), cf=(80, 16000, 100),
+    ear = Zilany2009((100,100,100), cf=cf,
                      powerlaw_implnt='approx',
-                     with_ffGn=True)
+                     with_ffGn=False)
 
     t = np.arange(0, 0.05, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
@@ -158,17 +163,18 @@ def main():
     s = np.concatenate( (s, z) )
 
     anf = ear.run(fs, s)
-    print
-    print "XXXXXXXXXXXXXX"
-    print anf[ anf['anf_cnt'] < 5 ]
 
-    # th.plot.raster(anf).show()
+    th.plot.raster(anf).show()
 
-    # p = th.plot_psth(anf.where(typ='hsr'), color='black')
-    # th.plot_psth(anf.where(typ='msr'), color='red', plot=p)
-    # th.plot_psth(anf.where(typ='lsr'), color='blue', plot=p)
-    # p.show()
+    hsr = anf[ anf['anf_type']=='hsr' ]
 
+    p = th.plot.psth(hsr, color='black')
+    th.plot.psth(th.sel(anf, anf_type='msr'), color='red', plot=p)
+    th.plot.psth(th.sel(anf, anf_type='lsr'), color='blue', plot=p)
+    p.show()
+
+
+    th.plot.isih(hsr, bin_size=0.3).show()
 
 if __name__ == "__main__":
     main()
