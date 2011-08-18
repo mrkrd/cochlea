@@ -8,8 +8,10 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 
 import _pycat
+
 import thorns as th
 import traveling_waves as tw
+
 
 class Zilany2009_Human_Holmberg(object):
     name = 'Zilany2009_Human_Holmberg'
@@ -46,7 +48,7 @@ class Zilany2009_Human_Holmberg(object):
         """
         np.random.seed(seed)
 
-        trains = th.Trains()
+        trains = []
         for cf in self._freq_map:
             # Run Outer/Middle Ear filter
             sound = tw.run_outer_ear_filter(fs, sound)
@@ -78,24 +80,37 @@ class Zilany2009_Human_Holmberg(object):
                                    anf_num=self._lsr_num)
                 trains.extend(tr)
 
-        return trains
 
+        spike_trains = np.array(trains,
+                                dtype=[('spikes', np.ndarray),
+                                       ('duration', float),
+                                       ('cf', float),
+                                       ('anf_type', '|S3'),
+                                       ('anf_idx', int)])
+        return spike_trains
 
 
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
         synout = None
-        anf_trains = th.Trains()
-        for anf_id in range(anf_num):
-            if (synout is None) or (self._with_ffGn):
+        duration = 1000 * len(vihc) / fs # ms
+        anf_trains = []
+        for anf_idx in range(anf_num):
+            if (synout is None) or self._with_ffGn:
                 synout = _pycat.run_synapse(fs=fs, vihc=vihc, cf=cf,
                                             anf_type=anf_type,
                                             powerlaw_implnt=self._powerlaw_implnt,
                                             with_ffGn=self._with_ffGn)
+
             spikes = _pycat.run_spike_generator(fs=fs,
                                                 synout=synout)
+
             spikes = spikes[spikes != 0] * 1000 # s -> ms
-            anf_trains.append(spikes, cf=cf, typ=anf_type)
+            anf_trains.append( (spikes,
+                                duration,
+                                cf,
+                                anf_type,
+                                anf_idx) )
 
         return anf_trains
 
@@ -128,32 +143,41 @@ class Zilany2009_Human_Holmberg(object):
         return self._freq_map
 
 
-
 def main():
     import thorns as th
+    import thorns.waves as wv
 
     fs = 100000
     cf = 10000
     stimdb = 20
 
-    ear = Zilany2009((100,100,100), cf=cf,
-                     powerlaw_implnt='approx',
-                     with_ffGn=True)
+    ear = Zilany2009_Human_Holmberg((100,100,100), cf=cf,
+                                    powerlaw_implnt='approx',
+                                    with_ffGn=False
+                                )
 
-    t = np.arange(0, 0.05, 1/fs)
-    s = np.sin(2 * np.pi * t * cf)
-    s = _pycat.set_dbspl(stimdb, s)
-    z = np.zeros_like(s)
-    s = np.concatenate( (s, z) )
+    s = wv.generate_ramped_tone(fs,
+                                freq=cf,
+                                tone_duration=50,
+                                ramp_duration=2.5,
+                                pad_duration=20,
+                                dbspl=stimdb)
 
     anf = ear.run(s, fs)
 
-    th.plot_raster(anf).show()
+    th.plot.raster(anf).show()
 
-    p = th.plot_psth(anf.where(typ='hsr'), color='black')
-    th.plot_psth(anf.where(typ='msr'), color='red', plot=p)
-    th.plot_psth(anf.where(typ='lsr'), color='blue', plot=p)
+    hsr = anf[ anf['anf_type']=='hsr' ]
+    msr = anf[ anf['anf_type']=='msr' ]
+    lsr = anf[ anf['anf_type']=='lsr' ]
+
+    p = th.plot.psth(hsr, color='black')
+    th.plot.psth(msr, color='red', plot=p)
+    th.plot.psth(lsr, color='blue', plot=p)
     p.show()
+
+
+    th.plot.isih(hsr, bin_size=0.3).show()
 
 
 if __name__ == "__main__":

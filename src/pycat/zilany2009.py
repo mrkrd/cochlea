@@ -85,13 +85,13 @@ class Zilany2009(object):
                                    anf_num=self._lsr_num)
                 trains.extend(tr)
 
-        trains = np.array(trains,
-                          dtype=[('spikes', np.ndarray),
-                                 ('duration', float),
-                                 ('cf', float),
-                                 ('anf_type', '|S3'),
-                                 ('anf_idx', int)])
-        return trains
+        spike_trains = np.array(trains,
+                                dtype=[('spikes', np.ndarray),
+                                       ('duration', float),
+                                       ('cf', float),
+                                       ('anf_type', '|S3'),
+                                       ('anf_idx', int)])
+        return spike_trains
 
 
 
