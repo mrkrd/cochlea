@@ -26,9 +26,13 @@ def calc_threshold_rate(model, model_pars):
 
     s = np.zeros(fs*tmax/1000)
 
-    anf = ear.run(fs, s)
+    anf = ear.run(s, fs)
 
-    rates = [th.calc_rate([train], stimulus_duration=tmax) for train in anf]
+    trains = anf['spikes']
+    durations = anf['duration']
+
+    rates = [1000*len(train)/duration
+             for train,duration in zip(trains,durations)]
     rates = np.array(rates)
 
     return rates.mean() + rates.std()
@@ -43,7 +47,7 @@ def error_function(dbspl, model, model_pars, cf, threshold_rate):
     tone_duration = 250     # ms
     onset = 15                  # ms
 
-    ear = model((10000, 0, 0),
+    ear = model((1000, 0, 0),
                 cf=cf,
                 **model_pars)
 
@@ -53,10 +57,10 @@ def error_function(dbspl, model, model_pars, cf, threshold_rate):
                                 pad_duration=0,
                                 dbspl=dbspl)
 
-    anf = ear.run(fs, s)
+    anf = ear.run(s, fs)
 
     trains = th.trim(anf, onset)
-    rate = th.calc_rate(anf, stimulus_duration=(tone_duration-onset))
+    rate = th.stats.rate(anf)
 
     error = threshold_rate - rate
 
@@ -67,12 +71,18 @@ def error_function(dbspl, model, model_pars, cf, threshold_rate):
 def calc_threshold( (model, freq, model_pars) ):
 
     threshold_rate = calc_threshold_rate(model, model_pars)
+    print "threshold_rate:", threshold_rate
 
     dbspl_opt = opt.fminbound(error_function,
                               x1=-10,
                               x2=100,
                               args=(model, model_pars, freq, threshold_rate),
                               xtol=0.1)
+
+    # dbspl_opt = opt.golden(error_function,
+    #                       args=(model, model_pars, freq, threshold_rate),
+    #                       brack=(-10, 100),
+    #                       tol=0.01)
 
     return freq, dbspl_opt
 
@@ -115,7 +125,7 @@ def main():
 
     # print "=== calc_threshold() ==="
     # dbspl_opt = calc_threshold( (model,
-    #                              1000,
+    #                              10000,
     #                              model_pars)
     #                         )
     # print "dbspl_opt:", dbspl_opt
