@@ -125,7 +125,7 @@ class Sumner2002_Vesicles(AuditoryPeriphery):
             self.ihc_lsr_module.print_pars()
 
 
-    def run(self, fs, sound):
+    def run(self, sound, fs):
         """ Run auditory periphery model.
 
         fs: sampling frequency
@@ -201,7 +201,7 @@ def main():
                                 pad_duration=20,
                                 dbspl=stimdb)
 
-    anf = ear.run(fs, s)
+    anf = ear.run(s, fs)
     p = th.plot.raster(anf)
     p.show()
     p = th.plot.psth(anf)

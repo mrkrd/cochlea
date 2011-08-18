@@ -105,7 +105,7 @@ class Holmberg2007(AuditoryPeriphery):
         return freq_map
 
 
-    def run(self, fs, sound):
+    def run(self, sound, fs):
         """ Run auditory periphery model.
 
         sound: audio signal
@@ -186,7 +186,7 @@ def main():
                                 pad_duration=20,
                                 dbspl=stimdb)
 
-    anf = ear.run(fs, s)
+    anf = ear.run(s, fs)
 
     th.plot.raster(anf).show()
     th.plot.psth(anf, bin_size=1).show()

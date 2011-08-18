@@ -54,7 +54,7 @@ class Sumner2002_Voltage_Vesicles(AuditoryPeriphery):
 
 
 
-    def run(self, fs, voltage):
+    def run(self, voltage, fs):
         """ Run auditory periphery model.
 
         fs: sampling frequency
@@ -109,7 +109,7 @@ def main():
     v = -0.089 * np.ones( np.ceil(tmax*fs/1000) )
     v[np.ceil(10*fs/1000):np.ceil(990*fs/1000)] = -0.029
 
-    anf = ear.run(fs, v)
+    anf = ear.run(v, fs)
 
     p = th.plot_raster(anf['spikes'])
     p.show()
