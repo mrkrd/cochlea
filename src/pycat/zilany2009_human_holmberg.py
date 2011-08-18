@@ -37,7 +37,7 @@ class Zilany2009_Human_Holmberg(object):
         self.set_freq(cf)
 
 
-    def run(self, fs, sound, seed=None, me_scaling=0.0261033984163):
+    def run(self, sound, fs, seed=None, me_scaling=0.0261033984163):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
@@ -146,7 +146,7 @@ def main():
     z = np.zeros_like(s)
     s = np.concatenate( (s, z) )
 
-    anf = ear.run(fs, s)
+    anf = ear.run(s, fs)
 
     th.plot_raster(anf).show()
 

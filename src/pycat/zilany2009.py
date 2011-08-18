@@ -46,7 +46,7 @@ class Zilany2009(object):
         self.set_freq(cf)
 
 
-    def run(self, fs, sound):
+    def run(self, sound, fs):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
@@ -171,7 +171,7 @@ def main():
                                 pad_duration=20,
                                 dbspl=stimdb)
 
-    anf = ear.run(fs, s)
+    anf = ear.run(s, fs)
 
     th.plot.raster(anf).show()
 
