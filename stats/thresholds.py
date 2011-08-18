@@ -10,7 +10,7 @@ import multiprocessing
 
 import thorns as th
 import thorns.waves as wv
-
+import binary
 
 def calc_threshold_rate(model, model_pars):
     if model.name == "Holmberg2007":
@@ -62,10 +62,10 @@ def error_function(dbspl, model, model_pars, cf, threshold_rate):
     trains = th.trim(anf, onset)
     rate = th.stats.rate(anf)
 
-    error = threshold_rate - rate
+    error = rate - threshold_rate
 
     print dbspl, error
-    return np.abs(error)
+    return error
 
 
 def calc_threshold( (model, freq, model_pars) ):
@@ -73,16 +73,11 @@ def calc_threshold( (model, freq, model_pars) ):
     threshold_rate = calc_threshold_rate(model, model_pars)
     print "threshold_rate:", threshold_rate
 
-    dbspl_opt = opt.fminbound(error_function,
-                              x1=-10,
-                              x2=100,
-                              args=(model, model_pars, freq, threshold_rate),
-                              xtol=0.1)
+    dbspl_opt = binary.find_threshold(error_function,
+                                      args=(model, model_pars, freq, threshold_rate),
+                                      init_range=(-10, 100),
+                                      desired_range=1)
 
-    # dbspl_opt = opt.golden(error_function,
-    #                       args=(model, model_pars, freq, threshold_rate),
-    #                       brack=(-10, 100),
-    #                       tol=0.01)
 
     return freq, dbspl_opt
 
@@ -123,18 +118,18 @@ def main():
     #                cf=1000,
     #                threshold_rate=threshold_rate)
 
-    # print "=== calc_threshold() ==="
-    # dbspl_opt = calc_threshold( (model,
-    #                              10000,
-    #                              model_pars)
-    #                         )
-    # print "dbspl_opt:", dbspl_opt
+    print "=== calc_threshold() ==="
+    dbspl_opt = calc_threshold( (model,
+                                 10000,
+                                 model_pars)
+                            )
+    print "dbspl_opt:", dbspl_opt
 
-    thresholds = calc_thresholds(model=model,
-                                 model_pars=model_pars,
-                                 freqs=[1000, 3000]
-                             )
-    print thresholds
+    # thresholds = calc_thresholds(model=model,
+    #                              model_pars=model_pars,
+    #                              freqs=[1000, 3000]
+    #                          )
+    # print thresholds
 
 if __name__ == "__main__":
     main()
