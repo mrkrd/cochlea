@@ -77,7 +77,6 @@ class Holmberg2007(AuditoryPeriphery):
 
 
     def set_freq(self, cf):
-
         if isinstance(cf, int):
             cf = float(cf)
 
@@ -161,10 +160,6 @@ class Holmberg2007(AuditoryPeriphery):
 
 
 
-    @classmethod
-    def plot_rate_intensity(cls):
-        ear = Holmberg2007()
-        print ear
 
 
 def main():

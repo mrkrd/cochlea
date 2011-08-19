@@ -10,16 +10,19 @@ import multiprocessing
 
 import thorns as th
 import thorns.waves as wv
-import binary
+from . import binary
 
 def calc_threshold_rate(model, model_pars):
     if model.name == "Holmberg2007":
+        import traveling_waves as tw
         fs = 48e3
+        cf = tw.find_closest_freq_in_map(1000)
     else:
         fs = 100e3
+        cf = 1000
 
     ear = model((10000, 0, 0),
-                cf=1000,
+                cf=cf,
                 **model_pars)
 
     tmax = 250
@@ -76,7 +79,7 @@ def calc_threshold( (model, freq, model_pars) ):
     dbspl_opt = binary.find_threshold(error_function,
                                       args=(model, model_pars, freq, threshold_rate),
                                       init_range=(-10, 100),
-                                      desired_range=1)
+                                      desired_range=0.1)
 
 
     return freq, dbspl_opt
@@ -113,7 +116,7 @@ def calc_human_hearing_threshold(freqs):
     f = freqs / 1000                # kHz -> Hz
 
     th = 3.64 * f**(-0.8) - \
-         6.5 np.exp(-0.6 * (f - 3.3)**2) + \
+         6.5 * np.exp(-0.6 * (f - 3.3)**2) + \
          10**(-3) * f**4
 
     return th
