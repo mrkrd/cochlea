@@ -7,4 +7,4 @@ __author__ = "Marek Rudnicki"
 
 from isointensity import calc_isointensity_curves
 from tuning import calc_tuning
-from thresholds import calc_thresholds
+from thresholds import calc_thresholds, calc_human_hearing_threshold

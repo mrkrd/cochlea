@@ -5,7 +5,6 @@ from __future__ import division
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-import biggles
 
 def find_threshold(func, args=(), init_range=(0, 10), desired_range=1):
     a, b = init_range

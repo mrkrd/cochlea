@@ -102,6 +102,24 @@ def calc_thresholds(model,
     return thresholds
 
 
+
+def calc_human_hearing_threshold(freqs):
+    """Terhardt, E. (1979). Calculating virtual pitch. Hearing
+    Research, 1(2):155-182.
+
+    http://www.diracdelta.co.uk/science/source/t/h/threshold%20of%20hearing/source.html
+
+    """
+    f = freqs / 1000                # kHz -> Hz
+
+    th = 3.64 * f**(-0.8) - \
+         6.5 np.exp(-0.6 * (f - 3.3)**2) + \
+         10**(-3) * f**4
+
+    return th
+
+
+
 def main():
     import pycat
 
