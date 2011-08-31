@@ -39,7 +39,7 @@ class Zilany2009_Human_Holmberg(object):
         self.set_freq(cf)
 
 
-    def run(self, sound, fs, seed=None, me_scaling=0.0261033984163):
+    def run(self, sound, fs, seed=None):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
@@ -51,9 +51,7 @@ class Zilany2009_Human_Holmberg(object):
         trains = []
         for cf in self._freq_map:
             # Run Outer/Middle Ear filter
-            sound = tw.run_outer_ear_filter(fs, sound)
-            sound = tw.run_middle_ear_filter(fs, sound)
-            sound = sound * me_scaling
+
 
             # Run IHC model
             vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
