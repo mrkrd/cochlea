@@ -13,6 +13,7 @@ setup(
     author = "Marek Rudnicki",
     packages = ["pycat"],
     package_dir = {"pycat": "src/pycat"},
+    package_data = {"pycat": ["data/*.txt"]},
     ext_package = "pycat",
     ext_modules = [
         Extension("_pycat",
