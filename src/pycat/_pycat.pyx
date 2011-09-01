@@ -4,6 +4,7 @@ import scipy.signal as dsp
 import ffGn_module
 
 cimport numpy as np
+np.seterr(invalid='ignore')
 
 
 cdef extern from "stdlib.h":

@@ -6,6 +6,8 @@ from __future__ import division
 __author__ = "Marek Rudnicki"
 
 import numpy as np
+import scipy.signal as dsp
+import os
 
 import _pycat
 
@@ -13,17 +15,23 @@ import thorns as th
 import traveling_waves as tw
 
 
-class Zilany2009_Human_Holmberg(object):
-    name = 'Zilany2009_Human_Holmberg'
+class Zilany2009_Human(object):
+    name = 'Zilany2009_Human'
 
-    def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='actual', with_ffGn=True):
-        """ Auditory periphery model of a cat (Zilany et al. 2009)
+    def __init__(self,
+                 anf_num=(1,1,1),
+                 cf=1000,
+                 powerlaw_implnt='approx',
+                 with_ffGn=False,
+                 with_me=True):
+        """Auditory periphery model from Zilany et al. (2009) with
+        human middle ear filter
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
-        powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
+        powerlaw_implnt: 'approx' or 'actual' implementation of the power-law
         with_ffGn: enable/disable Gausian noise
+        with_me: enable/disable middle ear filter (used for fitting a new ME filter)
 
         """
         self._hsr_num = anf_num[0]
@@ -36,10 +44,12 @@ class Zilany2009_Human_Holmberg(object):
         self._cohc = 1
         self._cihc = 1
 
+        self._with_me = with_me
+
         self.set_freq(cf)
 
 
-    def run(self, sound, fs, seed=None, me_scaling=0.0260498046875):
+    def run(self, sound, fs, seed=None):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
@@ -51,9 +61,9 @@ class Zilany2009_Human_Holmberg(object):
         trains = []
         for cf in self._freq_map:
             # Run Outer/Middle Ear filter
-            sound = tw.run_outer_ear_filter(fs, sound)
-            sound = tw.run_middle_ear_filter(fs, sound)
-            sound = sound * me_scaling
+            if self._with_me:
+                sound = run_me_filter_for_zilany2009(sound, fs)
+
 
             # Run IHC model
             vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
@@ -143,18 +153,59 @@ class Zilany2009_Human_Holmberg(object):
         return self._freq_map
 
 
+
+
+def run_me_filter_for_zilany2009(signal, fs):
+    signal_fft = np.fft.fft(signal)
+    freqs = np.fft.fftfreq(len(signal), d=1/fs)
+
+
+    me_filter_response = np.loadtxt(data_dir("me_filter_response.txt"))
+    me_filter_freqs = np.loadtxt(data_dir("me_filter_freqs.txt"))
+    fmin = me_filter_freqs.min()
+    fmax = me_filter_freqs.max()
+
+
+    # Convert dB to amplitudae ratio
+    response_ratio = 10 ** (me_filter_response / 20)
+
+    # Interpolate the filter to fit signal's FFT
+    band_len = len(signal_fft[(freqs>=fmin) & (freqs<=fmax)])
+    interp_ratio = dsp.resample(response_ratio, band_len)
+    interp_ratio = np.concatenate( (interp_ratio, interp_ratio[::-1]) )
+
+
+    # Apply the filter
+    band = (np.abs(freqs) >= fmin) & (np.abs(freqs) <= fmax)
+    signal_fft[band] *= interp_ratio
+
+    signal_fft[ np.logical_not(band) ] = 0
+
+
+
+    filtered = np.fft.ifft( signal_fft )
+
+    return np.real(filtered)
+
+
+def data_dir(par_file):
+    base_dir = os.path.dirname(__file__)
+    return os.path.join(base_dir, 'data', par_file)
+
+
+
 def main():
     import thorns as th
     import thorns.waves as wv
 
     fs = 100000
-    cf = 10000
-    stimdb = 20
+    cf = 1000
+    stimdb = 80
 
-    ear = Zilany2009_Human_Holmberg((100,100,100), cf=cf,
-                                    powerlaw_implnt='approx',
-                                    with_ffGn=False
-                                )
+    ear = Zilany2009_Human((100,100,100), cf=cf,
+                           powerlaw_implnt='approx',
+                           with_ffGn=False
+    )
 
     s = wv.generate_ramped_tone(fs,
                                 freq=cf,

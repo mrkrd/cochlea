@@ -21,13 +21,13 @@ class Zilany2009(object):
     name = 'Zilany2009'
 
     def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='actual', with_ffGn=True,
+                 powerlaw_implnt='approx', with_ffGn=False,
                  seed=None):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
         cf: CF
-        powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
+        powerlaw_implnt: 'approx' or 'actual' implementation of the power-law
         with_ffGn: enable/disable Gausian noise
 
         """

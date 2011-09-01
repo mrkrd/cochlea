@@ -13,11 +13,11 @@ import _pycat
 
 class Zilany2009_Voltage_Vesicles(object):
     def __init__(self, anf_num=(1,1,1),
-                 powerlaw_implnt='actual', with_ffGn=True):
+                 powerlaw_implnt='approx', with_ffGn=False):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
-        powerlaw_implnt: 'approx' or 'acctual' implementation of the power-law
+        powerlaw_implnt: 'approx' or 'actual' implementation of the power-law
 
         """
         self.name = 'Zilany2009'
