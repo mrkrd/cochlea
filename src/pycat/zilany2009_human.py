@@ -156,6 +156,8 @@ class Zilany2009_Human(object):
 
 
 def run_me_filter_for_zilany2009(signal, fs):
+    assert fs > 40e3
+
     signal_fft = np.fft.fft(signal)
     freqs = np.fft.fftfreq(len(signal), d=1/fs)
 
