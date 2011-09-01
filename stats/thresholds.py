@@ -78,7 +78,7 @@ def calc_threshold( (model, freq, model_pars) ):
 
     dbspl_opt = binary.find_threshold(error_function,
                                       args=(model, model_pars, freq, threshold_rate),
-                                      init_range=(-10, 100),
+                                      init_range=(-100, 100),
                                       desired_range=0.1)
 
 
