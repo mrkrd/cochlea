@@ -303,7 +303,7 @@ def sample_rate(fs, rates):
 
 
 
-def set_dbspl(dB, signal):
+def set_dbspl(signal, db):
     p0 = 2e-5                   # Pa
     squared = signal**2
     rms = np.sqrt( np.sum(squared) / len(signal) )
@@ -311,7 +311,7 @@ def set_dbspl(dB, signal):
     if rms == 0:
         r = 0
     else:
-        r = 10**(dB / 20.0) * p0 / rms
+        r = 10**(db / 20.0) * p0 / rms
 
     return signal * r * 1e6     # uPa
 
