@@ -137,8 +137,9 @@ class Zilany2009_Human(object):
         elif isinstance(cf, tuple):
             # Based on GenerateGreenwood_CFList() from DSAM
             # Liberman (1982)
-            aA = 456
-            k = 0.8
+            # Pars from GetGreenwoodPars_CFList()
+            aA = 165.4
+            k = 0.88
             a = 2.1
 
             freq_min, freq_max, freq_num = cf
