@@ -1,5 +1,5 @@
 import numpy as np
-from stdlib cimport malloc
+from libc.stdlib cimport malloc
 import scipy.signal as dsp
 import ffGn_module
 
