@@ -12,7 +12,6 @@ import os
 import _pycat
 
 import thorns as th
-import traveling_waves as tw
 
 
 class Zilany2009_Human(object):
