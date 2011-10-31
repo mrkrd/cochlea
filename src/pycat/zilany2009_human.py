@@ -57,13 +57,12 @@ class Zilany2009_Human(object):
         """
         np.random.seed(seed)
 
+        # Run Outer/Middle Ear filter
+        if self._with_me:
+            sound = run_me_filter_for_zilany2009(sound, fs)
+
         trains = []
         for cf in self._freq_map:
-            # Run Outer/Middle Ear filter
-            if self._with_me:
-                sound = run_me_filter_for_zilany2009(sound, fs)
-
-
             # Run IHC model
             vihc = _pycat.run_ihc(signal=sound, cf=cf, fs=fs,
                                   cohc=self._cohc, cihc=self._cihc)

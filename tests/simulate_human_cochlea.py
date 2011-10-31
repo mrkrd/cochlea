@@ -6,9 +6,10 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 import thorns as th
 import thorns.waves as wv
-import thorns.plot as thp
 
 import pycat
 
@@ -20,18 +21,20 @@ def main():
                                  cf=(80, 16000, 100))
 
     s = wv.generate_ramped_tone(fs,
-                                freq=1000,
+                                freq=600,
                                 tone_duration=50,
                                 ramp_duration=2.5,
                                 pad_duration=20,
-                                dbspl=70)
+                                dbspl=50)
 
     single_trains = ear.run(s, fs)
 
     anf = th.accumulate(single_trains,
                         ignore=['anf_idx'])
 
-    thp.raster(anf).show()
+    anf_matrix = th.trains_to_signal(anf, fs)
+    plt.imshow(anf_matrix.T, aspect='auto')
+    plt.show()
 
 
 if __name__ == "__main__":
