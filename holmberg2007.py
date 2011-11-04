@@ -164,6 +164,7 @@ class Holmberg2007(AuditoryPeriphery):
 
 def main():
     import thorns as th
+    import thorns.plot as thp
     import thorns.waves as wv
 
     fs = 48000
@@ -174,17 +175,17 @@ def main():
     ear = Holmberg2007((250,0,0), cf=cf)
 
 
-    s = wv.generate_ramped_tone(fs,
-                                freq=cf,
-                                tone_duration=50,
-                                ramp_duration=2.5,
-                                pad_duration=20,
-                                dbspl=stimdb)
+    s = th.waves.generate_ramped_tone(fs,
+                                      freq=cf,
+                                      tone_duration=50,
+                                      ramp_duration=2.5,
+                                      pad_duration=20,
+                                      dbspl=stimdb)
 
     anf = ear.run(s, fs)
 
-    th.plot.raster(anf).show()
-    th.plot.psth(anf, bin_size=1).show()
+    thp.raster(anf).show()
+    thp.psth(anf, bin_size=1).show()
 
 
 
