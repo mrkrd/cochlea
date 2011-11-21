@@ -9,7 +9,7 @@ numpy_include = numpy.get_include()
 
 setup(
     name = "pycat",
-    version = "1.0",
+    version = "1.1",
     author = "Marek Rudnicki",
     packages = ["pycat"],
     package_dir = {"pycat": "src/pycat"},
