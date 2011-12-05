@@ -93,8 +93,8 @@ class Zilany2009_Human(object):
                                 dtype=[('spikes', np.ndarray),
                                        ('duration', float),
                                        ('cf', float),
-                                       ('anf_type', '|S3'),
-                                       ('anf_idx', int)])
+                                       ('type', '|S3'),
+                                       ('idx', int)])
         return spike_trains
 
 
@@ -219,9 +219,9 @@ def main():
 
     th.plot.raster(anf).show()
 
-    hsr = anf[ anf['anf_type']=='hsr' ]
-    msr = anf[ anf['anf_type']=='msr' ]
-    lsr = anf[ anf['anf_type']=='lsr' ]
+    hsr = anf[ anf['type']=='hsr' ]
+    msr = anf[ anf['type']=='msr' ]
+    lsr = anf[ anf['type']=='lsr' ]
 
     p = th.plot.psth(hsr, color='black')
     th.plot.psth(msr, color='red', plot=p)
