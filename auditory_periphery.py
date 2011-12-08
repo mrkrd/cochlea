@@ -21,8 +21,8 @@ class AuditoryPeriphery(object):
     _anf_dtype = [('spikes', np.ndarray),
                   ('duration', float),
                   ('cf', float),
-                  ('anf_type', '|S3'),
-                  ('anf_idx', int)]
+                  ('type', '|S3'),
+                  ('idx', int)]
 
     def __init__(self):
         pass
