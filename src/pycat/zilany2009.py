@@ -90,7 +90,7 @@ class Zilany2009(object):
                                        ('duration', float),
                                        ('cf', float),
                                        ('type', '|S3'),
-                                       ('idx', int)])
+                                       ('index', int)])
         return spike_trains
 
 
