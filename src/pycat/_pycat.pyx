@@ -168,7 +168,7 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     """
     Run BM / IHC model.
 
-    signal: output of the middle ear filter [uPa]
+    signal: output of the middle ear filter [Pa]
     cf: characteristic frequency
     fs: sampling frequency
     cohc, cihc: degeneration parameters for IHC and OHC cells
@@ -181,9 +181,6 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     assert (cohc >= 0) and (cohc <= 1), "0 <= cohc <= 1"
     assert (cihc >= 0) and (cihc <= 1), "0 <= cihc <= 1"
 
-    # uPa -> Pa
-    # Compatibility with DSAM
-    signal = signal * 1e-6
 
     # Input sound
     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
@@ -313,5 +310,5 @@ def set_dbspl(signal, db):
     else:
         r = 10**(db / 20.0) * p0 / rms
 
-    return signal * r * 1e6     # uPa
+    return signal * r           # Pa
 
