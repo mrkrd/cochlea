@@ -57,6 +57,9 @@ class Zilany2009_Human(object):
         """
         np.random.seed(seed)
 
+        assert np.max(sound) < 1000, "Signal should be given in Pa"
+
+
         # Run Outer/Middle Ear filter
         if self._with_me:
             sound = run_me_filter_for_zilany2009(sound, fs)

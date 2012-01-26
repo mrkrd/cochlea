@@ -53,7 +53,7 @@ class Zilany2009(object):
         sound: input signal
 
         """
-        # TODO: implement storing of spikes in a file/db and reloading them as needed
+        assert np.max(sound) < 1000, "Signal should be given in Pa"
 
         trains = []
         for cf in self._freq_map:
