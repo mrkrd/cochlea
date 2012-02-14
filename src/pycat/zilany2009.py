@@ -98,7 +98,7 @@ class Zilany2009(object):
     def _run_anf(self, fs, cf, vihc, anf_type, anf_num):
 
         synout = None
-        duration = 1000 * len(vihc) / fs # ms
+        duration = len(vihc) / fs # [s]
         anf_trains = []
         for anf_idx in range(anf_num):
             if (synout is None) or self._with_ffGn:
@@ -110,7 +110,7 @@ class Zilany2009(object):
             spikes = _pycat.run_spike_generator(fs=fs,
                                                 synout=synout)
 
-            spikes = spikes[spikes != 0] * 1000 # s -> ms
+            spikes = spikes[spikes != 0] # [s]
             anf_trains.append( (spikes,
                                 duration,
                                 cf,
