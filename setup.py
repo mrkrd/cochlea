@@ -8,17 +8,17 @@ import numpy
 numpy_include = numpy.get_include()
 
 setup(
-    name = "pycat",
-    version = "1.1",
+    name = "cochlea",
+    version = "2",
     author = "Marek Rudnicki",
-    packages = ["pycat"],
-    package_dir = {"pycat": "src/pycat"},
-    package_data = {"pycat": ["data/*.txt"]},
-    ext_package = "pycat",
+    packages = ["cochlea"],
+    package_dir = {"cochlea": "src"},
+    package_data = {"cochlea": ["data/*.txt"]},
+    # ext_package = "cochlea",
     ext_modules = [
         Extension("_pycat",
-                  ["src/pycat/_pycat.pyx", "src/pycat/catmodel.c",
-                   "src/pycat/complex.c"],
+                  ["src/_pycat.pyx", "src/catmodel.c",
+                   "src/complex.c"],
                   include_dirs=[numpy_include])
         ],
     cmdclass = {"build_ext": build_ext}
