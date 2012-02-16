@@ -14,7 +14,7 @@ setup(
     packages = ["cochlea"],
     package_dir = {"cochlea": "src"},
     package_data = {"cochlea": ["data/*.txt"]},
-    # ext_package = "cochlea",
+    ext_package = "cochlea",
     ext_modules = [
         Extension("_pycat",
                   ["src/_pycat.pyx", "src/catmodel.c",
