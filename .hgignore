@@ -1,8 +1,14 @@
 syntax: glob
-*.pyc
-*.npz
-*.npy
-*.eps
-*.png
-*.pdf
-*.orig
+# *.pyc
+# *.npz
+# *.npy
+# *.eps
+# *.png
+# *.pdf
+# *.orig
+# build
+# _pycat.c
+# _pycat.h
+# *.mexa64
+# *.orig
+
