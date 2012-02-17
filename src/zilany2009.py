@@ -21,8 +21,7 @@ class Zilany2009(object):
     name = 'Zilany2009'
 
     def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='approx', with_ffGn=False,
-                 seed=None):
+                 powerlaw_implnt='approx', with_ffGn=False)
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -31,8 +30,6 @@ class Zilany2009(object):
         with_ffGn: enable/disable Gausian noise
 
         """
-        np.random.seed(seed)
-
         self._hsr_num = anf_num[0]
         self._msr_num = anf_num[1]
         self._lsr_num = anf_num[2]
@@ -46,13 +43,15 @@ class Zilany2009(object):
         self.set_freq(cf)
 
 
-    def run(self, sound, fs):
+    def run(self, sound, fs, seed):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
         sound: input signal
 
         """
+        np.random.seed(seed)
+
         assert np.max(sound) < 1000, "Signal should be given in Pa"
 
         trains = []

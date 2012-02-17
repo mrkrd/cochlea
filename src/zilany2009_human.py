@@ -17,11 +17,8 @@ import thorns as th
 class Zilany2009_Human(object):
     name = 'Zilany2009_Human'
 
-    def __init__(self,
-                 anf_num=(1,1,1),
-                 cf=1000,
-                 powerlaw_implnt='approx',
-                 with_ffGn=False,
+    def __init__(self, anf_num=(1,1,1), cf=1000,
+                 powerlaw_implnt='approx', with_ffGn=False,
                  with_me=True):
         """Auditory periphery model from Zilany et al. (2009) with
         human middle ear filter
@@ -48,7 +45,7 @@ class Zilany2009_Human(object):
         self.set_freq(cf)
 
 
-    def run(self, sound, fs, seed=None):
+    def run(self, sound, fs, seed):
         """ Run the model.
 
         fs: sampling frequency of the signal; model is run at the same frequency
