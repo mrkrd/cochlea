@@ -8,6 +8,8 @@ syntax: glob
 build
 _pycat.c
 _pycat.h
+_pycat.so
 *.mexa64
 *.orig
 _tw.c
+_tw.so
