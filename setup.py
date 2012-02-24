@@ -13,7 +13,7 @@ setup(
     author = "Marek Rudnicki",
     packages = ["cochlea"],
     package_dir = {"cochlea": "src"},
-    package_data = {"cochlea": ["data/*.txt"]},
+    package_data = {"cochlea": ["data/*.txt", "pars/*.par"]},
     ext_package = "cochlea",
     ext_modules = [
         Extension("_pycat",
