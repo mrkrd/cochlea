@@ -99,6 +99,8 @@ class Zilany2009_Human_PSP(object):
         for typ in psp:
             psp[typ] = np.array(psp[typ]).T
 
+        psp['cfs'] = self._freq_map
+
         return psp
 
 
