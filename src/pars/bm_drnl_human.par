@@ -1,0 +1,45 @@
+#		BM_DRNL		< BM_DRNLHuman.par
+
+# Parameters are based on
+# Lopez-Poveda, E.A., and Meddis, R.
+#"A human non-linear cochlear filterbank"
+# JASA 110, 3107-3118, (2001)
+
+#nonlinear path
+NL_GT_CASCADE		3	Nonlinear gammatone filter cascade.
+NL_LP_CASCADE		3	Nonlinear low-pass filter cascade.
+
+NONLINBWIDTH_PARAMETER	0:-0.032
+NONLINBWIDTH_PARAMETER	1:0.774
+
+COMPRSCALEA_PARAMETER	0:1.4
+COMPRSCALEA_PARAMETER	1:0.82
+
+COMPRSCALEB_PARAMETER	0:1.62
+COMPRSCALEB_PARAMETER	1:-0.82
+
+COMP_N_EXPON		0.25	Compression exponent, n (units).
+
+L_GT_CASCADE		3	Linear gammatone filter cascade.
+L_LP_CASCADE		4	Linear low-pass filter cascade.
+
+
+#linear path
+LINCF_PARAMETER	0:-0.068
+LINCF_PARAMETER	1:1.02
+
+LINBWIDTH_PARAMETER	0:0.037
+LINBWIDTH_PARAMETER	1:0.79
+
+LINSCALEG_PARAMETER	0:4.2
+LINSCALEG_PARAMETER	1:-0.48
+
+#BF List Parameters:-
+#CF_MODE			human  Can be `human', `single', etc.
+
+#MIN_CF			50	Minimum centre frequency (Hz).
+#MAX_CF			10000	Maximum centre frequency (Hz).
+#CHANNELS		100	No. of centre frequencies.
+
+#SINGLE_CF		1000
+#B_MODE				ERB

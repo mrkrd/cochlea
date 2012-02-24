@@ -1,11 +1,13 @@
 syntax: glob
-build
-dist
-*.o
-*.so
 *.pyc
-*.npy
-*.eps
-_tw.c
-_tw.html
+# *.npz
+# *.npy
+# *.eps
+# *.png
+# *.pdf
+build
+_pycat.c
+_pycat.h
+*.mexa64
 *.orig
+
