@@ -104,7 +104,7 @@ class Holmberg2007(AuditoryPeriphery):
         return freq_map
 
 
-    def run(self, sound, fs):
+    def run(self, sound, fs, seed):
         """ Run auditory periphery model.
 
         sound: audio signal
@@ -112,6 +112,10 @@ class Holmberg2007(AuditoryPeriphery):
 
         """
         assert fs == 48000
+        assert np.max(sound) < 1000, "Signal should be given in Pa"
+
+        np.random.seed(seed)
+
 
         ### Outer ear filter
         sound = tw.run_outer_ear_filter(fs, sound)
@@ -170,22 +174,22 @@ def main():
     fs = 48000
     cf = tw.find_closest_freq_in_map(1000)
     print "CF:", cf
-    stimdb = 60
+    stimdb = 70
 
     ear = Holmberg2007((250,0,0), cf=cf)
 
 
     s = th.waves.generate_ramped_tone(fs,
                                       freq=cf,
-                                      tone_duration=50,
-                                      ramp_duration=2.5,
-                                      pad_duration=20,
+                                      tone_duration=50e-3,
+                                      ramp_duration=2.5e-3,
+                                      pad_duration=20e-3,
                                       dbspl=stimdb)
 
-    anf = ear.run(s, fs)
+    anf = ear.run(s, fs, seed=0)
 
     thp.raster(anf).show()
-    thp.psth(anf, bin_size=1).show()
+    thp.psth(anf, bin_size=1e-3).show()
 
 
 

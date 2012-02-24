@@ -75,7 +75,7 @@ def run_outer_ear_filter(fs, signal):
 
 
 def set_dbspl(dB, signal):
-    p0 = 2e-5                   # Pa
+    p0 = 2e-5                   # [Pa]
     squared = signal**2
     rms = np.sqrt( np.sum(squared) / len(signal) )
 
@@ -84,7 +84,7 @@ def set_dbspl(dB, signal):
     else:
         r = 10**(dB / 20.0) * p0 / rms;
 
-    return signal * r * 1e6     # uPa
+    return signal * r           # [Pa]
 
 
 def find_closest_freq_idx_in_map(freq):
