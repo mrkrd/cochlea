@@ -199,8 +199,8 @@ def main():
     import thorns as th
     import thorns.waves as wv
 
-    fs = 100000
-    cf = 1000
+    fs = 100e3
+    cf = 1e3
     stimdb = 80
 
     ear = Zilany2009_Human((100,100,100), cf=cf,
@@ -210,12 +210,12 @@ def main():
 
     s = wv.generate_ramped_tone(fs,
                                 freq=cf,
-                                tone_duration=50,
-                                ramp_duration=2.5,
-                                pad_duration=20,
+                                tone_duration=50e-3,
+                                ramp_duration=2.5e-3,
+                                pad_duration=20e-3,
                                 dbspl=stimdb)
 
-    anf = ear.run(s, fs)
+    anf = ear.run(s, fs, seed=0)
 
     th.plot.raster(anf).show()
 
@@ -229,8 +229,10 @@ def main():
     p.show()
 
 
-    th.plot.isih(hsr, bin_size=0.3).show()
+    th.plot.isih(hsr, bin_size=0.3e-3).show()
 
+
+    print "HSR rate:", th.stats.rate(hsr)
 
 if __name__ == "__main__":
     main()
