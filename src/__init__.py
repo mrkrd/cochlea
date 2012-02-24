@@ -4,4 +4,7 @@ from zilany2009_voltage_vesicles import Zilany2009_Voltage_Vesicles
 from zilany2009_human import Zilany2009_Human
 from zilany2009_human_psp import Zilany2009_Human_PSP
 
-from holmberg2007 import Holmberg2007
+try:
+    from holmberg2007 import Holmberg2007
+except ImportError:
+    print "Holmberg2007 not loaded (DSAM missing?)"
