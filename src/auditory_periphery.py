@@ -22,7 +22,7 @@ class AuditoryPeriphery(object):
                   ('duration', float),
                   ('cf', float),
                   ('type', '|S3'),
-                  ('idx', int)]
+                  ('index', int)]
 
     def __init__(self):
         pass
