@@ -10,6 +10,8 @@ import scipy.signal as dsp
 import os
 
 import _pycat
+from auditory_periphery import run_human_me_filter_for_zilany2009
+from auditory_periphery import data_dir
 
 import thorns as th
 
@@ -59,7 +61,7 @@ class Zilany2009_Human(object):
 
         # Run Outer/Middle Ear filter
         if self._with_me:
-            sound = run_me_filter_for_zilany2009(sound, fs)
+            sound = run_human_me_filter_for_zilany2009(sound, fs)
 
         trains = []
         for cf in self._freq_map:
@@ -152,46 +154,6 @@ class Zilany2009_Human(object):
         return self._freq_map
 
 
-
-
-def run_me_filter_for_zilany2009(signal, fs):
-    assert fs > 40e3
-
-    signal_fft = np.fft.fft(signal)
-    freqs = np.fft.fftfreq(len(signal), d=1/fs)
-
-
-    me_filter_response = np.loadtxt(data_dir("me_filter_response.txt"))
-    me_filter_freqs = np.loadtxt(data_dir("me_filter_freqs.txt"))
-    fmin = me_filter_freqs.min()
-    fmax = me_filter_freqs.max()
-
-
-    # Convert dB to amplitudae ratio
-    response_ratio = 10 ** (me_filter_response / 20)
-
-    # Interpolate the filter to fit signal's FFT
-    band_len = len(signal_fft[(freqs>=fmin) & (freqs<=fmax)])
-    interp_ratio = dsp.resample(response_ratio, band_len)
-    interp_ratio = np.concatenate( (interp_ratio, interp_ratio[::-1]) )
-
-
-    # Apply the filter
-    band = (np.abs(freqs) >= fmin) & (np.abs(freqs) <= fmax)
-    signal_fft[band] *= interp_ratio
-
-    signal_fft[ np.logical_not(band) ] = 0
-
-
-
-    filtered = np.fft.ifft( signal_fft )
-
-    return np.real(filtered)
-
-
-def data_dir(par_file):
-    base_dir = os.path.dirname(__file__)
-    return os.path.join(base_dir, 'data', par_file)
 
 
 

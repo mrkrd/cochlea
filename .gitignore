@@ -1,10 +1,4 @@
-syntax: glob
 *.pyc
-# *.npz
-# *.npy
-# *.eps
-# *.png
-# *.pdf
 build
 _pycat.c
 _pycat.h

@@ -2,9 +2,9 @@ from __future__ import division
 
 import numpy as np
 import os
+import scipy.signal as dsp
 
 import thorns as th
-import dsam
 
 def par_dir(par_file):
     """
@@ -70,3 +70,46 @@ class AuditoryPeriphery(object):
     def run(self):
         """ Run the model """
         pass
+
+
+
+
+def run_human_me_filter_for_zilany2009(signal, fs):
+    assert fs > 40e3
+
+    signal_fft = np.fft.fft(signal)
+    freqs = np.fft.fftfreq(len(signal), d=1/fs)
+
+
+    me_filter_response = np.loadtxt(data_dir("me_filter_response.txt"))
+    me_filter_freqs = np.loadtxt(data_dir("me_filter_freqs.txt"))
+    fmin = me_filter_freqs.min()
+    fmax = me_filter_freqs.max()
+
+
+    # Convert dB to amplitudae ratio
+    response_ratio = 10 ** (me_filter_response / 20)
+
+
+    # Interpolate the filter to fit signal's FFT
+    band = ((np.abs(freqs)>=fmin) & (np.abs(freqs)<=fmax))
+    band_len = np.sum( band )
+    ratio_interp = dsp.resample(response_ratio, band_len/2)
+    ratio_interp = np.concatenate( (ratio_interp, ratio_interp[::-1]) )
+
+
+    # Apply the filter
+    signal_fft[band] *= ratio_interp
+
+    signal_fft[ np.logical_not(band) ] = 0
+
+
+    filtered = np.fft.ifft( signal_fft )
+    filtered = np.array( filtered.real )
+
+    return filtered
+
+
+def data_dir(par_file):
+    base_dir = os.path.dirname(__file__)
+    return os.path.join(base_dir, 'data', par_file)
