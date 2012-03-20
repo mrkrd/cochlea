@@ -21,20 +21,22 @@ def calc_threshold_rate(model, model_pars):
         fs = 100e3
         cf = 1000
 
-    ear = model((10000, 0, 0),
-                cf=cf,
-                **model_pars)
+    ear = model(
+        (10000, 0, 0),
+        cf=cf,
+        **model_pars
+    )
 
-    tmax = 250
+    tmax = 250e-3
 
-    s = np.zeros(fs*tmax/1000)
+    s = np.zeros(fs*tmax)
 
-    anf = ear.run(s, fs)
+    anf = ear.run(s, fs, seed=0)
 
     trains = anf['spikes']
     durations = anf['duration']
 
-    rates = [1000*len(train)/duration
+    rates = [len(train)/duration
              for train,duration in zip(trains,durations)]
     rates = np.array(rates)
 
@@ -47,27 +49,31 @@ def error_function(dbspl, model, model_pars, cf, threshold_rate):
     else:
         fs = 100e3              # Hz
 
-    tone_duration = 250     # ms
-    onset = 15                  # ms
+    tone_duration = 250e-3
+    onset = 15e-3
 
-    ear = model((1000, 0, 0),
-                cf=cf,
-                **model_pars)
+    ear = model(
+        (1000, 0, 0),
+        cf=cf,
+        **model_pars
+    )
 
-    s = wv.generate_ramped_tone(fs, cf,
-                                tone_duration=tone_duration,
-                                ramp_duration=2.5,
-                                pad_duration=0,
-                                dbspl=dbspl)
+    s = wv.generate_ramped_tone(
+        fs, cf,
+        tone_duration=tone_duration,
+        ramp_duration=2.5e-3,
+        pad_duration=0,
+        dbspl=dbspl
+    )
 
-    anf = ear.run(s, fs)
+    anf = ear.run(s, fs, seed=0)
 
     trains = th.trim(anf, onset)
     rate = th.stats.rate(anf)
 
     error = rate - threshold_rate
 
-    print dbspl, error
+    print dbspl, rate, error
     return error
 
 
@@ -76,10 +82,12 @@ def calc_threshold( (model, freq, model_pars) ):
     threshold_rate = calc_threshold_rate(model, model_pars)
     print "threshold_rate:", threshold_rate
 
-    dbspl_opt = binary.find_threshold(error_function,
-                                      args=(model, model_pars, freq, threshold_rate),
-                                      init_range=(-100, 100),
-                                      desired_range=0.1)
+    dbspl_opt = binary.find_threshold(
+        error_function,
+        args=(model, model_pars, freq, threshold_rate),
+        init_range=(-100, 100),
+        desired_range=0.1
+    )
 
 
     return freq, dbspl_opt
@@ -140,10 +148,13 @@ def main():
     #                threshold_rate=threshold_rate)
 
     print "=== calc_threshold() ==="
-    dbspl_opt = calc_threshold( (model,
-                                 10000,
-                                 model_pars)
-                            )
+    dbspl_opt = calc_threshold(
+        (
+            model,
+            10000,
+            model_pars
+        )
+    )
     print "dbspl_opt:", dbspl_opt
 
     # thresholds = calc_thresholds(model=model,

@@ -11,8 +11,14 @@ setup(
     name = "cochlea",
     version = "3",
     author = "Marek Rudnicki",
-    packages = ["cochlea"],
-    package_dir = {"cochlea": "src"},
+    packages = [
+        "cochlea",
+        "cochlea.stats"
+    ],
+    package_dir = {
+        "cochlea": "src",
+        "cochlea.stats": "src/stats"
+    },
     package_data = {"cochlea": ["data/*.txt", "pars/*.par"]},
     ext_package = "cochlea",
     ext_modules = [
