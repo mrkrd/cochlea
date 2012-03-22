@@ -15,7 +15,7 @@ except ImportError:
 def set_dbspl(signal, db):
     p0 = 2e-5                   # Pa
     squared = signal**2
-    rms = np.sqrt( np.sum(squared) / len(signal) )
+    rms = np.sqrt( np.sum(squared) / signal.size )
 
     if rms == 0:
         r = 0
