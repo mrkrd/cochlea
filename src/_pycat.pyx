@@ -189,7 +189,7 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
 
     # Output IHC voltage
-    ihcout = np.zeros( signal.shape )
+    ihcout = np.zeros( len(signal) )
     cdef double *ihcout_data = <double *>np.PyArray_DATA(ihcout)
 
 
