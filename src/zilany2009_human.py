@@ -127,13 +127,11 @@ class Zilany2009_Human(object):
 
     def set_freq(self, cf):
         """ Set signle or range of CF for the model."""
-        if isinstance(cf, int):
-            cf = float(cf)
-        assert (isinstance(cf, tuple) or
-                isinstance(cf, float))
 
         if isinstance(cf, float):
             self._freq_map = [cf]
+        elif isinstance(cf, int):
+            self._freq_map = [float(cf)]
         elif isinstance(cf, tuple):
             # Based on GenerateGreenwood_CFList() from DSAM
             # Liberman (1982)
@@ -149,6 +147,12 @@ class Zilany2009_Human(object):
 
             x_map = np.linspace(xmin, xmax, freq_num)
             self._freq_map = aA * ( 10**( a*x_map ) - k)
+        elif isinstance(cf, list):
+            self._freq_map = cf
+        else:
+            assert False, "CF must be int, float, tuple or list"
+
+
 
     def get_freq_map(self):
         return self._freq_map
