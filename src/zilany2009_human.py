@@ -147,7 +147,7 @@ class Zilany2009_Human(object):
 
             x_map = np.linspace(xmin, xmax, freq_num)
             self._freq_map = aA * ( 10**( a*x_map ) - k)
-        elif isinstance(cf, list):
+        elif isinstance(cf, list) or isinstance(cf, np.ndarray):
             self._freq_map = cf
         else:
             assert False, "CF must be int, float, tuple or list"
