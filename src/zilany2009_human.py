@@ -22,7 +22,7 @@ class Zilany2009_Human(object):
     def __init__(self,
                  anf_num=(1,1,1),
                  cf=1000,
-                 cohc=1
+                 cohc=1,
                  cihc=1,
                  powerlaw_implnt='approx',
                  with_ffGn=False,
