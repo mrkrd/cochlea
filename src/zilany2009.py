@@ -20,8 +20,13 @@ import thorns as th
 class Zilany2009(object):
     name = 'Zilany2009'
 
-    def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='approx', with_ffGn=False):
+    def __init__(self,
+                 anf_num=(1,1,1),
+                 cf=1000,
+                 cohc=1
+                 cihc=1
+                 powerlaw_implnt='approx',
+                 with_ffGn=False):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -37,8 +42,8 @@ class Zilany2009(object):
         self._powerlaw_implnt = powerlaw_implnt
         self._with_ffGn = with_ffGn
 
-        self._cohc = 1
-        self._cihc = 1
+        self._cohc = cohc
+        self._cihc = cihc
 
         self.set_freq(cf)
 

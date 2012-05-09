@@ -19,8 +19,13 @@ import thorns as th
 class Zilany2009_Human(object):
     name = 'Zilany2009_Human'
 
-    def __init__(self, anf_num=(1,1,1), cf=1000,
-                 powerlaw_implnt='approx', with_ffGn=False,
+    def __init__(self,
+                 anf_num=(1,1,1),
+                 cf=1000,
+                 cohc=1
+                 cihc=1,
+                 powerlaw_implnt='approx',
+                 with_ffGn=False,
                  with_me=True):
         """Auditory periphery model from Zilany et al. (2009) with
         human middle ear filter
@@ -39,8 +44,8 @@ class Zilany2009_Human(object):
         self._powerlaw_implnt = powerlaw_implnt
         self._with_ffGn = with_ffGn
 
-        self._cohc = 1
-        self._cihc = 1
+        self._cohc = cohc
+        self._cihc = cihc
 
         self._with_me = with_me
 
