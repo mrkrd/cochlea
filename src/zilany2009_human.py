@@ -22,8 +22,8 @@ class Zilany2009_Human(object):
     def __init__(self,
                  anf_num=(1,1,1),
                  cf=1000,
-                 cohc=1,
-                 cihc=1,
+                 cohc=1.,
+                 cihc=1.,
                  powerlaw_implnt='approx',
                  with_ffGn=False,
                  with_me=True):
@@ -44,8 +44,8 @@ class Zilany2009_Human(object):
         self._powerlaw_implnt = powerlaw_implnt
         self._with_ffGn = with_ffGn
 
-        self._cohc = cohc
-        self._cihc = cihc
+        self._cohc = float(cohc)
+        self._cihc = float(cihc)
 
         self._with_me = with_me
 
