@@ -18,8 +18,9 @@ def main():
     fs = 100e3
 
     ear = cochlea.Zilany2009_Human(
-        anf_num=(100,0,0),
-        cf=(80, 16000, 100)
+        anf_num=(0,1000,0),
+        cf=(80, 16000, 100),
+        cohc=1.0
     )
 
     s = wv.generate_ramped_tone(
