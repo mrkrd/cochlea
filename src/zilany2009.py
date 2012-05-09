@@ -23,8 +23,8 @@ class Zilany2009(object):
     def __init__(self,
                  anf_num=(1,1,1),
                  cf=1000,
-                 cohc=1,
-                 cihc=1,
+                 cohc=1.,
+                 cihc=1.,
                  powerlaw_implnt='approx',
                  with_ffGn=False):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
@@ -42,8 +42,8 @@ class Zilany2009(object):
         self._powerlaw_implnt = powerlaw_implnt
         self._with_ffGn = with_ffGn
 
-        self._cohc = cohc
-        self._cihc = cihc
+        self._cohc = float(cohc)
+        self._cihc = float(cihc)
 
         self.set_freq(cf)
 

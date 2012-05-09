@@ -163,8 +163,8 @@ def run_me(np.ndarray[np.float64_t, ndim=1] signal,
 def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
             double cf,
             double fs,
-            int cohc=1,
-            int cihc=1):
+            float cohc=1.,
+            float cihc=1.):
     """
     Run BM / IHC model.
 
