@@ -5,8 +5,8 @@ from __future__ import division
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-
 import matplotlib.pyplot as plt
+import scipy.signal as dsp
 
 import thorns as th
 import thorns.waves as wv
@@ -18,19 +18,14 @@ def main():
     fs = 100e3
 
     ear = cochlea.Zilany2009_Human(
-        anf_num=(0,1000,0),
+        anf_num=(0,100,0),
         cf=(80, 16000, 100),
         cohc=1.0
     )
 
-    s = wv.generate_ramped_tone(
-        fs,
-        freq=600,
-        tone_duration=50e-3,
-        ramp_duration=2.5e-3,
-        pad_duration=20e-3,
-        dbspl=60
-    )
+    t = np.arange(0, 0.1, 1/fs)
+    s = dsp.chirp(t, 80, t[-1], 16000)
+    s = cochlea.set_dbspl(s, 50)
     s = np.concatenate( (s, np.zeros(50e-3 * fs)) )
 
     single_trains = ear.run(s, fs, seed=0)
