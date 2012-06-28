@@ -12,29 +12,35 @@ cdef extern from "stdlib.h":
 
 
 cdef extern from "catmodel.h":
-    void IHCAN(double *px,
-               double cf,
-               int nrep,
-               double tdres,
-               int totalstim,
-               double cohc,
-               double cihc,
-               double *ihcout)
-    double Synapse(double *ihcout,
-                   double tdres,
-                   double cf,
-                   int totalstim,
-                   int nrep,
-                   double spont,
-                   double implnt,
-                   double sampFreq,
-                   double *synouttmp,
-                   int with_ffGn)
-    int SpikeGenerator(double *synouttmp,
-                       double tdres,
-                       int totalstim,
-                       int nrep,
-                       double *sptime)
+    void IHCAN(
+        double *px,
+        double cf,
+        int nrep,
+        double tdres,
+        int totalstim,
+        double cohc,
+        double cihc,
+        double *ihcout
+    )
+    double Synapse(
+        double *ihcout,
+        double tdres,
+        double cf,
+        int totalstim,
+        int nrep,
+        double spont,
+        double implnt,
+        double sampFreq,
+        double *synouttmp,
+        int with_ffGn
+    )
+    int SpikeGenerator(
+        double *synouttmp,
+        double tdres,
+        int totalstim,
+        int nrep,
+        double *sptime
+    )
 
 
 cdef extern from "Python.h":
@@ -44,10 +50,10 @@ cdef extern from "Python.h":
 cdef extern from "numpy/arrayobject.h":
     ctypedef Py_intptr_t npy_intp
     object PyArray_SimpleNewFromData(int nd, npy_intp* dims, int typenum, void* data)
-    void import_array()
 
 
-import_array()
+
+np.import_array()
 
 
 
