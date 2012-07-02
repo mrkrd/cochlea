@@ -49,7 +49,12 @@ cdef extern from "Python.h":
 
 cdef extern from "numpy/arrayobject.h":
     ctypedef Py_intptr_t npy_intp
-    object PyArray_SimpleNewFromData(int nd, npy_intp* dims, int typenum, void* data)
+    object PyArray_SimpleNewFromData(
+        int nd,
+        npy_intp* dims,
+        int typenum,
+        void* data
+    )
 
 
 
@@ -229,12 +234,16 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
     assert anf_type in ['hsr', 'msr', 'lsr'], "anf_type not hsr/msr/lsr"
     assert powerlaw_implnt in ['actual', 'approx'], "powerlaw_implnt not actual/approx"
 
-    spont = {'hsr': 100.,
-             'msr': 5.,
-             'lsr': 0.1}
+    spont = {
+        'hsr': 100.,
+        'msr': 5.,
+        'lsr': 0.1
+    }
 
-    implnt_map = {'actual': 1,
-                  'approx': 0}
+    implnt_map = {
+        'actual': 1,
+        'approx': 0
+    }
 
 
     # Input IHC voltage
@@ -249,16 +258,18 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
 
 
     # Run synapse model
-    Synapse(vihc_data,                   # px
-            1.0/fs,                      # tdres
-            cf,                          # cf
-            len(vihc),                   # totalstim
-            1,                           # nrep
-            spont[anf_type],             # spont
-            implnt_map[powerlaw_implnt], # implnt
-            10e3,                        # sampFreq
-            synout_data,                 # synouttmp
-            with_ffGn)                   # with_ffGn
+    Synapse(
+        vihc_data,                   # px
+        1.0/fs,                      # tdres
+        cf,                          # cf
+        len(vihc),                   # totalstim
+        1,                           # nrep
+        spont[anf_type],             # spont
+        implnt_map[powerlaw_implnt], # implnt
+        10e3,                        # sampFreq
+        synout_data,                 # synouttmp
+        with_ffGn                    # with_ffGn
+    )
 
     return synout
 
@@ -288,11 +299,13 @@ def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
 
 
     # Run synapse model
-    SpikeGenerator(synout_data,  # synouttmp
-                   1./fs,        # tdres
-                   len(synout),  # totalstim
-                   1,            # nprep
-                   sptime_data)  # sptime
+    SpikeGenerator(
+        synout_data,            # synouttmp
+        1./fs,                  # tdres
+        len(synout),            # totalstim
+        1,                      # nprep
+        sptime_data             # sptime
+    )
 
     return sptime
 
