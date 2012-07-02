@@ -196,7 +196,7 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
 
     # Input sound
     if not signal.flags['C_CONTIGUOUS']:
-        arr = signal.copy(order='C')
+        signal = signal.copy(order='C')
     cdef double *signal_data = <double *>np.PyArray_DATA(signal)
 
     # Output IHC voltage
@@ -248,7 +248,7 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
 
     # Input IHC voltage
     if not vihc.flags['C_CONTIGUOUS']:
-        arr = vihc.copy(order='C')
+        vihc = vihc.copy(order='C')
     cdef double *vihc_data = <double *>np.PyArray_DATA(vihc)
 
 
@@ -290,7 +290,7 @@ def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
     """
     # Input IHC voltage
     if not synout.flags['C_CONTIGUOUS']:
-        arr = synout.copy(order='C')
+        synout = synout.copy(order='C')
     cdef double *synout_data = <double *>np.PyArray_DATA(synout)
 
     # Output spikes (signal)
