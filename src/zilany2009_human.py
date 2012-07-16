@@ -13,7 +13,7 @@ import _pycat
 from auditory_periphery import run_human_me_filter_for_zilany2009
 from auditory_periphery import data_dir
 
-import thorns as th
+import marlib.thorns as th
 
 
 class Zilany2009_Human(object):
@@ -188,22 +188,19 @@ def main():
 
     anf = ear.run(s, fs, seed=0)
 
-    th.plot.raster(anf).show()
+    fig, ax = plt.subplots(2,1)
+    th.plot_raster(anf, ax[0])
 
     hsr = anf[ anf['type']=='hsr' ]
     msr = anf[ anf['type']=='msr' ]
     lsr = anf[ anf['type']=='lsr' ]
 
-    p = th.plot.psth(hsr, color='black')
-    th.plot.psth(msr, color='red', plot=p)
-    th.plot.psth(lsr, color='blue', plot=p)
-    p.show()
+    th.plot_psth(hsr, bin_size=0.3e-3, axis=ax[1])
+    th.plot_psth(msr, bin_size=0.3e-3, axis=ax[1])
+    th.plot_psth(lsr, bin_size=0.3e-3, axis=ax[1])
 
+    plt.show()
 
-    th.plot.isih(hsr, bin_size=0.3e-3).show()
-
-
-    print "HSR rate:", th.stats.rate(hsr)
 
 if __name__ == "__main__":
     main()

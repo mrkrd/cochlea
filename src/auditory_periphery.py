@@ -4,7 +4,7 @@ import numpy as np
 import os
 import scipy.signal as dsp
 
-import thorns as th
+import marlib.thorns as th
 
 def par_dir(par_file):
     """
@@ -54,7 +54,7 @@ class AuditoryPeriphery(object):
             sg_module.run()
 
             anf_signal = sg_module.get_signal()
-            anf_spikes = th.signal_to_trains(anf_signal, fs)
+            anf_spikes = th.make_trains(anf_signal, fs=fs)
 
             for cf, train in zip(freq_map, anf_spikes):
                 trains.append( (train['spikes'],
