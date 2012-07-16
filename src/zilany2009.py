@@ -15,7 +15,6 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 
 import _pycat
-import thorns as th
 
 class Zilany2009(object):
     name = 'Zilany2009'
@@ -157,40 +156,44 @@ class Zilany2009(object):
 
 
 def main():
-    import thorns as th
-    import thorns.waves as wv
-
     fs = 100e3
     cf = 10e3
-    stimdb = 80
+    dbspl = 50
 
-    ear = Zilany2009((100,100,100), cf=cf,
-                     powerlaw_implnt='approx',
-                     with_ffGn=False)
+    ear = Zilany2009(
+        (100,100,100),
+        cf=cf
+    )
 
-    s = wv.generate_ramped_tone(fs,
-                                freq=cf,
-                                tone_duration=50e-3,
-                                ramp_duration=2.5e-3,
-                                pad_duration=20e-3,
-                                dbspl=stimdb)
+    s = gen.generate_ramped_tone(
+        fs,
+        freq=cf,
+        tone_duration=50e-3,
+        ramp_duration=2.5e-3,
+        pad_duration=20e-3,
+        dbspl=dbspl
+    )
 
     anf = ear.run(s, fs, seed=0)
 
-    th.plot.raster(anf).show()
+
+    fig, ax = plt.subplots(2,1)
+    th.plot_raster(anf, ax[0])
 
     hsr = anf[ anf['type']=='hsr' ]
     msr = anf[ anf['type']=='msr' ]
     lsr = anf[ anf['type']=='lsr' ]
 
-    p = th.plot.psth(hsr, color='black')
-    th.plot.psth(msr, color='red', plot=p)
-    th.plot.psth(lsr, color='blue', plot=p)
-    p.show()
+    th.plot_psth(hsr, bin_size=0.3e-3, axis=ax[1])
+    th.plot_psth(msr, bin_size=0.3e-3, axis=ax[1])
+    th.plot_psth(lsr, bin_size=0.3e-3, axis=ax[1])
 
-
-    th.plot.isih(hsr, bin_size=0.3e-3).show()
+    plt.show()
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    import marlib.thorns as th
+    import marlib.generators as gen
+
     main()
 
