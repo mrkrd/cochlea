@@ -88,12 +88,14 @@ class Zilany2009(object):
                                    anf_num=self._lsr_num)
                 trains.extend(tr)
 
-        spike_trains = np.array(trains,
-                                dtype=[('spikes', np.ndarray),
-                                       ('duration', float),
-                                       ('cf', float),
-                                       ('type', '|S3'),
-                                       ('index', int)])
+        spike_trains = np.array(
+            trains,
+            dtype=[('spikes', np.ndarray),
+                   ('duration', float),
+                   ('cf', float),
+                   ('type', '|S3'),
+                   ('index', int)]
+            )
         return spike_trains
 
 
@@ -153,47 +155,4 @@ class Zilany2009(object):
     def get_freq_map(self):
         return self._freq_map
 
-
-
-def main():
-    fs = 100e3
-    cf = 10e3
-    dbspl = 50
-
-    ear = Zilany2009(
-        (100,100,100),
-        cf=cf
-    )
-
-    s = gen.generate_ramped_tone(
-        fs,
-        freq=cf,
-        tone_duration=50e-3,
-        ramp_duration=2.5e-3,
-        pad_duration=20e-3,
-        dbspl=dbspl
-    )
-
-    anf = ear.run(s, fs, seed=0)
-
-
-    fig, ax = plt.subplots(2,1)
-    th.plot_raster(anf, ax[0])
-
-    hsr = anf[ anf['type']=='hsr' ]
-    msr = anf[ anf['type']=='msr' ]
-    lsr = anf[ anf['type']=='lsr' ]
-
-    th.plot_psth(hsr, bin_size=0.3e-3, axis=ax[1])
-    th.plot_psth(msr, bin_size=0.3e-3, axis=ax[1])
-    th.plot_psth(lsr, bin_size=0.3e-3, axis=ax[1])
-
-    plt.show()
-
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
-    import mrlib.thorns as th
-    import mrlib.generators as gen
-
-    main()
 

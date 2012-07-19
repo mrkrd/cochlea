@@ -13,8 +13,6 @@ import _pycat
 from auditory_periphery import run_human_me_filter_for_zilany2009
 from auditory_periphery import data_dir
 
-import mrlib.thorns as th
-
 
 class Zilany2009_Human(object):
     name = 'Zilany2009_Human'
@@ -164,44 +162,4 @@ class Zilany2009_Human(object):
 
 
 
-
-
-def main():
-    import thorns as th
-    import thorns.waves as wv
-
-    fs = 100e3
-    cf = 1e3
-    stimdb = 80
-
-    ear = Zilany2009_Human((100,100,100), cf=cf,
-                           powerlaw_implnt='approx',
-                           with_ffGn=False
-    )
-
-    s = wv.generate_ramped_tone(fs,
-                                freq=cf,
-                                tone_duration=50e-3,
-                                ramp_duration=2.5e-3,
-                                pad_duration=20e-3,
-                                dbspl=stimdb)
-
-    anf = ear.run(s, fs, seed=0)
-
-    fig, ax = plt.subplots(2,1)
-    th.plot_raster(anf, ax[0])
-
-    hsr = anf[ anf['type']=='hsr' ]
-    msr = anf[ anf['type']=='msr' ]
-    lsr = anf[ anf['type']=='lsr' ]
-
-    th.plot_psth(hsr, bin_size=0.3e-3, axis=ax[1])
-    th.plot_psth(msr, bin_size=0.3e-3, axis=ax[1])
-    th.plot_psth(lsr, bin_size=0.3e-3, axis=ax[1])
-
-    plt.show()
-
-
-if __name__ == "__main__":
-    main()
 

@@ -159,7 +159,7 @@ class Holmberg2007(AuditoryPeriphery):
             trains.extend(tr)
 
 
-        spike_trains = np.rec.array(trains, dtype=self._anf_dtype)
+        spike_trains = np.array(trains, dtype=self._anf_dtype)
         return spike_trains
 
 
