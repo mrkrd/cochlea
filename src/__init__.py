@@ -15,5 +15,5 @@ except ImportError:
 
 
 
-from marlib import set_dbspl
+from mrlib import set_dbspl
 

@@ -192,8 +192,8 @@ def main():
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    import marlib.thorns as th
-    import marlib.generators as gen
+    import mrlib.thorns as th
+    import mrlib.generators as gen
 
     main()
 

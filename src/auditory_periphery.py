@@ -4,7 +4,7 @@ import numpy as np
 import os
 import scipy.signal as dsp
 
-import marlib.thorns as th
+import mrlib.thorns as th
 
 def par_dir(par_file):
     """
