@@ -15,5 +15,5 @@ except ImportError:
 
 
 
-from marlib import set_dbspl
+from marlib.waves import set_dbspl
 
