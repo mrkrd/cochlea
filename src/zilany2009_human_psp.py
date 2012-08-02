@@ -13,7 +13,6 @@ import _pycat
 from auditory_periphery import run_human_me_filter_for_zilany2009
 from auditory_periphery import data_dir
 
-import thorns as th
 
 
 class Zilany2009_Human_PSP(object):
