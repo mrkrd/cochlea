@@ -141,7 +141,7 @@ def main():
 
     t = np.arange(0, 0.1, 1/fs)
     s = np.sin(2 * np.pi * t * cf)
-    s = _pycat.set_dbspl(stimdb, s)
+    s = set_dbspl(stimdb, s)
     z = np.zeros( np.ceil(len(t)/2) )
     s = np.concatenate( (z, s, z) )
 
@@ -158,4 +158,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
