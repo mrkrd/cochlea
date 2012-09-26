@@ -1061,8 +1061,3 @@ int SpikeGenerator(double *synouttmp,
      nspikes = Nout;  /* Number of spikes that occurred. */
      return(nspikes);
 }
-
-
-
-
-

@@ -47,10 +47,11 @@ class Zilany2009_Vesicles(object):
         sound: in uPa
 
         """
+        # Run Middle Ear filter
+        meout = _pycat.run_me(signal=sound, fs=fs)
+
         trains = []
         for cf in self._freq_map:
-            # Run Middle Ear filter
-            meout = _pycat.run_me(signal=sound, fs=fs)
 
             # Run IHC model
             vihc = _pycat.run_ihc(signal=meout, cf=cf, fs=fs,

@@ -58,11 +58,13 @@ class Zilany2009(object):
 
         assert np.max(sound) < 1000, "Signal should be given in Pa"
 
+
+        # Run Middle Ear filter
+        meout = _pycat.run_me(signal=sound, fs=fs)
+
+
         trains = []
         for cf in self._freq_map:
-            # Run Middle Ear filter
-            meout = _pycat.run_me(signal=sound, fs=fs)
-
             # Run IHC model
             vihc = _pycat.run_ihc(signal=meout, cf=cf, fs=fs,
                                   cohc=self._cohc, cihc=self._cihc)
@@ -154,5 +156,3 @@ class Zilany2009(object):
 
     def get_freq_map(self):
         return self._freq_map
-
-

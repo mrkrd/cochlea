@@ -193,7 +193,6 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
     assert (cihc >= 0) and (cihc <= 1), "0 <= cihc <= 1"
 
 
-
     # Input sound
     if not signal.flags['C_CONTIGUOUS']:
         signal = signal.copy(order='C')
