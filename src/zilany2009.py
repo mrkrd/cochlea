@@ -98,6 +98,9 @@ class Zilany2009(object):
                    ('type', '|S3'),
                    ('index', int)]
             )
+
+        np.fft.fftpack._fft_cache = {}
+
         return spike_trains
 
 
