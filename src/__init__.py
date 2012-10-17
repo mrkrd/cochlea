@@ -2,10 +2,16 @@ from __future__ import division
 
 import numpy as np
 
-from zilany2009 import Zilany2009
-#from zilany2009_vesicles import Zilany2009_Vesicles
-#from zilany2009_voltage_vesicles import Zilany2009_Voltage_Vesicles
-from zilany2009_human import Zilany2009_Human
+from zilany2009 import (
+    Zilany2009,
+    run_zilany2009
+)
+
+from zilany2009_human import (
+    Zilany2009_Human,
+    run_zilany2009_human
+)
+
 from zilany2009_human_psp import Zilany2009_Human_PSP
 
 try:

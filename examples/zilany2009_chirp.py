@@ -23,20 +23,22 @@ def main():
     s = np.concatenate( (s, np.zeros(10e-3 * fs)) )
 
 
-    ### Build inner ear model
-    ear = cochlea.Zilany2009(
-        anf_num=(100,0,0),
-        cf=(80, 20000, 100),
-    )
-
 
     ### Run model
-    anf = ear.run(s, fs, seed=0)
+    anf = cochlea.run_zilany2009(
+        s,
+        fs,
+        anf_num=(100,0,0),
+        cf=(80, 20000, 100),
+        seed=0
+    )
 
 
 
     ### Plot auditory nerve response
-    anf_acc = th.accumulate(anf, ignore=['index'])
+    anf_acc = th.accumulate(anf, keep=['cf', 'duration'])
+    anf_acc.sort('cf', ascending=False, inplace=True)
+
 
     fig, ax = plt.subplots()
     th.plot_neurogram(
