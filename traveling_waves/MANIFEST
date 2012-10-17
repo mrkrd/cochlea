@@ -1,8 +1,0 @@
-README
-setup.py
-src/LCR4.c
-src/__init__.py
-src/_tw.pyx
-src/bm_pars.py
-src/bm_wave.c
-src/ihcrp.c
