@@ -24,7 +24,7 @@ def run_zilany2009_human_psp(
         cohc=1,
         cihc=1,
         powerlaw_implnt='approx',
-        with_ffGn=False):
+        parallel=False):
 
 
 
@@ -39,32 +39,55 @@ def run_zilany2009_human_psp(
     sound = _run_human_me_filter_for_zilany2009(sound, fs)
 
 
+    channel_args = [
+        {
+            'sound': sound,
+            'cf': freq,
+            'fs': fs,
+            'cohc': cohc,
+            'cihc': cihc,
+            'anf_type': anf_type,
+            'powerlaw_implnt': powerlaw_implnt,
+        }
+        for freq in cfs
+    ]
 
-    psp = []
-    for freq in cfs:
 
-        # Run IHC model
-        vihc = _pycat.run_ihc(
-            signal=sound,
-            cf=float(freq),
-            fs=float(fs),
-            cohc=float(cohc),
-            cihc=float(cihc)
-        )
+    if parallel:
+        import multiprocessing
 
+        pool = multiprocessing.Pool()
+        psp = pool.map(_run_channel, channel_args)
 
-        synout = _pycat.run_synapse(
-            fs=fs,
-            vihc=vihc,
-            cf=freq,
-            anf_type=anf_type,
-            powerlaw_implnt=powerlaw_implnt,
-            with_ffGn=with_ffGn
-        )
+    else:
+        psp = map(_run_channel, channel_args)
 
-        psp.append(synout)
 
     psp = np.array(psp).T
 
 
     return psp, cfs
+
+
+
+def _run_channel(args):
+
+    vihc = _pycat.run_ihc(
+        signal=args['sound'],
+        cf=float(args['cf']),
+        fs=float(args['fs']),
+        cohc=float(args['cohc']),
+        cihc=float(args['cihc'])
+    )
+
+
+    synout = _pycat.run_synapse(
+        fs=args['fs'],
+        vihc=vihc,
+        cf=args['cf'],
+        anf_type=args['anf_type'],
+        powerlaw_implnt=args['powerlaw_implnt'],
+        with_ffGn=False
+    )
+
+    return synout

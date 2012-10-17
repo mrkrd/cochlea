@@ -14,6 +14,7 @@ from __future__ import print_function
 __author__ = "Marek Rudnicki"
 
 import warnings
+import itertools
 
 import numpy as np
 import pandas as pd
@@ -30,8 +31,7 @@ def run_zilany2009(
         cf,
         cohc=1,
         cihc=1,
-        powerlaw_implnt='approx',
-        with_ffGn=False):
+        powerlaw_implnt='approx'):
 
 
 
@@ -41,15 +41,105 @@ def run_zilany2009(
     assert sound.ndim == 1
 
 
-    anf_count = {
-        'hsr': anf_num[0],
-        'msr': anf_num[1],
-        'lsr': anf_num[2]
-    }
+
+
+    cfs = _calc_cfs(cf)
 
 
 
-    ### Calculate CFs
+
+
+    ### Run Middle Ear filter
+    meout = _pycat.run_me(signal=sound, fs=fs)
+
+
+    channel_args = [
+        {
+            'sound': sound,
+            'cf': freq,
+            'fs': fs,
+            'cohc': cohc,
+            'cihc': cihc,
+            'anf_num': anf_num,
+            'powerlaw_implnt': powerlaw_implnt,
+        }
+        for freq in cfs
+    ]
+
+
+
+
+    if parallel:
+        import multiprocessing
+
+        pool = multiprocessing.Pool()
+        nested = pool.map(_run_channel, channel_args)
+
+    else:
+        nested = map(_run_channel, channel_args)
+
+    trains = itertools.chain(nested)
+    spike_trains = pd.DataFrame(
+        trains
+    )
+
+    np.fft.fftpack._fft_cache = {}
+
+    return spike_trains
+
+
+
+
+def _run_channel(args):
+
+    vihc = _pycat.run_ihc(
+        signal=args['signal'],
+        cf=args['cf'],
+        fs=args['fs'],
+        cohc=float(args['cohc']),
+        cihc=float(args['cihc'])
+    )
+
+    duration = len(vihc) / fs
+    anf_types = np.repeat(['hsr', 'msr', 'lsr'], args['anf_num'])
+    synout = {'hsr':None, 'msr':None, 'lsr':None}
+
+    trains = []
+    for anf_type in anf_types:
+
+        if synout[anf_type] is None:
+            synout[anf_type] = _pycat.run_synapse(
+                fs=args['fs'],
+                vihc=vihc,
+                cf=args['cf'],
+                anf_type=anf_type,
+                powerlaw_implnt=powerlaw_implnt,
+                with_ffGn=False
+            )
+
+        spikes = _pycat.run_spike_generator(
+            fs=fs,
+            synout=synout
+        )
+
+        spikes = np.array(spikes[spikes != 0])
+
+        trains.append({
+            'spikes': spikes,
+            'duration': duration,
+            'cf': args['cf'],
+            'type': anf_type
+        })
+
+
+    return trains
+
+
+
+
+
+def _calc_cfs(cf):
+
     if np.isscalar(cf):
         cfs = [float(cf)]
 
@@ -74,83 +164,7 @@ def run_zilany2009(
     else:
         raise RuntimeError("CF must be a scalar, a tuple or a list.")
 
-
-
-
-    ### Run Middle Ear filter
-    meout = _pycat.run_me(signal=sound, fs=fs)
-
-
-
-    trains = []
-    for freq in cfs:
-
-        ### Run IHC model
-        vihc = _pycat.run_ihc(
-            signal=meout,
-            cf=freq,
-            fs=fs,
-            cohc=float(cohc),
-            cihc=float(cihc)
-        )
-
-        for typ,cnt in anf_count.items():
-
-            tr = _run_anf(
-                vihc=vihc,
-                fs=fs,
-                cf=freq,
-                anf_type=typ,
-                anf_cnt=cnt,
-                with_ffGn=with_ffGn,
-                powerlaw_implnt=powerlaw_implnt
-            )
-            trains.extend(tr)
-
-
-    spike_trains = pd.DataFrame(
-        trains
-    )
-
-    np.fft.fftpack._fft_cache = {}
-
-    return spike_trains
-
-
-
-def _run_anf(vihc, fs, cf, anf_type, anf_cnt, with_ffGn, powerlaw_implnt):
-
-    synout = None
-    duration = len(vihc) / fs
-    anf_trains = []
-    for anf_idx in range(anf_cnt):
-        if (synout is None) or with_ffGn:
-            synout = _pycat.run_synapse(
-                fs=fs,
-                vihc=vihc,
-                cf=cf,
-                anf_type=anf_type,
-                powerlaw_implnt=powerlaw_implnt,
-                with_ffGn=with_ffGn
-            )
-
-        spikes = _pycat.run_spike_generator(
-            fs=fs,
-            synout=synout
-        )
-
-        spikes = np.array(spikes[spikes != 0])
-
-        anf_trains.append({
-            'spikes': spikes,
-            'duration': duration,
-            'cf': cf,
-            'type': anf_type,
-            'index': anf_idx
-        })
-
-    return anf_trains
-
+    return cfs
 
 
 

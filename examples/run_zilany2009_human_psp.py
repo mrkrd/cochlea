@@ -31,6 +31,7 @@ def main():
         fs,
         anf_type='msr',
         cf=(80, 20000, 100),
+        parallel=True
     )
 
 
