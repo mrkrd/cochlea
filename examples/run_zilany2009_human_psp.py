@@ -26,7 +26,7 @@ def main():
 
 
     ### Run model
-    rates = cochlea.run_zilany2009_human_psp(
+    rates, cfs = cochlea.run_zilany2009_human_psp(
         s,
         fs,
         anf_type='msr',

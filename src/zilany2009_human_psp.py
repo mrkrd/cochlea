@@ -67,4 +67,4 @@ def run_zilany2009_human_psp(
     psp = np.array(psp).T
 
 
-    return psp
+    return psp, cfs
