@@ -187,8 +187,7 @@ class Zilany2009(object):
                  cf=1000,
                  cohc=1.,
                  cihc=1.,
-                 powerlaw_implnt='approx',
-                 with_ffGn=False):
+                 powerlaw_implnt='approx'):
         """ Auditory periphery model of a cat (Zilany et al. 2009)
 
         anf_num: (hsr_num, msr_num, lsr_num)
@@ -224,8 +223,7 @@ class Zilany2009(object):
             cf=self._cf,
             cohc=self._cohc,
             cihc=self._cihc,
-            powerlaw_implnt=self._powerlaw_implnt,
-            with_ffGn=self._with_ffGn
+            powerlaw_implnt=self._powerlaw_implnt
         )
 
         return trains
