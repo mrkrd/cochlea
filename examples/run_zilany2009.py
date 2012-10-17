@@ -30,7 +30,8 @@ def main():
         fs,
         anf_num=(100,0,0),
         cf=(80, 20000, 100),
-        seed=0
+        seed=0,
+        parallel=True
     )
 
 

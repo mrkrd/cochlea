@@ -31,11 +31,11 @@ def run_zilany2009(
         cf,
         cohc=1,
         cihc=1,
-        powerlaw_implnt='approx'):
+        powerlaw_implnt='approx',
+        parallel=False):
 
 
 
-    np.random.seed(seed)
 
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
@@ -55,15 +55,16 @@ def run_zilany2009(
 
     channel_args = [
         {
-            'sound': sound,
+            'signal': meout,
             'cf': freq,
             'fs': fs,
             'cohc': cohc,
             'cihc': cihc,
             'anf_num': anf_num,
             'powerlaw_implnt': powerlaw_implnt,
+            'seed': seed+i
         }
-        for freq in cfs
+        for i,freq in enumerate(cfs)
     ]
 
 
@@ -78,9 +79,9 @@ def run_zilany2009(
     else:
         nested = map(_run_channel, channel_args)
 
-    trains = itertools.chain(nested)
+    trains = itertools.chain(*nested)
     spike_trains = pd.DataFrame(
-        trains
+        list(trains)
     )
 
     np.fft.fftpack._fft_cache = {}
@@ -92,12 +93,22 @@ def run_zilany2009(
 
 def _run_channel(args):
 
+    fs = args['fs']
+    cf = args['cf']
+    signal = args['signal']
+    cohc = args['cohc']
+    cihc = args['cihc']
+    powerlaw_implnt = args['powerlaw_implnt']
+    seed = args['seed']
+
+    np.random.seed(seed)
+
     vihc = _pycat.run_ihc(
-        signal=args['signal'],
-        cf=args['cf'],
-        fs=args['fs'],
-        cohc=float(args['cohc']),
-        cihc=float(args['cihc'])
+        signal=signal,
+        cf=cf,
+        fs=fs,
+        cohc=float(cohc),
+        cihc=float(cihc)
     )
 
     duration = len(vihc) / fs
@@ -109,9 +120,9 @@ def _run_channel(args):
 
         if synout[anf_type] is None:
             synout[anf_type] = _pycat.run_synapse(
-                fs=args['fs'],
+                fs=fs,
                 vihc=vihc,
-                cf=args['cf'],
+                cf=cf,
                 anf_type=anf_type,
                 powerlaw_implnt=powerlaw_implnt,
                 with_ffGn=False
@@ -119,7 +130,7 @@ def _run_channel(args):
 
         spikes = _pycat.run_spike_generator(
             fs=fs,
-            synout=synout
+            synout=synout[anf_type]
         )
 
         spikes = np.array(spikes[spikes != 0])

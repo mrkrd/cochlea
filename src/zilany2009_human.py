@@ -11,9 +11,10 @@ import scipy.signal as dsp
 import pandas as pd
 import os
 import warnings
+import itertools
 
 from . import _pycat
-
+from . zilany2009 import _run_channel
 
 
 def run_zilany2009_human(
@@ -25,21 +26,14 @@ def run_zilany2009_human(
         cohc=1,
         cihc=1,
         powerlaw_implnt='approx',
-        with_ffGn=False):
+        parallel=False):
 
 
 
-    np.random.seed(seed)
 
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
 
-
-    anf_count = {
-        'hsr': anf_num[0],
-        'msr': anf_num[1],
-        'lsr': anf_num[2]
-    }
 
 
 
@@ -55,39 +49,42 @@ def run_zilany2009_human(
 
 
 
-    trains = []
-    for freq in cfs:
-
-        ### Run IHC model
-        vihc = _pycat.run_ihc(
-            signal=meout,
-            cf=freq,
-            fs=fs,
-            cohc=float(cohc),
-            cihc=float(cihc)
-        )
-
-        for typ,cnt in anf_count.items():
-
-            tr = _run_anf(
-                vihc=vihc,
-                fs=fs,
-                cf=freq,
-                anf_type=typ,
-                anf_cnt=cnt,
-                with_ffGn=with_ffGn,
-                powerlaw_implnt=powerlaw_implnt
-            )
-            trains.extend(tr)
+    channel_args = [
+        {
+            'signal': meout,
+            'cf': freq,
+            'fs': fs,
+            'cohc': cohc,
+            'cihc': cihc,
+            'anf_num': anf_num,
+            'powerlaw_implnt': powerlaw_implnt,
+            'seed': seed+i
+        }
+        for i,freq in enumerate(cfs)
+    ]
 
 
+
+
+    if parallel:
+        import multiprocessing
+
+        pool = multiprocessing.Pool()
+        nested = pool.map(_run_channel, channel_args)
+
+    else:
+        nested = map(_run_channel, channel_args)
+
+    trains = itertools.chain(*nested)
     spike_trains = pd.DataFrame(
-        trains
+        list(trains)
     )
 
     np.fft.fftpack._fft_cache = {}
 
     return spike_trains
+
+
 
 
 
@@ -123,38 +120,7 @@ def _calc_cfs(cf):
 
 
 
-def _run_anf(vihc, fs, cf, anf_type, anf_cnt, with_ffGn, powerlaw_implnt):
 
-    synout = None
-    duration = len(vihc) / fs
-    anf_trains = []
-    for anf_idx in range(anf_cnt):
-        if (synout is None) or with_ffGn:
-            synout = _pycat.run_synapse(
-                fs=fs,
-                vihc=vihc,
-                cf=cf,
-                anf_type=anf_type,
-                powerlaw_implnt=powerlaw_implnt,
-                with_ffGn=with_ffGn
-            )
-
-        spikes = _pycat.run_spike_generator(
-            fs=fs,
-            synout=synout
-        )
-
-        spikes = np.array(spikes[spikes != 0])
-
-        anf_trains.append({
-            'spikes': spikes,
-            'duration': duration,
-            'cf': cf,
-            'type': anf_type,
-            'index': anf_idx
-        })
-
-    return anf_trains
 
 
 
