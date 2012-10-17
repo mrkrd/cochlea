@@ -43,31 +43,7 @@ def run_zilany2009_human(
 
 
 
-    ### Calculate CFs
-    if np.isscalar(cf):
-        cfs = [float(cf)]
-
-    elif isinstance(cf, tuple):
-        # Based on GenerateGreenwood_CFList() from DSAM
-        # Liberman (1982)
-        aA = 165.4
-        k = 0.88
-        a = 2.1
-
-        freq_min, freq_max, freq_num = cf
-
-        xmin = np.log10( freq_min / aA + k) / a
-        xmax = np.log10( freq_max / aA + k) / a
-
-        x_map = np.linspace(xmin, xmax, freq_num)
-        cfs = aA * ( 10**( a*x_map ) - k)
-
-    elif isinstance(cf, list) or isinstance(cf, np.ndarray):
-        cfs = cf
-
-    else:
-        raise RuntimeError("CF must be a scalar, a tuple or a list.")
-
+    cfs = _calc_cfs(cf)
 
 
 
@@ -112,6 +88,38 @@ def run_zilany2009_human(
     np.fft.fftpack._fft_cache = {}
 
     return spike_trains
+
+
+
+def _calc_cfs(cf):
+
+    if np.isscalar(cf):
+        cfs = [float(cf)]
+
+    elif isinstance(cf, tuple):
+        # Based on GenerateGreenwood_CFList() from DSAM
+        # Liberman (1982)
+        aA = 165.4
+        k = 0.88
+        a = 2.1
+
+        freq_min, freq_max, freq_num = cf
+
+        xmin = np.log10( freq_min / aA + k) / a
+        xmax = np.log10( freq_max / aA + k) / a
+
+        x_map = np.linspace(xmin, xmax, freq_num)
+        cfs = aA * ( 10**( a*x_map ) - k)
+
+    elif isinstance(cf, list) or isinstance(cf, np.ndarray):
+        cfs = cf
+
+    else:
+        raise RuntimeError("CF must be a scalar, a tuple or a list.")
+
+    return cfs
+
+
 
 
 

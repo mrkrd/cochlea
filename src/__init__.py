@@ -1,4 +1,7 @@
 from __future__ import division
+from __future__ import print_function
+
+import warnings
 
 import numpy as np
 
@@ -12,12 +15,12 @@ from zilany2009_human import (
     run_zilany2009_human
 )
 
-from zilany2009_human_psp import Zilany2009_Human_PSP
+from zilany2009_human_psp import run_zilany2009_human_psp
 
 try:
     from holmberg2007 import Holmberg2007
 except ImportError:
-    print "Holmberg2007 not loaded (DSAM missing?)"
+    warnings.warn("Holmberg2007 not loaded (perhaps DSAM missing)")
 
 
 
