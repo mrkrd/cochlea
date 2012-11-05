@@ -58,9 +58,9 @@ def run_zilany2009_human(
             'cihc': cihc,
             'anf_num': anf_num,
             'powerlaw_implnt': powerlaw_implnt,
-            'seed': seed+i
+            'seed': seed
         }
-        for i,freq in enumerate(cfs)
+        for freq in cfs
     ]
 
 
