@@ -20,6 +20,6 @@ setup(
     },
     ext_package = "cochlea",
     ext_modules = cythonize(
-        ["cochlea/_pycat.pyx", "cochlea/traveling_waves/_tw.pyx"]
+        ["src/_pycat.pyx", "src/traveling_waves/_tw.pyx"]
     )
 )
