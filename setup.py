@@ -14,6 +14,7 @@ setup(
         "cochlea",
         "cochlea.stats"
     ],
+    package_dir = {"cochlea": "src"},
     package_data = {
         "cochlea": ["data/*.txt", "pars/*.par"]
     },
