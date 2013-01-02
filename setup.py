@@ -22,16 +22,8 @@ setup(
         "cochlea": ["data/*.txt", "pars/*.par"]
     },
     ext_package = "cochlea",
-    ext_modules = cythonize([
-        Extension(
-            "_pycat",
-            ["src/_pycat.pyx", "src/catmodel.c", "src/complex.c"],
-            include_dirs=[numpy_include]
-        ),
-        Extension(
-            "_tw",
-            ["src/traveling_waves/_tw.pyx"],
-            include_dirs=[numpy_include]
-        )
-    ])
+    include_dirs = [numpy_include],
+    ext_modules = cythonize(
+        ["src/_pycat.pyx", "src/traveling_waves/_tw.pyx"]
+    )
 )
