@@ -5,7 +5,6 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 
 import numpy
-numpy_include = numpy.get_include()
 
 setup(
     name = "cochlea",
@@ -22,7 +21,7 @@ setup(
         "cochlea": ["data/*.txt", "pars/*.par"]
     },
     ext_package = "cochlea",
-    include_dirs = [numpy_include],
+    include_dirs = [numpy.get_include()],
     ext_modules = cythonize(
         ["src/_pycat.pyx", "src/traveling_waves/_tw.pyx"]
     )
