@@ -6,30 +6,43 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 
-def find_threshold(func, args=(), init_range=(0, 10), desired_range=1):
-    a, b = init_range
+def find_zero(func, kwargs, x1, x2, xtol):
+    """We assume that the function is increasing and
 
-    assert a < b
-    assert func(a, *args) < 0
-    assert func(b, *args) > 0
+    func(xrange[0]) < 0
+    func(xrange[1]) > 0
 
+    We perform binary search to find func's zero.
 
-    while b - a > desired_range:
-        x = (a + b) / 2
-        y = func(x, *args)
+    """
+
+    assert x1 < x2
+
+    if func(x1, **kwargs) > 0:
+        return np.nan
+
+    if func(x2, **kwargs) < 0:
+        return np.nan
+
+    while x2 - x1 > xtol:
+        x = (x1 + x2) / 2
+        y = func(x, **kwargs)
 
         if y > 0:
-            b = x
+            x2 = x
         elif y < 0:
-            a = x
+            x1 = x
         else:
-            a = b = x
+            x1 = x2 = x
 
-    return (a + b) / 2
+    x = (x1 + x2) / 2
+
+    return x
 
 
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()
