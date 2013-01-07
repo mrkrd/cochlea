@@ -8,28 +8,29 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import pandas as pd
 
+import marlib as mr
 import marlib.thorns as th
 import marlib.waves as wv
 
 from binary import find_zero
 
-def calc_spont_threshold(model, model_pars):
-    if 'fs' not in model_pars:
-        model_pars['fs'] = 100e3
+def calc_spont_threshold(model, model_pars=None):
 
-    if 'cf' not in model_pars:
-        model_pars['cf'] = 1e3
+    cf = 1e3
 
-    if 'seed' not in model_pars:
-        model_pars['seed'] = 0
-
+    if model_pars is None:
+        model_pars = {
+            'fs': 100e3,
+            'seed': 0,
+        }
 
     tmax = 250e-3
     s = np.zeros(model_pars['fs']*tmax)
 
     anf = model(
         sound=s,
-        anf_num=(10000, 0, 0),
+        cf=cf,
+        anf_num=(10000,0,0),
         **model_pars
     )
 
@@ -42,13 +43,13 @@ def calc_spont_threshold(model, model_pars):
 
 
 
-def error_func(dbspl, model, cf, model_pars, spont_rate):
+def error_func(dbspl, model, cf, spont_rate, model_pars):
 
-    if 'fs' not in model_pars:
-        model_pars['fs'] = 100e3
-
-    if 'seed' not in model_pars:
-        model_pars['seed'] = 0
+    if model_pars is None:
+        model_pars = {
+            'fs': 100e3,
+            'seed': 0
+        }
 
     fs = model_pars['fs']
 
@@ -81,7 +82,7 @@ def error_func(dbspl, model, cf, model_pars, spont_rate):
 
 
 
-def calc_hearing_threshold_rate(model, cf, model_pars, spont_rate):
+def calc_hearing_threshold_rate(model, cf, spont_rate, model_pars=None):
 
     kwargs = {
         'model':model,
@@ -104,18 +105,40 @@ def calc_hearing_threshold_rate(model, cf, model_pars, spont_rate):
 
 
 
-def calc_thresholds(model,
-                    freqs=np.logspace(np.log10(100), np.log10(16000), 32),
-                    model_pars={}):
+def calc_hearing_thresholds_rate(
+        model,
+        model_pars=None,
+        cfs=None
+):
 
-    pool = multiprocessing.Pool()
+    if cfs is None:
+        cfs = np.logspace(np.log10(100), np.log10(16000), 32)
 
-    space = [(model, freq, model_pars)
-             for freq in freqs]
 
-    thresholds = pool.map(calc_threshold, space)
+    spont_rate = calc_spont_threshold(
+        model,
+        model_pars
+    )
 
-    thresholds = np.rec.array(thresholds, names=('cfs', 'thresholds'))
+    space = [
+        {
+            'model': model,
+            'model_pars': model_pars,
+            'spont_rate': spont_rate,
+            'cf': cf
+        }
+        for cf in cfs
+    ]
+
+
+    thresholds = mr.map(
+        calc_hearing_threshold_rate,
+        space,
+        # backend='multiprocessing'
+    )
+    thresholds = list(thresholds)
+
+    thresholds = pd.Series(thresholds, index=cfs)
 
     return thresholds
 
@@ -139,48 +162,34 @@ def calc_human_hearing_threshold(freqs):
 
 
 def main():
+    import matplotlib.pyplot as plt
     import cochlea
 
-    spont_rate = calc_spont_threshold(
-        cochlea.run_zilany2009,
-        {}
+    # spont_rate = calc_spont_threshold(
+    #     cochlea.run_zilany2009,
+    #     {}
+    # )
+    # print(spont_rate)
+
+
+    # r = calc_hearing_threshold_rate(
+    #     model=cochlea.run_zilany2009,
+    #     cf=1e3,
+    #     model_pars={},
+    #     spont_rate=spont_rate
+    # )
+
+    # print(r)
+
+
+    ths = calc_hearing_thresholds_rate(
+        model=cochlea.run_zilany2009
     )
-    print(spont_rate)
+    print(ths)
 
+    ths.plot(logx=True)
+    plt.show()
 
-    r = calc_hearing_threshold_rate(
-        model=cochlea.run_zilany2009,
-        cf=1e3,
-        model_pars={},
-        spont_rate=spont_rate
-    )
-
-    print(r)
-
-    exit()
-
-    # print "=== error_function() ==="
-    # error_function(dbspl=40,
-    #                model=model,
-    #                model_pars=model_pars,
-    #                cf=1000,
-    #                threshold_rate=threshold_rate)
-
-    print("=== calc_threshold() ===")
-    dbspl_opt = calc_threshold(
-        (
-            model,
-            10000,
-            model_pars
-        )
-    )
-    print("dbspl_opt:", dbspl_opt)
-
-    # thresholds = calc_thresholds(model=model,
-    #                              model_pars=model_pars,
-    #                              freqs=[1000, 3000]
-    #                          )
-    # print thresholds
 
 if __name__ == "__main__":
     main()
