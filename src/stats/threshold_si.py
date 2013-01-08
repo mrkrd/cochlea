@@ -94,7 +94,7 @@ def calc_hearing_threshold_si(model, cf, spont_si, model_pars=None):
         error_func,
         kwargs=kwargs,
         x1=-100,
-        x2=70,
+        x2=50,
         xtol=0.1
     )
 
@@ -150,21 +150,20 @@ def main():
     import cochlea
     import matplotlib.pyplot as plt
 
-    # spont_si = calc_spont_threshold(
-    #     cochlea.run_zilany2009,
-    #     {}
-    # )
-    # print(spont_si)
+    spont_si = calc_spont_threshold(
+        cochlea.run_zilany2009
+    )
+    print(spont_si)
 
 
-    # r = calc_hearing_threshold_si(
-    #     model=cochlea.run_zilany2009,
-    #     cf=1e3,
-    #     model_pars={},
-    #     spont_si=spont_si
-    # )
+    r = calc_hearing_threshold_si(
+        model=cochlea.run_zilany2009,
+        cf=4e3,
+        spont_si=spont_si
+    )
 
-    # print(r)
+    print(r)
+    exit()
 
 
     ths = calc_hearing_thresholds_si(
