@@ -115,9 +115,10 @@ def calc_hearing_thresholds_si(
         cfs = np.logspace(np.log10(100), np.log10(16000), 32)
 
 
-    spont_si = calc_spont_threshold(
-        model,
-        model_pars
+    spont_si = mr.apply(
+        calc_spont_threshold,
+        model=model,
+        model_pars=model_pars
     )
 
     space = [
