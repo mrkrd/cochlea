@@ -7,6 +7,7 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 import pandas as pd
+import logging
 
 import marlib as mr
 import marlib.thorns as th
@@ -14,22 +15,24 @@ import marlib.waves as wv
 
 from binary import find_zero
 
+logger = logging.getLogger(__name__)
+
 def calc_spont_threshold(model, model_pars=None):
 
-    cf = 1e3
-
     if model_pars is None:
-        model_pars = {
-            'fs': 100e3,
-            'seed': 0,
-        }
+        model_pars = {}
+    if 'fs' not in model_pars:
+        model_pars['fs'] = 100e3
+    if 'seed' not in model_pars:
+        model_pars['seed'] = 0
+    if 'cf' not in model_pars:
+        model_pars['cf'] = 1e3
 
     tmax = 250e-3
     s = np.zeros(model_pars['fs']*tmax)
 
     anf = model(
         sound=s,
-        cf=cf,
         anf_num=(10000,0,0),
         **model_pars
     )
@@ -46,10 +49,11 @@ def calc_spont_threshold(model, model_pars=None):
 def error_func(dbspl, model, cf, spont_rate, model_pars):
 
     if model_pars is None:
-        model_pars = {
-            'fs': 100e3,
-            'seed': 0
-        }
+        model_pars = {}
+    if 'fs' not in model_pars:
+        model_pars['fs'] = 100e3
+    if 'seed' not in model_pars:
+        model_pars['seed'] = 0
 
     fs = model_pars['fs']
 
@@ -76,7 +80,7 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
 
     error = rate - spont_rate
 
-    print(dbspl, rate, error)
+    logger.debug(dbspl, rate, error)
 
     return error
 
@@ -145,20 +149,6 @@ def calc_hearing_thresholds_rate(
 
 
 
-def calc_human_hearing_threshold(freqs):
-    """Terhardt, E. (1979). Calculating virtual pitch. Hearing
-    Research, 1(2):155-182.
-
-    http://www.diracdelta.co.uk/science/source/t/h/threshold%20of%20hearing/source.html
-
-    """
-    f = freqs / 1000                # kHz -> Hz
-
-    th = 3.64 * f**(-0.8) - \
-         6.5 * np.exp(-0.6 * (f - 3.3)**2) + \
-         10**(-3) * f**4
-
-    return th
 
 
 

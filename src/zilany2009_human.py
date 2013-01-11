@@ -26,6 +26,7 @@ def run_zilany2009_human(
         cohc=1,
         cihc=1,
         powerlaw_implnt='approx',
+        middle_ear=True,
         parallel=False):
 
 
@@ -42,10 +43,13 @@ def run_zilany2009_human(
 
 
     ### Run Middle Ear filter
-    meout = _run_human_me_filter_for_zilany2009(
-        signal=sound,
-        fs=fs
-    )
+    if middle_ear:
+        meout = _run_human_me_filter_for_zilany2009(
+            signal=sound,
+            fs=fs
+        )
+    else:
+        meout = sound
 
 
 
@@ -131,7 +135,8 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
     freqs = np.fft.fftfreq(len(signal), d=1/fs)
 
 
-    me_filter_response = np.loadtxt(_data_dir("me_filter_response.txt"))
+    me_filter = pd.read_cvs('me_filter.csv')
+    me_filter_response = me_filter.index
     me_filter_freqs = np.loadtxt(_data_dir("me_filter_freqs.txt"))
     fmin = me_filter_freqs.min()
     fmax = me_filter_freqs.max()
