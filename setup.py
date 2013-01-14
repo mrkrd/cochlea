@@ -18,7 +18,7 @@ setup(
     ],
     package_dir = {"cochlea": "src"},
     package_data = {
-        "cochlea": ["data/*.txt", "pars/*.par"]
+        "cochlea": ["data/*.csv", "pars/*.par"]
     },
     ext_package = "cochlea",
     include_dirs = [numpy.get_include()],

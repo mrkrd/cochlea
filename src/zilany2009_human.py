@@ -135,9 +135,13 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
     freqs = np.fft.fftfreq(len(signal), d=1/fs)
 
 
-    me_filter = pd.read_cvs('me_filter.csv')
-    me_filter_response = me_filter.index
-    me_filter_freqs = np.loadtxt(_data_dir("me_filter_freqs.txt"))
+    me_filter = pd.read_csv(
+        _data_dir('me_filter.csv'),
+        squeeze=True,
+        header=0
+    )
+    me_filter_response = me_filter.values
+    me_filter_freqs = me_filter.index
     fmin = me_filter_freqs.min()
     fmax = me_filter_freqs.max()
 
