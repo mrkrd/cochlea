@@ -136,18 +136,15 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
 
 
     me_filter = pd.read_csv(
-        _data_dir('me_filter.csv'),
-        squeeze=True,
-        header=0
+        _data_dir('me_filter.csv')
     )
-    me_filter_response = me_filter.values
-    me_filter_freqs = me_filter.index
-    fmin = me_filter_freqs.min()
-    fmax = me_filter_freqs.max()
 
+    fmin = me_filter.freq.min()
+    fmax = me_filter.freq.max()
 
-    # Convert dB to amplitudae ratio
-    response_ratio = 10 ** (me_filter_response / 20)
+    # Convert dB to amplitude ratio
+    response_ratio = 10 ** (np.array(me_filter.response) / 20)
+
 
 
     # Interpolate the filter to fit signal's FFT
