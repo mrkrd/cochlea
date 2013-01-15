@@ -14,14 +14,16 @@ setup(
     author_email = "marek.rudnicki@tum.de",
     packages = [
         "cochlea",
-        "cochlea.stats"
+        "cochlea.stats",
+        "cochlea.pycat",
+        "cochlea.traveling_waves",
     ],
     package_data = {
         "cochlea": ["data/*.csv", "pars/*.par"]
     },
-    ext_package = "cochlea",
     include_dirs = [numpy.get_include()],
-    ext_modules = cythonize(
-        ["cochlea/_pycat.pyx", "cochlea/traveling_waves/_tw.pyx"]
-    )
+    ext_modules = cythonize([
+        Extension("cochlea.pycat._pycat", ["cochlea/pycat/_pycat.pyx"]),
+        Extension("cochlea.traveling_waves/_tw", ["cochlea/traveling_waves/_tw.pyx"]),
+    ])
 )
