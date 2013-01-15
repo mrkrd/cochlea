@@ -7,7 +7,7 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 
-import _pycat
+from cochlea.pycat import _pycat
 import thorns as th
 
 

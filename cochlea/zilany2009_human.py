@@ -13,8 +13,8 @@ import os
 import warnings
 import itertools
 
-from . import _pycat
-from . zilany2009 import _run_channel
+from cochlea.pycat import _pycat
+from cochlea.zilany2009 import _run_channel
 
 
 def run_zilany2009_human(

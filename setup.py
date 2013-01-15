@@ -6,9 +6,30 @@ from Cython.Build import cythonize
 
 import numpy
 
+extensions = [
+    Extension(
+        "cochlea.pycat._pycat",
+        [
+            "cochlea/pycat/_pycat.pyx",
+            "cochlea/pycat/catmodel.c",
+            "cochlea/pycat/complex.c"
+        ]
+    ),
+    Extension(
+        "cochlea.traveling_waves/_tw",
+        [
+            "cochlea/traveling_waves/_tw.pyx",
+            "cochlea/traveling_waves/bm_wave.c",
+            "cochlea/traveling_waves/ihcrp.c",
+            "cochlea/traveling_waves/LCR4.c"
+        ]
+    ),
+]
+
+
 setup(
     name = "cochlea",
-    version = "4",
+    version = "5",
     description = "Collection of inner ear models",
     author = "Marek Rudnicki",
     author_email = "marek.rudnicki@tum.de",
@@ -22,8 +43,5 @@ setup(
         "cochlea": ["data/*.csv", "pars/*.par"]
     },
     include_dirs = [numpy.get_include()],
-    ext_modules = cythonize([
-        Extension("cochlea.pycat._pycat", ["cochlea/pycat/_pycat.pyx"]),
-        Extension("cochlea.traveling_waves/_tw", ["cochlea/traveling_waves/_tw.pyx"]),
-    ])
+    ext_modules = cythonize(extensions)
 )

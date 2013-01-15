@@ -9,8 +9,8 @@ import numpy as np
 import scipy.signal as dsp
 import os
 
-from . import _pycat
-from . zilany2009_human import (
+from cochlea.pycat import _pycat
+from cochlea.zilany2009_human import (
     _calc_cfs,
     _run_human_me_filter_for_zilany2009
 )

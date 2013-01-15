@@ -3,8 +3,16 @@ from __future__ import division
 import numpy as np
 import scipy.signal as dsp
 
-import bm_pars
-from bm_pars import real_freq_map, S_ST, S_ED, C_eardrum
+from cochlea.traveling_waves.bm_pars import (
+    real_freq_map,
+    S_ST,
+    S_ED,
+    C_eardrum,
+    outer_ear_a_48kHz,
+    outer_ear_b_48kHz,
+    outer_ear_a_100kHz,
+    outer_ear_b_100kHz,
+)
 from _tw import *
 
 
@@ -57,11 +65,11 @@ def run_middle_ear_filter(fs, signal):
 
 def _calc_outer_ear_coefs(fs):
     if fs == 48000:
-        a = bm_pars.outer_ear_a_48kHz
-        b = bm_pars.outer_ear_b_48kHz
+        a = outer_ear_a_48kHz
+        b = outer_ear_b_48kHz
     elif fs == 100000:
-        a = bm_pars.outer_ear_a_100kHz
-        b = bm_pars.outer_ear_b_100kHz
+        a = outer_ear_a_100kHz
+        b = outer_ear_b_100kHz
     else:
         assert False, "Invalid sampling frequency: fs"
 

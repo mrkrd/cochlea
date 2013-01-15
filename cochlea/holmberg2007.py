@@ -13,8 +13,8 @@ __author__ = "Marek Rudnicki"
 
 import numpy as np
 
-from auditory_periphery import par_dir, AuditoryPeriphery
-import traveling_waves as tw
+from cochlea.auditory_periphery import par_dir, AuditoryPeriphery
+import cochlea.traveling_waves as tw
 import dsam
 
 
