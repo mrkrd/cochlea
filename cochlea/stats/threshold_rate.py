@@ -21,20 +21,22 @@ def calc_spont_threshold(model, model_pars=None):
 
     if model_pars is None:
         model_pars = {}
-    if 'fs' not in model_pars:
-        model_pars['fs'] = 100e3
-    if 'seed' not in model_pars:
-        model_pars['seed'] = 0
-    if 'cf' not in model_pars:
-        model_pars['cf'] = 1e3
+
+
+    pars = dict(model_pars)
+
+
+    fs = pars.setdefault('fs', 100e3)
+    pars.setdefault('seed', 0)
+    pars.setdefault('cf', 1e3)
 
     tmax = 250e-3
-    s = np.zeros(model_pars['fs']*tmax)
+    s = np.zeros(fs*tmax)
 
     anf = model(
         sound=s,
         anf_num=(10000,0,0),
-        **model_pars
+        **pars
     )
 
     rates = [th.calc_rate(train) for _,train in anf.iterrows()]
@@ -50,12 +52,11 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
 
     if model_pars is None:
         model_pars = {}
-    if 'fs' not in model_pars:
-        model_pars['fs'] = 100e3
-    if 'seed' not in model_pars:
-        model_pars['seed'] = 0
 
-    fs = model_pars['fs']
+    pars = dict(model_pars)
+
+    fs = model_pars.setdefault('fs', 100e3)
+    model_pars.setdefault('seed', 0)
 
     tone_duration = 250e-3
     onset = 15e-3

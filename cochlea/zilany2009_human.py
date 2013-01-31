@@ -52,7 +52,6 @@ def run_zilany2009_human(
         meout = sound
 
 
-
     channel_args = [
         {
             'signal': meout,
@@ -131,9 +130,8 @@ def _calc_cfs(cf):
 def _run_human_me_filter_for_zilany2009(signal, fs):
     assert fs > 40e3
 
-    signal_fft = np.fft.fft(signal)
-    freqs = np.fft.fftfreq(len(signal), d=1/fs)
-
+    signal_fft = np.fft.rfft(signal)
+    freqs = np.linspace(0, fs/2, len(signal_fft))
 
     me_filter = pd.read_csv(
         _data_dir('me_filter.csv')
@@ -142,26 +140,31 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
     fmin = me_filter.freq.min()
     fmax = me_filter.freq.max()
 
+    assert fmax < fs/2
+
     # Convert dB to amplitude ratio
     response_ratio = 10 ** (np.array(me_filter.response) / 20)
 
 
-
     # Interpolate the filter to fit signal's FFT
-    band = ((np.abs(freqs)>=fmin) & (np.abs(freqs)<=fmax))
+    band = ((freqs>=fmin) & (freqs<=fmax))
     band_len = np.sum( band )
-    ratio_interp = dsp.resample(response_ratio, band_len/2)
-    ratio_interp = np.concatenate( (ratio_interp, ratio_interp[::-1]) )
+    ratio_interp = dsp.resample(response_ratio, band_len)
 
+    import marlib
+    # marlib.plot(band)
+    marlib.plot(signal)
+    marlib.plot(signal_fft)
 
     # Apply the filter
     signal_fft[band] *= ratio_interp
 
-    signal_fft[ np.logical_not(band) ] = 0
+    signal_fft[~band] = 0
 
 
-    filtered = np.fft.ifft( signal_fft )
-    filtered = np.array( filtered.real )
+    filtered = np.fft.irfft( signal_fft )
+    filtered = np.array(filtered)
+    marlib.plot(np.fft.irfft(signal_fft))
 
     return filtered
 
