@@ -7,7 +7,8 @@ from __future__ import print_function
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-import scipy.signal as dsp
+import scipy.signal
+import scipy.interpolate
 import pandas as pd
 import os
 import warnings
@@ -137,34 +138,40 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
         _data_dir('me_filter.csv')
     )
 
-    fmin = me_filter.freq.min()
-    fmax = me_filter.freq.max()
-
-    assert fmax < fs/2
-
-    # Convert dB to amplitude ratio
-    response_ratio = 10 ** (np.array(me_filter.response) / 20)
 
 
     # Interpolate the filter to fit signal's FFT
-    band = ((freqs>=fmin) & (freqs<=fmax))
-    band_len = np.sum( band )
-    ratio_interp = dsp.resample(response_ratio, band_len)
+    h = scipy.interpolate.interp1d(
+        x=me_filter.freq,
+        y=me_filter.h,
+        kind='cubic',
+        bounds_error=False,
+        fill_value=0
+    )
 
-    import marlib
-    # marlib.plot(band)
-    marlib.plot(signal)
-    marlib.plot(signal_fft)
+
+
+    # Convert dB to amplitude ratio
+    h_ratio = 10 ** (h(freqs) / 20)
+
+
 
     # Apply the filter
-    signal_fft[band] *= ratio_interp
-
-    signal_fft[~band] = 0
+    signal_fft *= h_ratio
 
 
-    filtered = np.fft.irfft( signal_fft )
-    filtered = np.array(filtered)
-    marlib.plot(np.fft.irfft(signal_fft))
+    # Go back to time domain
+    filtered = np.fft.irfft(signal_fft)
+
+
+
+    import marlib
+    # marlib.plot(ratio_interp)
+    # marlib.plot(band, x=freqs)
+    # marlib.plot(signal, fs=fs)
+    # marlib.plot(signal_fft, x=freqs)
+
+
 
     return filtered
 

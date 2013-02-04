@@ -15,7 +15,6 @@ import marlib.waves as wv
 
 from binary import find_zero
 
-logger = logging.getLogger(__name__)
 
 def calc_spont_threshold(model, model_pars=None):
 
@@ -43,6 +42,8 @@ def calc_spont_threshold(model, model_pars=None):
     rates = np.array(rates)
 
     threshold = rates.mean() + rates.std()
+
+    logging.debug("mean + std rate = {}".format(threshold))
 
     return threshold
 
@@ -81,7 +82,7 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
 
     error = rate - spont_rate
 
-    logger.debug(dbspl, rate, error)
+    logging.debug("{} {} {}".format(dbspl, rate, error))
 
     return error
 

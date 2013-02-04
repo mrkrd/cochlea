@@ -15,7 +15,6 @@ import marlib.waves as wv
 
 from binary import find_zero
 
-logger = logging.getLogger(__name__)
 
 def calc_spont_threshold(model, model_pars=None):
 
@@ -79,7 +78,7 @@ def error_func(dbspl, model, cf, model_pars, spont_si):
 
     error = si - spont_si
 
-    logger.debug(dbspl, si, error)
+    logging.debug("{} {} {}".format(dbspl, si, error))
 
     return error
 
