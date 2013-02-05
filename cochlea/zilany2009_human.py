@@ -7,7 +7,6 @@ from __future__ import print_function
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-import scipy.signal
 import scipy.interpolate
 import pandas as pd
 import os
@@ -162,15 +161,6 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
 
     # Go back to time domain
     filtered = np.fft.irfft(signal_fft)
-
-
-
-    import marlib
-    # marlib.plot(ratio_interp)
-    # marlib.plot(band, x=freqs)
-    # marlib.plot(signal, fs=fs)
-    # marlib.plot(signal_fft, x=freqs)
-
 
 
     return filtered
