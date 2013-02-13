@@ -24,6 +24,7 @@ def run_zilany2009_human_psp(
         cohc=1,
         cihc=1,
         powerlaw_implnt='approx',
+        middle_ear=True,
         parallel=False):
 
 
@@ -36,7 +37,8 @@ def run_zilany2009_human_psp(
 
 
     # Run Outer/Middle Ear filter
-    sound = _run_human_me_filter_for_zilany2009(sound, fs)
+    if middle_ear:
+        sound = _run_human_me_filter_for_zilany2009(sound, fs)
 
 
     channel_args = [
