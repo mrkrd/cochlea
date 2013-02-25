@@ -20,10 +20,19 @@ import dsam
 
 
 
+def run_zilany2009(
+        sound,
+        fs,
+        anf_num,
+        seed,
+        cf):
 
 
-class Holmberg2007(AuditoryPeriphery):
-    name = "Holmberg2007"
+
+    assert np.max(sound) < 1000, "Signal should be given in Pa"
+    assert sound.ndim == 1
+
+
 
     def __init__(self, anf_num=(1,1,1),
                  cf=None,
