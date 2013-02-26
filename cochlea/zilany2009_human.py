@@ -27,7 +27,7 @@ def run_zilany2009_human(
         cihc=1,
         powerlaw_implnt='approx',
         middle_ear=True,
-        parallel=False):
+):
 
 
 
@@ -36,6 +36,7 @@ def run_zilany2009_human(
     assert sound.ndim == 1
 
 
+    np.random.seed(seed)
 
 
     cfs = _calc_cfs(cf)
@@ -68,15 +69,8 @@ def run_zilany2009_human(
 
 
 
+    nested = map(_run_channel, channel_args)
 
-    if parallel:
-        import multiprocessing
-
-        pool = multiprocessing.Pool()
-        nested = pool.map(_run_channel, channel_args)
-
-    else:
-        nested = map(_run_channel, channel_args)
 
     trains = itertools.chain(*nested)
     spike_trains = pd.DataFrame(

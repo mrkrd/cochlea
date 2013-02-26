@@ -18,7 +18,8 @@ from zilany2009_human import (
 from zilany2009_human_psp import run_zilany2009_human_psp
 
 try:
-    from holmberg2007 import Holmberg2007
+    from holmberg2007 import run_holmberg2007
+
 except ImportError:
     warnings.warn("Holmberg2007 not loaded (perhaps DSAM missing)")
 

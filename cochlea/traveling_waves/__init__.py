@@ -21,7 +21,7 @@ scaling_factor = S_ST * S_ED
 
 
 
-def run_middle_ear_filter_orig(fs, signal):
+def run_middle_ear_filter_orig(signal, fs):
     """ Middle ear filter designed using digital wave techinique. """
     assert fs == 48000
 
@@ -56,7 +56,7 @@ def _calc_middle_ear_coefs(fs):
     return b, a
 
 
-def run_middle_ear_filter(fs, signal):
+def run_middle_ear_filter(signal, fs):
     """ Middle ear filter model. """
     b,a = _calc_middle_ear_coefs(fs)
 
@@ -76,7 +76,7 @@ def _calc_outer_ear_coefs(fs):
     return b, a
 
 
-def run_outer_ear_filter(fs, signal):
+def run_outer_ear_filter(signal, fs):
     b, a = _calc_outer_ear_coefs(fs)
 
     return dsp.lfilter(b, a, signal)

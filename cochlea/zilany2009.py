@@ -32,8 +32,7 @@ def run_zilany2009(
         cohc=1,
         cihc=1,
         powerlaw_implnt='approx',
-        parallel=False):
-
+):
 
 
 
@@ -41,6 +40,7 @@ def run_zilany2009(
     assert sound.ndim == 1
 
 
+    np.random.seed(seed)
 
 
     cfs = _calc_cfs(cf)
@@ -68,17 +68,11 @@ def run_zilany2009(
     ]
 
 
+    ### Run model for each channel
+    nested = map(_run_channel, channel_args)
 
 
-    if parallel:
-        import multiprocessing
-
-        pool = multiprocessing.Pool()
-        nested = pool.map(_run_channel, channel_args)
-
-    else:
-        nested = map(_run_channel, channel_args)
-
+    ### Unpack the results
     trains = itertools.chain(*nested)
     spike_trains = pd.DataFrame(
         list(trains)
@@ -100,8 +94,8 @@ def _run_channel(args):
     cihc = args['cihc']
     powerlaw_implnt = args['powerlaw_implnt']
     seed = args['seed']
+    anf_num = args['anf_num']
 
-    np.random.seed(seed)
 
     vihc = _pycat.run_ihc(
         signal=signal,
@@ -112,7 +106,7 @@ def _run_channel(args):
     )
 
     duration = len(vihc) / fs
-    anf_types = np.repeat(['hsr', 'msr', 'lsr'], args['anf_num'])
+    anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)
     synout = {'hsr':None, 'msr':None, 'lsr':None}
 
     trains = []

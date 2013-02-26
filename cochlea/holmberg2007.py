@@ -8,172 +8,119 @@ Speech Recognition. PhD thesis, Technical University Darmstadt.
 
 
 from __future__ import division
+from __future__ import print_function
 
 __author__ = "Marek Rudnicki"
 
 import numpy as np
+import os
+import pandas as pd
 
-from cochlea.auditory_periphery import par_dir, AuditoryPeriphery
 import cochlea.traveling_waves as tw
 import dsam
+import marlib.thorns as th
+
+def par_dir(par_file):
+    """
+    Add directory path to par file name that is refered to the
+    modules location.
+    """
+    base_dir = os.path.dirname(__file__)
+    return os.path.join(base_dir, 'pars', par_file)
 
 
-
-
-def run_zilany2009(
+def run_holmberg2007(
         sound,
         fs,
         anf_num,
         seed,
-        cf):
-
-
+        cf=None
+):
 
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
+    assert cf is None
+    assert fs == 48e3
+
+    np.random.seed(seed)
 
 
 
-    def __init__(self, anf_num=(1,1,1),
-                 cf=None,
-                 accumulate=False,
-                 approx_freq=False):
-        """ Auditory periphery model from Marcus Holmberg (2007)
 
-        anf_num: (hsr_num, msr_num, lsr_num)
-        cf: CF (if None all 100 channels are computed)
-        accumulate: if True, spikes for all fibers are calculated at once.
-        approx_freq: if True, calculate channel that is the closest to the given `cf'
-                     No assertion error will be generated.
-
-        """
-
-        self.approx_freq = approx_freq
-        self.set_freq(cf)
-
-        self._hsr_num = anf_num[0]
-        self._msr_num = anf_num[1]
-        self._lsr_num = anf_num[2]
-
-        self._accumulate = accumulate
-
-        # Outer/middle ear filter
-        # Stapes velocity [Pa -> m/s]
-        # BM module is in run()
-        # IHC receptor potential
-
-
-        if self._hsr_num > 0:
-            self.ihc_hsr_module = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_hsr_module.read_pars(par_dir("ihc_hsr_Sumner2002.par"))
-
-            self.sg_hsr_module = dsam.EarModule("An_SG_Carney")
-            self.sg_hsr_module.read_pars(par_dir("anf_carney.par"))
-            dsam.connect(self.ihc_hsr_module, self.sg_hsr_module)
-
-        if self._msr_num > 0:
-            self.ihc_msr_module = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_msr_module.read_pars(par_dir("ihc_msr_Sumner2002.par"))
-
-            self.sg_msr_module = dsam.EarModule("An_SG_Carney")
-            self.sg_msr_module.read_pars(par_dir("anf_carney.par"))
-            dsam.connect(self.ihc_msr_module, self.sg_msr_module)
-
-
-        if self._lsr_num > 0:
-            self.ihc_lsr_module = dsam.EarModule("IHC_Meddis2000")
-            self.ihc_lsr_module.read_pars(par_dir("ihc_lsr_Sumner2002.par"))
-
-            self.sg_lsr_module = dsam.EarModule("An_SG_Carney")
-            self.sg_lsr_module.read_pars(par_dir("anf_carney.par"))
-            dsam.connect(self.ihc_lsr_module, self.sg_lsr_module)
-
-
-    def set_freq(self, cf):
-        if isinstance(cf, int):
-            cf = float(cf)
-
-        if isinstance(cf, float):
-            if self.approx_freq:
-                self._freq_idx = tw.find_closest_freq_idx_in_map(cf)
-            else:
-                real_freq_map = tw.bm_pars.real_freq_map
-                assert cf in real_freq_map
-                self._freq_idx = int(np.where(real_freq_map == cf)[0])
-        elif cf is None:
-            self._freq_idx = None
-        else:
-            assert False, "CF must be a real number or None"
+    freq_map = tw.bm_pars.real_freq_map
+    duration = len(sound) / fs
 
 
 
-    def get_freq_map(self):
-        """ Returns frequency map of the model. """
-        if isinstance(self._freq_idx, int):
-            freq_map = [ tw.bm_pars.real_freq_map[self._freq_idx] ]
-        else:
-            freq_map = tw.bm_pars.real_freq_map
-
-        return freq_map
 
 
-    def run(self, sound, fs, seed):
-        """ Run auditory periphery model.
+    ### Outer ear filter
+    sound_oe = tw.run_outer_ear_filter(sound, fs)
 
-        sound: audio signal
-        fs: sampling frequency (48000 Hz)
+    ### Middle ear filter
+    sound_me = tw.run_middle_ear_filter(sound_oe, fs)
 
-        """
-        assert fs == 48000
-        assert np.max(sound) < 1000, "Signal should be given in Pa"
+    ### Scaling
+    sound_scaled = sound_me * tw.scaling_factor
 
-        np.random.seed(seed)
+    ### Basilar membrane
+    xbm = tw.run_bm_wave(sound_scaled, fs)
 
+    ### Amplification
+    LCR4 = tw.run_LCR4(xbm, fs)
 
-        ### Outer ear filter
-        sound = tw.run_outer_ear_filter(fs, sound)
-
-        ### Middle ear filter
-        sound = tw.run_middle_ear_filter(fs, sound)
-
-        ### Scaling
-        sound = sound * tw.scaling_factor
-
-        ### Basilar membrane
-        xbm = tw.run_bm_wave(fs, sound)
-
-        if self._freq_idx is not None:
-            xbm = xbm[:,self._freq_idx]
-
-        ### Amplification
-        LCR4 = tw.run_LCR4(fs, xbm, self._freq_idx)
-
-        ### IHCRP
-        ihcrp = tw.run_ihcrp(fs, LCR4, self._freq_idx)
+    ### IHCRP
+    ihcrp = tw.run_ihcrp(LCR4, fs)
 
 
-        trains = []
-        if self._hsr_num > 0:
-            self.ihc_hsr_module.run(fs, ihcrp)
-            tr = self._run_anf('hsr', self.sg_hsr_module,
-                               fs, self._hsr_num, self._accumulate)
-            trains.extend(tr)
+    anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)
+    ihcs = {'hsr':None, 'msr':None, 'lsr':None}
+    sgs = {'hsr':None, 'msr':None, 'lsr':None}
+    trains = []
 
-        if self._msr_num > 0:
-            self.ihc_msr_module.run(fs, ihcrp)
-            tr = self._run_anf('msr', self.sg_msr_module,
-                               fs, self._msr_num, self._accumulate)
-            trains.extend(tr)
+    for anf_type in anf_types:
 
-        if self._lsr_num > 0:
-            self.ihc_lsr_module.run(fs, ihcrp)
-            tr = self._run_anf('lsr', self.sg_lsr_module,
-                               fs, self._lsr_num, self._accumulate)
-            trains.extend(tr)
+        if ihcs[anf_type] is None:
+            ihc_module = dsam.EarModule("IHC_Meddis2000")
+            ihc_module.read_pars(par_dir("ihc_{}_Sumner2002.par".format(anf_type)))
+            sg_module = dsam.EarModule("An_SG_Carney")
+            sg_module.read_pars(par_dir("anf_carney.par"))
+            sg_module.set_par('pulse_duration', 1.1/fs)
+            dsam.connect(ihc_module, sg_module)
+
+            ihc_module.run(fs, ihcrp)
+
+            ihcs[anf_type] = ihc_module
+            sgs[anf_type] = sg_module
 
 
-        spike_trains = np.array(trains, dtype=self._anf_dtype)
-        return spike_trains
+        sgs[anf_type].run()
+        sg_signal = sgs[anf_type].get_signal()
+
+
+        ### Convert array to `nude' spike trains (no meta)
+        nudes = []
+        for sig in sg_signal.T:
+            sig = sig.astype(int)
+            t = np.arange(len(sig))
+            spikes = np.repeat(t, sig) / fs
+
+            nudes.append(spikes)
+
+
+
+        for cf,spikes in zip(freq_map, nudes):
+            trains.append({
+                'spikes': spikes,
+                'duration': duration,
+                'cf': cf,
+                'type': anf_type
+            })
+
+
+    # print(trains)
+    spike_trains = pd.DataFrame(trains)
+    return spike_trains
 
 
 
@@ -186,7 +133,7 @@ def main():
 
     fs = 48000
     cf = tw.find_closest_freq_in_map(1000)
-    print "CF:", cf
+    print("CF:", cf)
     stimdb = 70
 
     ear = Holmberg2007((250,0,0), cf=cf)

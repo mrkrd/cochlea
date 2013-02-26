@@ -15,10 +15,12 @@ cdef extern from "math.h":
 
 import bm_pars
 
-def run_bm_wave(np.float64_t fs,
-                np.ndarray[np.float64_t, ndim=1] signal):
+def run_bm_wave(
+        np.ndarray[np.float64_t, ndim=1] signal,
+        np.float64_t fs,
+):
 
-    assert fs == 48000.0
+    assert fs == 48e3
 
     cdef np.ndarray[np.float64_t] Ls = bm_pars.Ls
     cdef np.ndarray[np.float64_t] Rs = bm_pars.Rs
@@ -159,9 +161,9 @@ def run_bm_wave(np.float64_t fs,
 
 
 
-def run_LCR4(fs, xbm, sections=None):
+def run_LCR4(xbm, fs, sections=None):
 
-    assert fs == 48000
+    assert fs == 48e3
 
     if sections is None:
         sections = range(100)
@@ -397,9 +399,9 @@ def _run_single_LCR4(np.float64_t fs,
 
 
 
-def run_ihcrp(fs, xbm, sections=None):
+def run_ihcrp(xbm, fs, sections=None):
 
-    assert fs == 48000
+    assert fs == 48e3
 
     if sections is None:
         sections = range(100)
@@ -530,6 +532,3 @@ def _run_single_ihcrp(np.float64_t fs,
         uIHC_old = uIHC[i]
 
     return uIHC
-
-
-

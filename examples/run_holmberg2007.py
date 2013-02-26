@@ -14,7 +14,7 @@ import cochlea
 
 def main():
 
-    fs = 100e3
+    fs = 48e3
 
     ### Make sound
     t = np.arange(0, 0.1, 1/fs)
@@ -26,18 +26,16 @@ def main():
 
 
     ### Run model
-    anf = cochlea.run_zilany2009(
+    anf_trains = cochlea.run_holmberg2007(
         s,
         fs,
         anf_num=(100,0,0),
-        cf=(80, 20000, 100),
-        seed=0
+        seed=0,
     )
 
 
-
     ### Plot auditory nerve response
-    anf_acc = th.accumulate(anf, keep=['cf', 'duration'])
+    anf_acc = th.accumulate(anf_trains, keep=['cf', 'duration'])
     anf_acc.sort('cf', ascending=False, inplace=True)
 
 

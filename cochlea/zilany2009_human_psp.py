@@ -25,7 +25,7 @@ def run_zilany2009_human_psp(
         cihc=1,
         powerlaw_implnt='approx',
         middle_ear=True,
-        parallel=False):
+):
 
 
 
@@ -55,14 +55,7 @@ def run_zilany2009_human_psp(
     ]
 
 
-    if parallel:
-        import multiprocessing
-
-        pool = multiprocessing.Pool()
-        psp = pool.map(_run_channel, channel_args)
-
-    else:
-        psp = map(_run_channel, channel_args)
+    psp = map(_run_channel, channel_args)
 
 
     psp = np.array(psp).T
