@@ -82,7 +82,7 @@ def run_holmberg2007(
 
         if ihcs[anf_type] is None:
             ihc_module = dsam.EarModule("IHC_Meddis2000")
-            ihc_module.read_pars(par_dir("ihc_{}_Sumner2002.par".format(anf_type)))
+            ihc_module.read_pars(par_dir("ihc_%s_Sumner2002.par" %anf_type))
             sg_module = dsam.EarModule("An_SG_Carney")
             sg_module.read_pars(par_dir("anf_carney.par"))
             sg_module.set_par('pulse_duration', 1.1/fs)
