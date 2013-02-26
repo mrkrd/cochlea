@@ -21,7 +21,6 @@ def main():
     s = dsp.chirp(t, 80, t[-1], 20000)
     s = cochlea.set_dbspl(s, 50)
     s = np.concatenate( (s, np.zeros(10e-3 * fs)) )
-    s = np.zeros_like(s)
 
 
 
