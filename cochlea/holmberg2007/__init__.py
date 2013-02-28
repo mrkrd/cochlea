@@ -118,43 +118,6 @@ def run_holmberg2007(
             })
 
 
-    # print(trains)
+
     spike_trains = pd.DataFrame(trains)
     return spike_trains
-
-
-
-
-
-def main():
-    import thorns as th
-    import thorns.plot as thp
-    import thorns.waves as wv
-
-    fs = 48000
-    cf = tw.find_closest_freq_in_map(1000)
-    print("CF:", cf)
-    stimdb = 70
-
-    ear = Holmberg2007((250,0,0), cf=cf)
-
-
-    s = th.waves.generate_ramped_tone(fs,
-                                      freq=cf,
-                                      tone_duration=50e-3,
-                                      ramp_duration=2.5e-3,
-                                      pad_duration=20e-3,
-                                      dbspl=stimdb)
-
-    anf = ear.run(s, fs, seed=0)
-
-    thp.raster(anf).show()
-    thp.psth(anf, bin_size=1e-3).show()
-
-
-
-
-
-
-if __name__ == "__main__":
-    main()
