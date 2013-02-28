@@ -16,7 +16,7 @@ import numpy as np
 import os
 import pandas as pd
 
-import cochlea.traveling_waves as tw
+import traveling_waves as tw
 import dsam
 import marlib.thorns as th
 

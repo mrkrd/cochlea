@@ -3,7 +3,7 @@ from __future__ import division
 import numpy as np
 import scipy.signal as dsp
 
-from cochlea.traveling_waves.bm_pars import (
+from cochlea.holmberg2007.bm_pars import (
     real_freq_map,
     S_ST,
     S_ED,

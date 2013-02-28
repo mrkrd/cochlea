@@ -19,7 +19,7 @@ import itertools
 import numpy as np
 import pandas as pd
 
-from cochlea.pycat import _pycat
+from cochlea.zilany2009 import _pycat
 
 
 

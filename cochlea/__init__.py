@@ -1,27 +1,11 @@
 from __future__ import division
 from __future__ import print_function
 
-import warnings
 
 import numpy as np
 
-from zilany2009 import (
-    Zilany2009,
-    run_zilany2009
-)
-
-from zilany2009_human import (
-    Zilany2009_Human,
-    run_zilany2009_human
-)
-
-from zilany2009_human_psp import run_zilany2009_human_psp
-
-try:
-    from holmberg2007 import run_holmberg2007
-
-except ImportError:
-    warnings.warn("Holmberg2007 not loaded (perhaps DSAM missing)")
+from cochlea.zilany2009 import run_zilany2009
+from cochlea.holmberg2007 import run_holmberg2007
 
 
 
@@ -37,7 +21,8 @@ def set_dbspl(signal, dbspl):
 
 def set_dba_isolet(signal, dba):
     p0 = 20e-6
-    rms_dba = 0.02972401089     # value from miclib
+    rms_dba = 0.02972401089     # value from miclib (precalculated for
+                                # all ISOLET files)
 
     scaled = signal * 10**(dba/20) * p0 / rms_dba
 

@@ -1,0 +1,8 @@
+#		An_SG_Binomial 		< binomialHSR.par
+
+NUM_FIBRES		1000	Number of fibres.
+RAN_SEED		0	Random number seed (0 for different seed for each run).
+PULSE_DURATION		1e-05	Pulse duration (s).
+MAGNITUDE		1	Pulse magnitude (arbitrary units).
+REFRAC_PERIOD		0.00075	Refractory period (s).
+

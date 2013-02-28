@@ -157,7 +157,8 @@ def run_bm_wave(
         Zhel = bh2
 
 
-    return np.fliplr(xbm)
+    flipped = np.fliplr(xbm)
+    return filpped
 
 
 
