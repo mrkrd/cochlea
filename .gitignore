@@ -5,6 +5,6 @@ _pycat.h
 _pycat.so
 *.mexa64
 *.orig
-_tw.c
-_tw.so
+_traveling_waves.c
+_traveling_waves.so
 work

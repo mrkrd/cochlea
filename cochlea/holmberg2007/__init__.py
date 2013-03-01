@@ -15,10 +15,11 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import os
 import pandas as pd
+import scipy.signal as dsp
 
-import traveling_waves as tw
 import dsam
 import marlib.thorns as th
+import traveling_waves as tw
 
 def par_dir(par_file):
     """
@@ -47,7 +48,7 @@ def run_holmberg2007(
 
 
 
-    freq_map = tw.bm_pars.real_freq_map
+    freq_map = tw.real_freq_map
     duration = len(sound) / fs
 
 
@@ -67,10 +68,10 @@ def run_holmberg2007(
     xbm = tw.run_bm_wave(sound_scaled, fs)
 
     ### Amplification
-    LCR4 = tw.run_LCR4(xbm, fs)
+    lcr4 = tw.run_lcr4(xbm, fs)
 
     ### IHCRP
-    ihcrp = tw.run_ihcrp(LCR4, fs)
+    ihcrp = tw.run_ihcrp(lcr4, fs)
 
 
     anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)

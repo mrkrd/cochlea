@@ -7,21 +7,18 @@ from Cython.Build import cythonize
 import numpy
 
 extensions = [
+    # Extension(
+    #     "cochlea.pycat._pycat",
+    #     [
+    #         "cochlea/pycat/_pycat.pyx",
+    #         "cochlea/pycat/catmodel.c",
+    #         "cochlea/pycat/complex.c"
+    #     ]
+    # ),
     Extension(
-        "cochlea.pycat._pycat",
+        "cochlea.holmberg2007._traveling_waves",
         [
-            "cochlea/pycat/_pycat.pyx",
-            "cochlea/pycat/catmodel.c",
-            "cochlea/pycat/complex.c"
-        ]
-    ),
-    Extension(
-        "cochlea.traveling_waves/_tw",
-        [
-            "cochlea/traveling_waves/_tw.pyx",
-            "cochlea/traveling_waves/bm_wave.c",
-            "cochlea/traveling_waves/ihcrp.c",
-            "cochlea/traveling_waves/LCR4.c"
+            "cochlea/holmberg2007/_traveling_waves.pyx",
         ]
     ),
 ]

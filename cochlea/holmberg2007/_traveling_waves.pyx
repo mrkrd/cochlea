@@ -64,6 +64,7 @@ def run_bm_wave(
     cdef np.float64_t sample
     cdef np.ndarray[np.float64_t] time_slice
 
+
     cdef Py_ssize_t sections = 100
 
 
@@ -158,11 +159,11 @@ def run_bm_wave(
 
 
     flipped = np.fliplr(xbm)
-    return filpped
+    return flipped
 
 
 
-def run_LCR4(xbm, fs, sections=None):
+def run_lcr4(xbm, fs, sections=None):
 
     assert fs == 48e3
 
@@ -180,11 +181,11 @@ def run_LCR4(xbm, fs, sections=None):
     for i in range(len(sections)):
         sec = sections[i]
         xbm_slice = xbm[:,i]
-        xbm_out.append( _run_single_LCR4(fs, xbm_slice, sec) )
+        xbm_out.append( _run_single_lcr4(fs, xbm_slice, sec) )
 
     return np.array(xbm_out).T
 
-def _run_single_LCR4(np.float64_t fs,
+def _run_single_lcr4(np.float64_t fs,
                      np.ndarray[np.float64_t] xbm,
                      Py_ssize_t sec):
 
