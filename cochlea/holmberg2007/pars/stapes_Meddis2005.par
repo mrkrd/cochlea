@@ -1,6 +1,0 @@
-# converts microPascals to stapes velocity (m/s)
-
-OPERATOR	SCALE
-OPERAND		6E-10
-
-
