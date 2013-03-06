@@ -20,14 +20,6 @@ import itertools
 import traveling_waves as tw
 
 
-def par_dir(par_file):
-    """
-    Add directory path to par file name that is refered to the
-    modules location.
-    """
-    base_dir = os.path.dirname(__file__)
-    return os.path.join(base_dir, 'pars', par_file)
-
 
 def run_holmberg2007(
         sound,
@@ -76,31 +68,72 @@ def run_holmberg2007(
 
     anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)
 
+
+    ihc_meddis2000_pars = {
+        'hsr': {
+            'gamma_ca': 130,
+            'beta_ca': 400,
+            'tau_m': 1e-4,
+            'gmax_ca': 4.5e-9,
+            'e_ca': 0.066,
+            'tau_ca': 1e-4,
+            'perm_ca0': 0,
+            'perm_z': 2e32,
+            'pca': 3,
+            'replenish_rate_y': 10,
+            'loss_rate_l': 2580,
+            'recovery_rate_r': 6580,
+            'reprocess_rate_x': 66.3,
+            'max_free_pool': 8,
+        },
+        'msr': {
+            'gamma_ca': 130,
+            'beta_ca': 400,
+            'tau_m': 1e-4,
+            'gmax_ca': 4.25e-9,
+            'e_ca': 0.066,
+            'tau_ca': 1e-4,
+            'perm_ca0': 2.5e-11,
+            'perm_z': 2e32,
+            'pca': 3,
+            'replenish_rate_y': 10,
+            'loss_rate_l': 2580,
+            'recovery_rate_r': 6580,
+            'reprocess_rate_x': 66.3,
+            'max_free_pool': 9,
+        },
+        'lsr': {
+            'gamma_ca': 130,
+            'beta_ca': 400,
+            'tau_m': 1e-4,
+            'gmax_ca': 2.75e-9,
+            'e_ca': 0.066,
+            'tau_ca': 1e-4,
+            'perm_ca0': 4.2e-11,
+            'perm_z': 2e32,
+            'pca': 3,
+            'replenish_rate_y': 10,
+            'loss_rate_l': 2580,
+            'recovery_rate_r': 6580,
+            'reprocess_rate_x': 66.3,
+            'max_free_pool': 6,
+        }
+    }
+
     psps = {}
     trains = []
     for cf,anf_type in itertools.product(ihcrp.keys(),anf_types):
 
         if (cf,anf_type) not in psps:
+            ### IHC and Synapse
             psp = tw.run_ihc_meddis2000(
                 ihcrp=ihcrp[cf],
                 fs=fs,
-                gamma_Ca=130,
-                beta_Ca=400,
-                tau_m=1e-4,
-                G_Ca_max=4.5e-9,
-                E_Ca=0.066,
-                tau_Ca=1e-4,
-                perm_Ca0=0,
-                perm_z=2e32,
-                pCa=3,
-                replenish_rate_y=10,
-                loss_rate_l=2580,
-                recovery_rate_r=6580,
-                reprocess_rate_x=66.3,
-                max_free_pool=8,
+                **ihc_meddis2000_pars[anf_type]
             )
             psps[cf,anf_type] = psp
 
+        ### Spike generator
         spikes = tw.run_an_sg_carney_holmberg2007(
             psp=psp,
             fs=fs,
@@ -110,6 +143,7 @@ def run_holmberg2007(
             s1=12.5e-3,
             refractory_period=0.75e-3
         )
+
         trains.append({
             'spikes': spikes,
             'duration': duration,

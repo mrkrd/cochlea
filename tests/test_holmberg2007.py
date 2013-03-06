@@ -23,6 +23,7 @@ def test_bm_wave():
     sound_scaled = data['sound_scaled']
     xbm_target = data['xbm']
     channel = int(data['channel'])
+    cf = tw.real_freq_map[channel]
 
     xbm = tw.run_bm_wave(
         sound_scaled,
@@ -30,11 +31,11 @@ def test_bm_wave():
     )
 
     assert_array_equal(
-        xbm[channel]['xbm'],
+        xbm[cf],
         xbm_target
     )
 
-    assert xbm[channel]['cf'] == tw.real_freq_map[channel]
+
 
 
 
@@ -83,8 +84,10 @@ def test_ihcrp():
 
 
 def test_ihc_meddis2000():
-    """Testing against the DSAM implementation"""
+    """ test_ihc_meddis2000()
+    Testing against the DSAM implementation
 
+    """
     data = np.load('data/holmberg2007.npz')
 
     fs = data['fs']
@@ -94,45 +97,45 @@ def test_ihc_meddis2000():
     psp = tw.run_ihc_meddis2000(
         ihcrp=ihcrp,
         fs=fs,
-        gammaCa=130,
-        betaCa=400,
-        tauCaChan=1e-4,
-        GCaMax=4.5e-9,
-        CaVrev=0.066,
-        tauConcCa=1e-4,
-        perm_Ca0=0,
+        gamma_ca=130,
+        beta_ca=400,
+        tau_m=1e-4,
+        gmax_ca=4.5e-9,
+        e_ca=0.066,
+        tau_ca=1e-4,
+        perm_ca0=0,
         perm_z=2e32,
-        pCa=3,                  # default
-        replenishRate_y=10,
-        lossRate_l=2580,
-        recoveryRate_r=6580,
-        reprocessRate_x=66.3,
-        maxFreePool_M=8,
-        # opmode='spikes'
+        pca=3,
+        replenish_rate_y=10,
+        loss_rate_l=2580,
+        recovery_rate_r=6580,
+        reprocess_rate_x=66.3,
+        max_free_pool=8,
     )
 
     assert_array_almost_equal(
         psp,
-        psp_target
+        psp_target,
+        decimal=17
     )
 
 
 
-def test_an_sg_carney_holmberg2007():
+# def test_an_sg_carney_holmberg2007():
 
-    data = np.load('data/holmberg2007.npz')
+#     data = np.load('data/holmberg2007.npz')
 
-    fs = data['fs']
-    psp = data['psp']
+#     fs = data['fs']
+#     psp = data['psp']
 
-    an = tw.run_an_sg_carney_holmberg2007(
-        psp=psp,
-        fs=fs,
-        c0=0.5,
-        c1=0.5,
-        s0=1e-3,
-        s1=12.5e-3,
-        refractory_period=0.75e-3
-    )
+#     an = tw.run_an_sg_carney_holmberg2007(
+#         psp=psp,
+#         fs=fs,
+#         c0=0.5,
+#         c1=0.5,
+#         s0=1e-3,
+#         s1=12.5e-3,
+#         refractory_period=0.75e-3
+#     )
 
-    print(an)
+#     print(an)

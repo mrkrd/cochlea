@@ -563,15 +563,15 @@ def run_ihcrp(
 def run_ihc_meddis2000(
         np.ndarray[np.float64_t, ndim=1] ihcrp,
         np.float64_t fs,
-        np.float64_t gamma_Ca,
-        np.float64_t beta_Ca,
+        np.float64_t gamma_ca,
+        np.float64_t beta_ca,
         np.float64_t tau_m,
-        np.float64_t tau_Ca,
-        np.float64_t G_Ca_max,
-        np.float64_t E_Ca,
-        np.float64_t perm_Ca0,
+        np.float64_t tau_ca,
+        np.float64_t gmax_ca,
+        np.float64_t e_ca,
+        np.float64_t perm_ca0,
         np.float64_t perm_z,
-        np.float64_t pCa,
+        np.float64_t pca,
         np.float64_t replenish_rate_y,
         np.float64_t loss_rate_l,
         np.float64_t recovery_rate_r,
@@ -586,7 +586,7 @@ def run_ihc_meddis2000(
     cdef np.float64_t conc_Ca
     cdef np.float64_t act_Ca_inf
     cdef np.float64_t k0        # spont perm
-    cdef np.float64_t vin
+    cdef np.float64_t vin       # resting potential
     cdef np.float64_t act_Ca
     cdef np.float64_t reservoirQ
     cdef np.float64_t spontFreePool_q0
@@ -608,11 +608,11 @@ def run_ihc_meddis2000(
     psp = np.zeros_like(ihcrp)
     uIHC_rest = ihcrp[0]
 
-    act_Ca_inf = 1 / (1 + exp(-gamma_Ca*uIHC_rest)/beta_Ca)
-    ICa = G_Ca_max * act_Ca_inf**3 * (uIHC_rest - E_Ca)
+    act_Ca_inf = 1 / (1 + exp(-gamma_ca*uIHC_rest)/beta_ca)
+    ICa = gmax_ca * act_Ca_inf**3 * (uIHC_rest - e_ca)
 
-    if -ICa > perm_Ca0:
-        k0 = perm_z * ((-ICa)**pCa - perm_Ca0**pCa)
+    if -ICa > perm_ca0:
+        k0 = perm_z * ((-ICa)**pca - perm_ca0**pca)
     else:
         k0 = 0.0
 
@@ -644,19 +644,19 @@ def run_ihc_meddis2000(
         vin = ihcrp[i]
 
         ### Ca current
-        act_Ca_inf = 1 / (1 + exp(-gamma_Ca*vin)/beta_Ca)
+        act_Ca_inf = 1 / (1 + exp(-gamma_ca*vin)/beta_ca)
         act_Ca += (act_Ca_inf - act_Ca) * dt / tau_m
-        ICa = G_Ca_max * act_Ca**3 * (vin - E_Ca)
+        ICa = gmax_ca * act_Ca**3 * (vin - e_ca)
 
 
         ### Calcium Ion accumulation and diffusion
         # caCondMode == IHC_MEDDIS2000_CACONDMODE_ORIGINAL
-        conc_Ca += (-ICa - conc_Ca) * dt / tau_Ca
+        conc_Ca += (-ICa - conc_Ca) * dt / tau_ca
 
 
         ### power law release function
-        if conc_Ca > perm_Ca0:
-            kdt = (perm_z*dt * (conc_Ca**pCa - perm_Ca0**pCa))
+        if conc_Ca > perm_ca0:
+            kdt = (perm_z*dt * (conc_Ca**pca - perm_ca0**pca))
         else:
             kdt = 0.0
 
