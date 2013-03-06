@@ -1,5 +1,7 @@
 from __future__ import division
 
+import collections
+
 import numpy as np
 cimport numpy as np
 
@@ -10,10 +12,10 @@ cdef extern from "math.h":
     double fabs(double x)
 
 
-
-
-
 import bm_pars
+
+
+
 
 def run_bm_wave(
         np.ndarray[np.float64_t, ndim=1] signal,
@@ -158,46 +160,55 @@ def run_bm_wave(
         Zhel = bh2
 
 
-    flipped = np.fliplr(xbm)
-    return flipped
+    xbm = np.fliplr(xbm)
+
+    out = dict(zip(bm_pars.real_freq_map, xbm.T))
+
+    return out
 
 
 
-def run_lcr4(xbm, fs, sections=None):
+# def run_lcr4(xbm, fs, sections=None):
+
+#     assert fs == 48e3
+
+#     if sections is None:
+#         sections = range(100)
+#     elif isinstance(sections, int):
+#         sections = [sections]
+
+#     if xbm.ndim == 1:
+#         xbm = xbm.reshape(xbm.shape+(1,))
+
+#     assert xbm.shape[1] == len(sections)
+
+#     xbm_out = []
+#     for i in range(len(sections)):
+#         sec = sections[i]
+#         xbm_slice = xbm[:,i]
+#         xbm_out.append( _run_single_lcr4(fs, xbm_slice, sec) )
+
+#     return np.array(xbm_out).T
+
+def run_lcr4(
+        np.ndarray[np.float64_t] xbm,
+        np.float64_t fs,
+        np.float64_t cf,
+):
 
     assert fs == 48e3
 
-    if sections is None:
-        sections = range(100)
-    elif isinstance(sections, int):
-        sections = [sections]
+    cdef Py_ssize_t sec = np.where(bm_pars.real_freq_map == cf)[0][0]
 
-    if xbm.ndim == 1:
-        xbm = xbm.reshape(xbm.shape+(1,))
+    ### The original implementation (c code) had high CFs on the left.
+    ### The pre-calculated values in bm_pars have the orignal order
+    ### and must be inversed.
+    cdef np.ndarray[np.float64_t] freq_map = bm_pars.freq_map[::-1]
+    cdef np.ndarray[np.float64_t] Qmin = bm_pars.Qmin[::-1]
+    cdef np.ndarray[np.float64_t] Qmax = bm_pars.Qmax[::-1]
+    cdef np.ndarray[np.float64_t] SAT1 = bm_pars.SAT1[::-1]
+    cdef np.ndarray[np.float64_t] SAT4 = bm_pars.SAT4[::-1]
 
-    assert xbm.shape[1] == len(sections)
-
-    xbm_out = []
-    for i in range(len(sections)):
-        sec = sections[i]
-        xbm_slice = xbm[:,i]
-        xbm_out.append( _run_single_lcr4(fs, xbm_slice, sec) )
-
-    return np.array(xbm_out).T
-
-def _run_single_lcr4(np.float64_t fs,
-                     np.ndarray[np.float64_t] xbm,
-                     Py_ssize_t sec):
-
-    assert fs == 48000
-
-    sec = 99 - sec         # DSAM convention (low channel -> low freq)
-
-    cdef np.ndarray[np.float64_t] freq_map = bm_pars.freq_map
-    cdef np.ndarray[np.float64_t] Qmin = bm_pars.Qmin
-    cdef np.ndarray[np.float64_t] Qmax = bm_pars.Qmax
-    cdef np.ndarray[np.float64_t] SAT1 = bm_pars.SAT1
-    cdef np.ndarray[np.float64_t] SAT4 = bm_pars.SAT4
 
     cdef np.float64_t T4C, T4L, T5C, T5L, T6C, T6L
     cdef np.float64_t T7C, T7L, Rtest, Rc_res, Rl_res
@@ -401,37 +412,42 @@ def _run_single_lcr4(np.float64_t fs,
 
 
 
-def run_ihcrp(xbm, fs, sections=None):
+# def run_ihcrp(xbm, fs, sections=None):
+
+#     assert fs == 48e3
+
+#     if sections is None:
+#         sections = range(100)
+#     elif isinstance(sections, int):
+#         sections = [sections]
+
+#     if xbm.ndim == 1:
+#         xbm = xbm.reshape(xbm.shape+(1,))
+
+#     assert xbm.shape[1] == len(sections)
+
+#     uihc = []
+#     for i in range(len(sections)):
+#         sec = sections[i]
+#         xbm_slice = xbm[:,i]
+#         uihc.append( _run_single_ihcrp(fs, xbm_slice, sec) )
+
+#     return np.array(uihc).T
+
+
+
+def run_ihcrp(
+        np.ndarray[np.float64_t] xbm,
+        np.float64_t fs,
+        np.float64_t cf,
+):
 
     assert fs == 48e3
 
-    if sections is None:
-        sections = range(100)
-    elif isinstance(sections, int):
-        sections = [sections]
-
-    if xbm.ndim == 1:
-        xbm = xbm.reshape(xbm.shape+(1,))
-
-    assert xbm.shape[1] == len(sections)
-
-    uihc = []
-    for i in range(len(sections)):
-        sec = sections[i]
-        xbm_slice = xbm[:,i]
-        uihc.append( _run_single_ihcrp(fs, xbm_slice, sec) )
-
-    return np.array(uihc).T
-
-
-
-def _run_single_ihcrp(np.float64_t fs,
-                      np.ndarray[np.float64_t] xbm,
-                      Py_ssize_t sec):
-
-    assert fs == 48000
-
-    sec = 99 - sec         # DSAM convention (low channel -> low freq)
+    cdef Py_ssize_t sec = np.where(bm_pars.real_freq_map == cf)[0][0]
+    sec = 99 - sec         # Flipping the sections, because the
+                           # original C implementation had high CFs on
+                           # the left hand side
 
     cdef np.ndarray[np.float64_t] uIHC = np.zeros_like(xbm)
     cdef np.ndarray[np.float64_t] ciliaCouplingGain = bm_pars.ciliaGain
@@ -472,17 +488,23 @@ def _run_single_ihcrp(np.float64_t fs,
 
     cdef int sections = 100
 
-    restingPotential_V0 = ((p_restingConductance_G0 *
-                            p_endocochlearPot_Et + p_kConductance_Gk *
-                            (p_reversalPot_Ek + p_endocochlearPot_Et *
-                             p_reversalPotCorrection)) /
-                           (p_restingConductance_G0 + p_kConductance_Gk))
+    restingPotential_V0 = (
+        (
+            p_restingConductance_G0*p_endocochlearPot_Et
+            + p_kConductance_Gk*(p_reversalPot_Ek + p_endocochlearPot_Et*p_reversalPotCorrection)
+        )
+        /
+        (p_restingConductance_G0 + p_kConductance_Gk)
+    )
 
 
     dt = 1 / fs
     dtOverC = dt / p_totalCapacitance_C
-    gkEpk = p_kConductance_Gk * (p_reversalPot_Ek +
-                                 p_endocochlearPot_Et * p_reversalPotCorrection)
+    gkEpk = (
+        p_kConductance_Gk
+        *
+        (p_reversalPot_Ek + p_endocochlearPot_Et*p_reversalPotCorrection)
+    )
 
     Z_ST = 0
 
@@ -534,3 +556,216 @@ def _run_single_ihcrp(np.float64_t fs,
         uIHC_old = uIHC[i]
 
     return uIHC
+
+
+
+
+def run_ihc_meddis2000(
+        np.ndarray[np.float64_t, ndim=1] ihcrp,
+        np.float64_t fs,
+        np.float64_t gamma_Ca,
+        np.float64_t beta_Ca,
+        np.float64_t tau_m,
+        np.float64_t tau_Ca,
+        np.float64_t G_Ca_max,
+        np.float64_t E_Ca,
+        np.float64_t perm_Ca0,
+        np.float64_t perm_z,
+        np.float64_t pCa,
+        np.float64_t replenish_rate_y,
+        np.float64_t loss_rate_l,
+        np.float64_t recovery_rate_r,
+        np.float64_t reprocess_rate_x,
+        np.float64_t max_free_pool,
+        opmode='probability'
+):
+
+    cdef np.float64_t dt = 1/fs
+    cdef np.ndarray[np.float64_t, ndim=1] psp
+    cdef np.float64_t uIHC_rest
+    cdef np.float64_t conc_Ca
+    cdef np.float64_t act_Ca_inf
+    cdef np.float64_t k0        # spont perm
+    cdef np.float64_t vin
+    cdef np.float64_t act_Ca
+    cdef np.float64_t reservoirQ
+    cdef np.float64_t spontFreePool_q0
+    cdef np.float64_t cleftC
+    cdef np.float64_t spontCleft_c0
+    cdef np.float64_t ICa
+    cdef np.float64_t replenish
+    cdef np.float64_t ejected
+    cdef np.float64_t kdt
+    cdef np.float64_t reUptakeAndLost
+    cdef np.float64_t reUptake
+    cdef np.float64_t reprocessed
+    cdef np.float64_t reprocessedW
+    cdef Py_ssize_t i
+
+
+
+    ### Initial values
+    psp = np.zeros_like(ihcrp)
+    uIHC_rest = ihcrp[0]
+
+    act_Ca_inf = 1 / (1 + exp(-gamma_Ca*uIHC_rest)/beta_Ca)
+    ICa = G_Ca_max * act_Ca_inf**3 * (uIHC_rest - E_Ca)
+
+    if -ICa > perm_Ca0:
+        k0 = perm_z * ((-ICa)**pCa - perm_Ca0**pCa)
+    else:
+        k0 = 0.0
+
+    # cleftReplenishMode == IHC_MEDDIS2000_CLEFTREPLENISHMODE_ORIGINAL
+    spontCleft_c0 = (
+        max_free_pool * replenish_rate_y * k0
+        /
+        (replenish_rate_y * (loss_rate_l+recovery_rate_r) + k0*loss_rate_l)
+    )
+
+    if (spontCleft_c0 > 0) and opmode == 'probability':
+        spontFreePool_q0 = spontCleft_c0 * (loss_rate_l + recovery_rate_r) / k0
+    elif (spontCleft_c0 > 0) and opmode == 'spikes':
+        spontFreePool_q0 = np.floor( (spontCleft_c0 * (loss_rate_l+recovery_rate_r) / k0) + 0.5 )
+    else:
+        spontFreePool_q0 = max_free_pool
+
+    spontReprocess_w0 = spontCleft_c0 * recovery_rate_r / reprocess_rate_x
+
+    act_Ca = act_Ca_inf
+    conc_Ca = -ICa
+    reservoirQ = spontFreePool_q0
+    cleftC = spontCleft_c0
+    reprocessedW = spontReprocess_w0
+
+
+    for i in range(len(ihcrp)):
+
+        vin = ihcrp[i]
+
+        ### Ca current
+        act_Ca_inf = 1 / (1 + exp(-gamma_Ca*vin)/beta_Ca)
+        act_Ca += (act_Ca_inf - act_Ca) * dt / tau_m
+        ICa = G_Ca_max * act_Ca**3 * (vin - E_Ca)
+
+
+        ### Calcium Ion accumulation and diffusion
+        # caCondMode == IHC_MEDDIS2000_CACONDMODE_ORIGINAL
+        conc_Ca += (-ICa - conc_Ca) * dt / tau_Ca
+
+
+        ### power law release function
+        if conc_Ca > perm_Ca0:
+            kdt = (perm_z*dt * (conc_Ca**pCa - perm_Ca0**pCa))
+        else:
+            kdt = 0.0
+
+
+
+        ### Synapse
+        if opmode == 'probability':
+            # cleftReplenishMode == IHC_MEDDIS2000_CLEFTREPLENISHMODE_ORIGINAL
+            if reservoirQ < max_free_pool:
+                replenish = replenish_rate_y * dt * (max_free_pool - reservoirQ)
+            else:
+                replenish = 0.0
+
+
+            ejected = kdt * reservoirQ
+
+            reUptakeAndLost = (loss_rate_l + recovery_rate_r) * dt * cleftC
+            reUptake = recovery_rate_r * dt * cleftC
+
+            reprocessed = reprocess_rate_x * dt * reprocessedW
+            reservoirQ += replenish - ejected + reprocessed
+            cleftC += ejected - reUptakeAndLost
+
+            psp[i] = ejected
+
+            reprocessedW += reUptake - reprocessed
+        elif opmode == 'spikes':
+            if reservoirQ < max_free_pool:
+                replenish = (np.random.geometric(
+                    replenish_rate_y * dt,
+                    int(max_free_pool - reservoirQ)
+                ) == 1).sum()
+            else:
+                replenish = 0.0
+
+            ejected = (np.random.geometric(
+                kdt,
+                int(reservoirQ)
+            ) == 1).sum()
+
+            reUptakeAndLost = (loss_rate_l+recovery_rate_r)*dt * cleftC
+            reUptake = recovery_rate_r * dt * cleftC
+            if reprocessedW < 1:
+                reprocessed = 0.0
+            else:
+                reprocessed = (np.random.geometric(
+                    reprocess_rate_x * dt,
+                    int(reprocessedW)
+                ) == 1).sum()
+
+            reservoirQ += replenish - ejected + reprocessed
+            cleftC += ejected - reUptakeAndLost
+
+
+            if ejected > 0:
+                psp[i] = ejected
+            else:
+                psp[i] = 0.0
+
+            reprocessedW += reUptake - reprocessed
+
+
+        else:
+            raise RuntimeError
+
+    return psp
+
+
+
+def run_an_sg_carney_holmberg2007(
+        np.ndarray[np.float64_t, ndim=1] psp,
+        np.float64_t fs,
+        np.float64_t c0,
+        np.float64_t c1,
+        np.float64_t s0,
+        np.float64_t s1,
+        np.float64_t refractory_period
+):
+
+    cdef np.float64_t dt
+    cdef np.float64_t timer
+    cdef Py_ssize_t i
+    cdef np.float64_t p
+    cdef np.float64_t excess_time
+    cdef np.float64_t threshold
+    cdef np.ndarray[np.float64_t, ndim=1] rand
+
+    dt = 1/fs
+    timer = refractory_period + dt
+    rand = np.random.rand(len(psp))
+
+    spikes = []
+    for i in range(len(psp)):
+        p = psp[i]
+
+        if timer > refractory_period:
+            excess_time = timer - refractory_period
+            threshold = (
+                c0*exp(-excess_time/s0)
+                +
+                c1*exp(-excess_time/s1)
+            )
+
+            ### stochastical vesicle release
+            if p*(1-threshold) > rand[i]:
+                spikes.append(i*dt)
+                timer = 0
+
+        timer += dt
+
+    spikes = np.array(spikes)
+    return spikes

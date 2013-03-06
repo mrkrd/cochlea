@@ -15,11 +15,10 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import os
 import pandas as pd
-import scipy.signal as dsp
+import itertools
 
-import dsam
-import marlib.thorns as th
 import traveling_waves as tw
+
 
 def par_dir(par_file):
     """
@@ -38,7 +37,7 @@ def run_holmberg2007(
         cf=None
 ):
 
-    assert np.max(sound) < 1000, "Signal should be given in Pa"
+    assert np.max(np.abs(sound)) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
     assert cf is None
     assert fs == 48e3
@@ -47,11 +46,7 @@ def run_holmberg2007(
 
 
 
-
-    freq_map = tw.real_freq_map
     duration = len(sound) / fs
-
-
 
 
 
@@ -65,59 +60,62 @@ def run_holmberg2007(
     sound_scaled = sound_me * tw.scaling_factor
 
     ### Basilar membrane
-    xbm = tw.run_bm_wave(sound_scaled, fs)
+    xbms = tw.run_bm_wave(sound_scaled, fs)
 
-    ### Amplification
-    lcr4 = tw.run_lcr4(xbm, fs)
 
-    ### IHCRP
-    ihcrp = tw.run_ihcrp(lcr4, fs)
+    ihcrp = {}
+    for cf,xbm in xbms.iteritems():
+
+        ### Amplification
+        lcr4 = tw.run_lcr4(xbm, fs, cf)
+
+        ### IHCRP
+        ihcrp[cf] = tw.run_ihcrp(lcr4, fs, cf)
+
 
 
     anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)
-    ihcs = {'hsr':None, 'msr':None, 'lsr':None}
-    sgs = {'hsr':None, 'msr':None, 'lsr':None}
+
+    psps = {}
     trains = []
+    for cf,anf_type in itertools.product(ihcrp.keys(),anf_types):
 
-    for anf_type in anf_types:
+        if (cf,anf_type) not in psps:
+            psp = tw.run_ihc_meddis2000(
+                ihcrp=ihcrp[cf],
+                fs=fs,
+                gamma_Ca=130,
+                beta_Ca=400,
+                tau_m=1e-4,
+                G_Ca_max=4.5e-9,
+                E_Ca=0.066,
+                tau_Ca=1e-4,
+                perm_Ca0=0,
+                perm_z=2e32,
+                pCa=3,
+                replenish_rate_y=10,
+                loss_rate_l=2580,
+                recovery_rate_r=6580,
+                reprocess_rate_x=66.3,
+                max_free_pool=8,
+            )
+            psps[cf,anf_type] = psp
 
-        if ihcs[anf_type] is None:
-            ihc_module = dsam.EarModule("IHC_Meddis2000")
-            ihc_module.read_pars(par_dir("ihc_%s_Sumner2002.par" %anf_type))
-            sg_module = dsam.EarModule("An_SG_Carney")
-            sg_module.read_pars(par_dir("anf_carney.par"))
-            sg_module.set_par('pulse_duration', 1.1/fs)
-            dsam.connect(ihc_module, sg_module)
-
-            ihc_module.run(fs, ihcrp)
-
-            ihcs[anf_type] = ihc_module
-            sgs[anf_type] = sg_module
-
-
-        sgs[anf_type].run()
-        sg_signal = sgs[anf_type].get_signal()
-
-
-        ### Convert array to `nude' spike trains (no meta)
-        nudes = []
-        for sig in sg_signal.T:
-            sig = sig.astype(int)
-            t = np.arange(len(sig))
-            spikes = np.repeat(t, sig) / fs
-
-            nudes.append(spikes)
-
-
-
-        for cf,spikes in zip(freq_map, nudes):
-            trains.append({
-                'spikes': spikes,
-                'duration': duration,
-                'cf': cf,
-                'type': anf_type
-            })
-
+        spikes = tw.run_an_sg_carney_holmberg2007(
+            psp=psp,
+            fs=fs,
+            c0=0.5,
+            c1=0.5,
+            s0=1e-3,
+            s1=12.5e-3,
+            refractory_period=0.75e-3
+        )
+        trains.append({
+            'spikes': spikes,
+            'duration': duration,
+            'cf': cf,
+            'type': anf_type
+        })
 
 
     spike_trains = pd.DataFrame(trains)
