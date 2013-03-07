@@ -10,11 +10,10 @@ import numpy as np
 import scipy.interpolate
 import pandas as pd
 import os
-import warnings
 import itertools
 
-from cochlea.pycat import _pycat
-from cochlea.zilany2009 import _run_channel
+import _pycat
+from zilany2009 import _run_channel
 
 
 def run_zilany2009_human(
@@ -25,7 +24,7 @@ def run_zilany2009_human(
         cf,
         cohc=1,
         cihc=1,
-        powerlaw_implnt='approx',
+        powerlaw='approximate',
         middle_ear=True,
 ):
 
@@ -43,7 +42,7 @@ def run_zilany2009_human(
 
 
 
-    ### Run Middle Ear filter
+    ### Run human middle ear filter
     if middle_ear:
         meout = _run_human_me_filter_for_zilany2009(
             signal=sound,
@@ -61,17 +60,21 @@ def run_zilany2009_human(
             'cohc': cohc,
             'cihc': cihc,
             'anf_num': anf_num,
-            'powerlaw_implnt': powerlaw_implnt,
+            'powerlaw': powerlaw,
             'seed': seed
         }
         for freq in cfs
     ]
 
 
+    ### Run the model for each channel
+    nested = map(
+        _run_channel,
+        channel_args
+    )
 
-    nested = map(_run_channel, channel_args)
 
-
+    ### Unpack the results
     trains = itertools.chain(*nested)
     spike_trains = pd.DataFrame(
         list(trains)
@@ -128,7 +131,7 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
     freqs = np.linspace(0, fs/2, len(signal_fft))
 
     me_filter = pd.read_csv(
-        _data_dir('me_filter.csv')
+        _data_dir('human_me_filter.csv')
     )
 
 
@@ -162,57 +165,4 @@ def _run_human_me_filter_for_zilany2009(signal, fs):
 
 def _data_dir(par_file):
     base_dir = os.path.dirname(__file__)
-    return os.path.join(base_dir, 'data', par_file)
-
-
-
-
-
-class Zilany2009_Human(object):
-    name = 'Zilany2009'
-
-    def __init__(self,
-                 anf_num=(1,1,1),
-                 cf=1000,
-                 cohc=1.,
-                 cihc=1.,
-                 powerlaw_implnt='approx'):
-        """ Auditory periphery model of a cat (Zilany et al. 2009)
-
-        anf_num: (hsr_num, msr_num, lsr_num)
-        cf: CF
-        powerlaw_implnt: 'approx' or 'actual' implementation of the power-law
-        with_ffGn: enable/disable Gausian noise
-
-        """
-        warnings.warn("Obsolited: use run_zilany2009() instead")
-
-
-        self._anf_num = anf_num
-        self._cf = cf
-        self._powerlaw_implnt = powerlaw_implnt
-        self._with_ffGn = with_ffGn
-        self._cohc = cohc
-        self._cihc = cihc
-
-
-    def run(self, sound, fs, seed):
-        """ Run the model.
-
-        fs: sampling frequency of the signal; model is run at the same frequency
-        sound: input signal
-
-        """
-
-        trains = run_zilany2009_human(
-            sound=sound,
-            fs=fs,
-            anf_num=self._anf_num,
-            seed=seed,
-            cf=self._cf,
-            cohc=self._cohc,
-            cihc=self._cihc,
-            powerlaw_implnt=self._powerlaw_implnt,
-        )
-
-        return trains
+    return os.path.join(base_dir, par_file)

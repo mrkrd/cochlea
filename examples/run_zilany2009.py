@@ -18,8 +18,7 @@ def main():
 
     ### Make sound
     t = np.arange(0, 0.1, 1/fs)
-    # s = dsp.chirp(t, 80, t[-1], 20000)
-    s = np.sin(2 * np.pi * 500 * t)
+    s = dsp.chirp(t, 80, t[-1], 20000)
     s = cochlea.set_dbspl(s, 50)
     s = np.concatenate( (s, np.zeros(10e-3 * fs)) )
 
@@ -31,7 +30,8 @@ def main():
         fs,
         anf_num=(100,0,0),
         cf=(80, 20000, 100),
-        seed=0
+        seed=0,
+        powerlaw='approximate'
     )
 
 

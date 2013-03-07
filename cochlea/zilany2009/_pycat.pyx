@@ -134,9 +134,14 @@ cdef public double* ffGn(int N, double tdres, double Hinput, double mu, bint wit
 
 
 
-def run_me(np.ndarray[np.float64_t, ndim=1] signal,
-           double fs):
-    # /*variables for middle-ear model */
+
+
+def run_middle_ear_filter(
+        np.ndarray[np.float64_t, ndim=1] signal,
+        double fs
+):
+
+    # variables for middle-ear model
     megainmax=43;
     # double *mey1, *mey2, *mey3, meout,c1filterouttmp,c2filterouttmp,c1vihctmp,c2vihctmp;
     # double fp,C,m11,m12,m21,m22,m23,m24,m25,m26,m31,m32,m33,m34,m35,m36;
@@ -171,13 +176,14 @@ def run_me(np.ndarray[np.float64_t, ndim=1] signal,
     return meout
 
 
-def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
-            double cf,
-            double fs,
-            double cohc=1.,
-            double cihc=1.):
-    """
-    Run BM / IHC model.
+def run_ihc(
+        np.ndarray[np.float64_t, ndim=1] signal,
+        double cf,
+        double fs,
+        double cohc=1.,
+        double cihc=1.
+):
+    """Run BM / IHC model.
 
     signal: output of the middle ear filter [Pa]
     cf: characteristic frequency
@@ -211,27 +217,29 @@ def run_ihc(np.ndarray[np.float64_t, ndim=1] signal,
 
 
 
-def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
-                double cf,
-                double fs,
-                anf_type='hsr',
-                powerlaw_implnt='actual',
-                with_ffGn=True):
-    """
-    Run synapse simulation.
+def run_synapse(
+        np.ndarray[np.float64_t, ndim=1] vihc,
+        double cf,
+        double fs,
+        anf_type='hsr',
+        powerlaw='actual',
+        ffGn=True
+):
+    """Run synapse simulation.
 
     vihc: IHC receptor potential
     cf: characteristic frequency
     anf_type: auditory nerve fiber type ('hsr', 'msr' or 'lsr')
-    powerlaw_implnt: implementation of the powerlaw ('actual', 'approx')
-    with_ffGn: enable/disable factorial Gauss noise generator
+    powerlaw: implementation of the powerlaw ('actual', 'approximate')
+    ffGn: enable/disable factorial Gauss noise generator
 
     return: PSTH from ANF
+
     """
     assert (cf > 79.9) and (cf < 40e3), "Wrong CF: 80 <= cf < 40e3, CF = %s"%str(cf)
     assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
     assert anf_type in ['hsr', 'msr', 'lsr'], "anf_type not hsr/msr/lsr"
-    assert powerlaw_implnt in ['actual', 'approx'], "powerlaw_implnt not actual/approx"
+    assert powerlaw in ['actual', 'approximate'], "powerlaw not actual/approximate"
 
     spont = {
         'hsr': 100.,
@@ -239,9 +247,9 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
         'lsr': 0.1
     }
 
-    implnt_map = {
+    powerlaw_map = {
         'actual': 1,
-        'approx': 0
+        'approximate': 0
     }
 
 
@@ -264,10 +272,10 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
         len(vihc),                   # totalstim
         1,                           # nrep
         spont[anf_type],             # spont
-        implnt_map[powerlaw_implnt], # implnt
+        powerlaw_map[powerlaw],      # powerlaw
         10e3,                        # sampFreq
         synout_data,                 # synouttmp
-        with_ffGn                    # with_ffGn
+        ffGn                         # ffGn
     )
 
     return synout
@@ -276,10 +284,11 @@ def run_synapse(np.ndarray[np.float64_t, ndim=1] vihc,
 
 
 
-def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
-                        double fs):
-    """
-    Run spike generator.
+def run_spike_generator(
+        np.ndarray[np.float64_t, ndim=1] synout,
+        double fs
+):
+    """Run spike generator.
 
     synout: synapse output (sp/s)
     fs: sampling frequency
@@ -293,8 +302,8 @@ def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
     cdef double *synout_data = <double *>np.PyArray_DATA(synout)
 
     # Output spikes (signal)
-    sptime = np.zeros(np.ceil(len(synout)/0.00075/fs))
-    cdef double *sptime_data = <double *>np.PyArray_DATA(sptime)
+    sptimes = np.zeros(np.ceil(len(synout)/0.00075/fs))
+    cdef double *sptimes_data = <double *>np.PyArray_DATA(sptimes)
 
 
     # Run synapse model
@@ -303,10 +312,12 @@ def run_spike_generator(np.ndarray[np.float64_t, ndim=1] synout,
         1./fs,                  # tdres
         len(synout),            # totalstim
         1,                      # nprep
-        sptime_data             # sptime
+        sptimes_data            # sptime
     )
 
-    return sptime
+    spikes = np.array(sptimes[sptimes != 0])
+
+    return spikes
 
 
 

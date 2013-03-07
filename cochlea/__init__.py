@@ -4,7 +4,8 @@ from __future__ import print_function
 
 import numpy as np
 
-from cochlea.zilany2009 import run_zilany2009
+from cochlea.zilany2009.zilany2009 import run_zilany2009
+from cochlea.zilany2009.zilany2009_human import run_zilany2009_human
 from cochlea.holmberg2007 import run_holmberg2007
 
 

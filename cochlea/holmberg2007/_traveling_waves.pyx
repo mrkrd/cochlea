@@ -1,6 +1,6 @@
 from __future__ import division
 
-import collections
+
 
 import numpy as np
 cimport numpy as np
@@ -168,27 +168,7 @@ def run_bm_wave(
 
 
 
-# def run_lcr4(xbm, fs, sections=None):
 
-#     assert fs == 48e3
-
-#     if sections is None:
-#         sections = range(100)
-#     elif isinstance(sections, int):
-#         sections = [sections]
-
-#     if xbm.ndim == 1:
-#         xbm = xbm.reshape(xbm.shape+(1,))
-
-#     assert xbm.shape[1] == len(sections)
-
-#     xbm_out = []
-#     for i in range(len(sections)):
-#         sec = sections[i]
-#         xbm_slice = xbm[:,i]
-#         xbm_out.append( _run_single_lcr4(fs, xbm_slice, sec) )
-
-#     return np.array(xbm_out).T
 
 def run_lcr4(
         np.ndarray[np.float64_t] xbm,
@@ -412,27 +392,6 @@ def run_lcr4(
 
 
 
-# def run_ihcrp(xbm, fs, sections=None):
-
-#     assert fs == 48e3
-
-#     if sections is None:
-#         sections = range(100)
-#     elif isinstance(sections, int):
-#         sections = [sections]
-
-#     if xbm.ndim == 1:
-#         xbm = xbm.reshape(xbm.shape+(1,))
-
-#     assert xbm.shape[1] == len(sections)
-
-#     uihc = []
-#     for i in range(len(sections)):
-#         sec = sections[i]
-#         xbm_slice = xbm[:,i]
-#         uihc.append( _run_single_ihcrp(fs, xbm_slice, sec) )
-
-#     return np.array(uihc).T
 
 
 
@@ -571,7 +530,7 @@ def run_ihc_meddis2000(
         np.float64_t e_ca,
         np.float64_t perm_ca0,
         np.float64_t perm_z,
-        np.float64_t pca,
+        np.float64_t power_ca,
         np.float64_t replenish_rate_y,
         np.float64_t loss_rate_l,
         np.float64_t recovery_rate_r,
@@ -612,7 +571,7 @@ def run_ihc_meddis2000(
     ICa = gmax_ca * act_Ca_inf**3 * (uIHC_rest - e_ca)
 
     if -ICa > perm_ca0:
-        k0 = perm_z * ((-ICa)**pca - perm_ca0**pca)
+        k0 = perm_z * ((-ICa)**power_ca - perm_ca0**power_ca)
     else:
         k0 = 0.0
 
@@ -656,7 +615,7 @@ def run_ihc_meddis2000(
 
         ### power law release function
         if conc_Ca > perm_ca0:
-            kdt = (perm_z*dt * (conc_Ca**pca - perm_ca0**pca))
+            kdt = (perm_z*dt * (conc_Ca**power_ca - perm_ca0**power_ca))
         else:
             kdt = 0.0
 

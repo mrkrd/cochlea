@@ -18,7 +18,7 @@ import pandas as pd
 import itertools
 
 import traveling_waves as tw
-
+from traveling_waves import real_freq_map
 
 
 def run_holmberg2007(
@@ -31,11 +31,18 @@ def run_holmberg2007(
 
     assert np.max(np.abs(sound)) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
-    assert cf is None
     assert fs == 48e3
 
     np.random.seed(seed)
 
+    if cf is None:
+        cfs = tw.real_freq_map
+    elif np.isscalar(cf):
+        cfs = [cf]
+    else:
+        cfs = cf
+
+    assert set(cfs) <= set(tw.real_freq_map)
 
 
     duration = len(sound) / fs
@@ -52,14 +59,13 @@ def run_holmberg2007(
     sound_scaled = sound_me * tw.scaling_factor
 
     ### Basilar membrane
-    xbms = tw.run_bm_wave(sound_scaled, fs)
+    xbm = tw.run_bm_wave(sound_scaled, fs)
 
 
     ihcrp = {}
-    for cf,xbm in xbms.iteritems():
-
+    for cf in cfs:
         ### Amplification
-        lcr4 = tw.run_lcr4(xbm, fs, cf)
+        lcr4 = tw.run_lcr4(xbm[cf], fs, cf)
 
         ### IHCRP
         ihcrp[cf] = tw.run_ihcrp(lcr4, fs, cf)
@@ -79,7 +85,7 @@ def run_holmberg2007(
             'tau_ca': 1e-4,
             'perm_ca0': 0,
             'perm_z': 2e32,
-            'pca': 3,
+            'power_ca': 3,
             'replenish_rate_y': 10,
             'loss_rate_l': 2580,
             'recovery_rate_r': 6580,
@@ -95,7 +101,7 @@ def run_holmberg2007(
             'tau_ca': 1e-4,
             'perm_ca0': 2.5e-11,
             'perm_z': 2e32,
-            'pca': 3,
+            'power_ca': 3,
             'replenish_rate_y': 10,
             'loss_rate_l': 2580,
             'recovery_rate_r': 6580,
@@ -111,7 +117,7 @@ def run_holmberg2007(
             'tau_ca': 1e-4,
             'perm_ca0': 4.2e-11,
             'perm_z': 2e32,
-            'pca': 3,
+            'power_ca': 3,
             'replenish_rate_y': 10,
             'loss_rate_l': 2580,
             'recovery_rate_r': 6580,
@@ -133,13 +139,13 @@ def run_holmberg2007(
             )
             psps[cf,anf_type] = psp
 
-        ### Spike generator
+        ### Spike generator (pars from Sumner et al. 2002)
         spikes = tw.run_an_sg_carney_holmberg2007(
             psp=psp,
             fs=fs,
             c0=0.5,
-            c1=0.5,
-            s0=1e-3,
+            c1=0.,
+            s0=0.8e-3,
             s1=12.5e-3,
             refractory_period=0.75e-3
         )
