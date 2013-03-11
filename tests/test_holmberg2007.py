@@ -105,7 +105,7 @@ def test_ihc_meddis2000():
         tau_ca=1e-4,
         perm_ca0=0,
         perm_z=2e32,
-        pca=3,
+        power_ca=3,
         replenish_rate_y=10,
         loss_rate_l=2580,
         recovery_rate_r=6580,
