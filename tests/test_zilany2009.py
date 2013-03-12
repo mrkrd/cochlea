@@ -48,7 +48,15 @@ def test_ihc():
 
 @skip
 def test_synapse():
+    """test_synapse()
 
+    This function has problems, because it's using matlab
+    implementation of `resample' and it's difficult to exactly
+    reproduce the output.
+
+    During the unit test the `ffGn' is replaced by `zeros'.
+
+    """
     m = scipy.io.loadmat(
         'data/zilany2009.mat',
         squeeze_me=True

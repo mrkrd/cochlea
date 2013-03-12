@@ -78,38 +78,46 @@ cdef public double* generate_random_numbers(long length):
 
 
 
-cdef public double* decimate(int k, double *signal, int q):
-    """ Decimate signal.
+cdef public double* decimate(
+    int k,
+    double *signal,
+    int q
+):
+    """Downsample a signal
 
-    k: lenght of signal
+    k: number of samples in signal
     signal: pointer to the signal
     q: decimation factor
+
+    This implementation was inspired by scipy.signal.decimate.
 
     """
     # signal_arr will not own the data, signal's array has to be freed
     # after return from this function
-    signal_arr = PyArray_SimpleNewFromData(1, [k],
-                                           np.NPY_DOUBLE,
-                                           <void *>signal)
+    signal_arr = PyArray_SimpleNewFromData(
+        1,                      # nd
+        [k],                    # dims
+        np.NPY_DOUBLE,          # typenum
+        <void *>signal          # data
+    )
+    signal_arr = np.array(signal_arr)
 
-    # Filter + downsample
-    # b = dsp.firwin(2*q, 1./q, window='hamming')
-    # filtered = dsp.lfilter(b, 1., signal_arr)
-    # decimated = np.array(filtered[::q])
+    b = dsp.firwin(2*q, 1./q, window='hamming')
+    a = [1.]
 
-    new_len = len(signal_arr) // q
-    signal_arr = signal_arr[0:new_len*q]
-    decimated = signal_arr.reshape((new_len, q))
-    b = dsp.firwin(q, 1./q, window='hamming')
-    decimated = np.sum(decimated*b, axis=1)
+    filtered = dsp.filtfilt(
+        b=b,
+        a=a,
+        x=signal_arr
+    )
 
-    if not decimated.flags['C_CONTIGUOUS']:
-        decimated = decimated.copy(order='C')
+    resampled = filtered[::q].copy(order='C')
+
 
     # Copy data to output array
-    cdef double *decimated_ptr = <double *>np.PyArray_DATA(decimated)
-    cdef double *out_ptr = <double *>malloc(len(decimated)*sizeof(double))
-    memcpy(out_ptr, decimated_ptr, len(decimated)*sizeof(double))
+    cdef double *resampled_ptr = <double *>np.PyArray_DATA(resampled)
+    cdef double *out_ptr = <double *>malloc(len(resampled)*sizeof(double))
+    memcpy(out_ptr, resampled_ptr, len(resampled)*sizeof(double))
 
     return out_ptr
 
