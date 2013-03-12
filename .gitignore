@@ -3,8 +3,6 @@ build
 _pycat.c
 _pycat.h
 _pycat.so
-*.mexa64
-*.orig
 _traveling_waves.c
 _traveling_waves.so
 _traveling_waves.html
