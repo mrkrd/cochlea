@@ -83,7 +83,7 @@ cdef public double* decimate(
     double *signal,
     int q
 ):
-    """Downsample a signal
+    """Decimate a signal
 
     k: number of samples in signal
     signal: pointer to the signal
@@ -100,9 +100,15 @@ cdef public double* decimate(
         np.NPY_DOUBLE,          # typenum
         <void *>signal          # data
     )
-    signal_arr = np.array(signal_arr)
 
-    b = dsp.firwin(2*q, 1./q, window='hamming')
+
+    # resampled = dsp.resample(
+    #     signal_arr,
+    #     len(signal_arr) // q
+    # )
+
+
+    b = dsp.firwin(q+1, 1./q, window='hamming')
     a = [1.]
 
     filtered = dsp.filtfilt(
@@ -111,7 +117,11 @@ cdef public double* decimate(
         x=signal_arr
     )
 
-    resampled = filtered[::q].copy(order='C')
+    resampled = filtered[::q]
+
+
+    if not resampled.flags['C_CONTIGUOUS']:
+        resampled = resampled.copy(order='C')
 
 
     # Copy data to output array

@@ -46,7 +46,7 @@ def test_ihc():
         decimal=15
     )
 
-@skip
+
 def test_synapse():
     """test_synapse()
 
@@ -54,7 +54,15 @@ def test_synapse():
     implementation of `resample' and it's difficult to exactly
     reproduce the output.
 
-    During the unit test the `ffGn' is replaced by `zeros'.
+    During the generation of mat-file the `ffGn' was replaced by
+    `zeros' and Matlab's `resample' by self-made downsampling function
+    equivalent to python's implementation:
+
+    function resampled = resample_fake(X, P, Q)
+        b = fir1(Q, 1/Q);
+        a = [1];
+        filtered = filtfilt(b, a, X);
+        resampled = filtered(1:Q:end);
 
     """
     m = scipy.io.loadmat(
@@ -75,12 +83,8 @@ def test_synapse():
         ffGn=False
     )
 
-    import matplotlib.pyplot as plt
-    plt.plot(synout)
-    plt.plot(synout_target)
-    plt.show()
-
-    assert_array_equal(
+    assert_array_almost_equal(
         synout,
-        synout_target
+        synout_target,
+        decimal=10
     )
