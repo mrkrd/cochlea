@@ -33,13 +33,11 @@
 */
 
 #include "Python.h"
-#include "_pycat.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>      /* Added for MS Visual C++ compatability, by Ian Bruce, 1999 */
-#include <mex.h>
 #include <time.h>
 /* #include <iostream.h>  This file may be needed for some C compilers - Not needed for lcc */
 
@@ -99,13 +97,13 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
     double NLogarithm(double, double, double, double);
 
     /* Allocate dynamic memory for the temporary variables */
-	ihcouttmp  = (double*)mxCalloc(totalstim*nrep,sizeof(double));
+	ihcouttmp  = (double*)calloc(totalstim*nrep,sizeof(double));
 
-	mey1 = (double*)mxCalloc(totalstim,sizeof(double));
-	mey2 = (double*)mxCalloc(totalstim,sizeof(double));
-	mey3 = (double*)mxCalloc(totalstim,sizeof(double));
+	mey1 = (double*)calloc(totalstim,sizeof(double));
+	mey2 = (double*)calloc(totalstim,sizeof(double));
+	mey3 = (double*)calloc(totalstim,sizeof(double));
 
-	tmpgain = (double*)mxCalloc(totalstim,sizeof(double));
+	tmpgain = (double*)calloc(totalstim,sizeof(double));
 
 	/** Calculate the center frequency for the control-path wideband filter
 	    from the location on basilar membrane, based on Greenwood (JASA 1990) */
@@ -219,7 +217,10 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
 		tauc1    = cohc*(tmptauc1-bmTaumin[0])+bmTaumin[0];  /* time -constant for the signal-path C1 filter */
 		rsigma   = 1/tauc1-1/bmTaumax[0]; /* shift of the location of poles of the C1 filter from the initial positions */
 
-		if (1/tauc1<0.0) mexErrMsgTxt("The poles are in the right-half plane; system is unstable.\n");
+		if (1/tauc1<0.0) {
+		     printf("The poles are in the right-half plane; system is unstable.\n");
+		     exit(-1);
+		}
 
 		tauwb = TauWBMax+(tauc1-bmTaumax[0])*(TauWBMax-TauWBMin)/(bmTaumax[0]-bmTaumin[0]);
 
@@ -274,9 +275,9 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
 
     /* Freeing dynamic memory allocated earlier */
 
-    mxFree(ihcouttmp);
-    mxFree(mey1); mxFree(mey2); mxFree(mey3);
-    mxFree(tmpgain);
+    free(ihcouttmp);
+    free(mey1); free(mey2); free(mey3);
+    free(tmpgain);
 
 } /* End of the SingleAN function */
 /* -------------------------------------------------------------------------------------------- */
@@ -415,7 +416,10 @@ double C1ChirpFilt(double x, double tdres,double cf, int n, double taumax, doubl
 
 	p[1].x = -sigma0 - rsigma;
 
-	if (p[1].x>0.0) mexErrMsgTxt("The system becomes unstable.\n");
+	if (p[1].x>0.0) {
+	     printf("The system becomes unstable.\n");
+	     exit(-1);
+	}
 
 	p[1].y = ipw;
 
@@ -437,7 +441,10 @@ double C1ChirpFilt(double x, double tdres,double cf, int n, double taumax, doubl
 
 	rzero = -CF/tan((C1initphase-phase)/order_of_zero);
 
-    if (rzero>0.0) mexErrMsgTxt("The zeros are in the right-half plane.\n");
+	if (rzero>0.0) {
+	     printf("The zeros are in the right-half plane.\n");
+	     exit(-1);
+	}
 
    /*%==================================================  */
 	/*each loop below is for a pair of poles and one zero */
@@ -560,7 +567,10 @@ double C2ChirpFilt(double xx, double tdres,double cf, int n, double taumax, doub
 
 	p[1].x = -sigma0*fcohc;
 
-	if (p[1].x>0.0) mexErrMsgTxt("The system becomes unstable.\n");
+	if (p[1].x>0.0) {
+	     printf("The system becomes unstable.\n");
+	     exit(-1);
+	}
 
 	p[1].y = ipw;
 
@@ -581,7 +591,10 @@ double C2ChirpFilt(double xx, double tdres,double cf, int n, double taumax, doub
 	};
 
 	rzero = -CF/tan((C2initphase-phase)/order_of_zero);
-    if (rzero>0.0) mexErrMsgTxt("The zeros are in the right-hand plane.\n");
+	if (rzero>0.0) {
+	     printf("The zeros are in the right-hand plane.\n");
+	     exit(-1);
+	}
    /*%==================================================  */
    /*%      time loop begins here                         */
    /*%==================================================  */

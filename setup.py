@@ -21,6 +21,15 @@ extensions = [
             "cochlea/holmberg2007/_traveling_waves.pyx",
         ]
     ),
+    Extension(
+        "cochlea.zilany2013._zilany2013",
+        [
+            "cochlea/zilany2013/_zilany2013.pyx",
+            "cochlea/zilany2013/model_IHC.c",
+            "cochlea/zilany2013/model_Synapse.c",
+            "cochlea/zilany2013/complex.c"
+        ]
+    ),
 ]
 
 
@@ -33,8 +42,9 @@ setup(
     packages = [
         "cochlea",
         "cochlea.stats",
-        "cochlea.pycat",
-        "cochlea.traveling_waves",
+        "cochlea.zilany2009",
+        "cochlea.zilany2013",
+        "cochlea.holmberg2007",
     ],
     package_data = {
         "cochlea": ["*.csv"]
