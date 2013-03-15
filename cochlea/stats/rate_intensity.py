@@ -12,10 +12,12 @@ import marlib as mr
 import marlib.thorns as th
 import marlib.waves as wv
 
-def _run_model(model, dbspl, cf, fs):
+def _run_model(model, dbspl, cf, model_pars):
 
     duration = 100e-3
     onset = 10e-3
+
+    fs = model_pars.setdefault('fs', 100e3)
 
     s = wv.make_ramped_tone(
         fs=fs,
@@ -27,10 +29,10 @@ def _run_model(model, dbspl, cf, fs):
 
     anf = model(
         sound=s,
-        fs=fs,
         anf_num=(250,250,250),
         cf=cf,
-        seed=0
+        seed=0,
+        **model_pars
     )
 
     hsr = anf[anf['type']=='hsr']
@@ -55,7 +57,7 @@ def _run_model(model, dbspl, cf, fs):
     return out
 
 
-def calc_rate_intensity(model, cfs, fs=100e3, dbspls=None):
+def calc_rate_intensity(model, cfs, dbspls=None, **model_pars):
 
     if dbspls is None:
         dbspls = np.arange(-10, 100, 5)
@@ -65,7 +67,7 @@ def calc_rate_intensity(model, cfs, fs=100e3, dbspls=None):
             'model': model,
             'dbspl': dbspl,
             'cf': cf,
-            'fs': fs,
+            'model_pars': model_pars,
         }
         for dbspl in dbspls
         for cf in cfs
@@ -83,10 +85,17 @@ def calc_rate_intensity(model, cfs, fs=100e3, dbspls=None):
 def main():
     import cochlea
 
+    # rates = calc_rate_intensity(
+    #     model=cochlea.run_holmberg2007,
+    #     cfs=[cochlea.holmberg2007.real_freq_map[80]],
+    #     fs=48e3,
+    #     # dbspls=[0, 20, 50]
+    # )
+
     rates = calc_rate_intensity(
-        model=cochlea.run_holmberg2007,
-        cfs=[cochlea.holmberg2007.real_freq_map[80]],
-        fs=48e3,
+        model=cochlea.run_zilany2013,
+        cfs=[5e3],
+        fs=100e3,
         # dbspls=[0, 20, 50]
     )
 

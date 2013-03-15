@@ -10,6 +10,7 @@ import warnings
 import itertools
 import numpy as np
 import pandas as pd
+import logging
 
 import _zilany2013
 
@@ -32,6 +33,7 @@ def run_zilany2013(
 
     np.random.seed(seed)
 
+    logging.info("Zilany2013: {}".format(species))
 
     cfs = _calc_cfs(cf)
 
@@ -134,7 +136,7 @@ def _run_channel(args):
 
 
 def _calc_cfs(cf):
-
+    print("Fix CFs")
     if np.isscalar(cf):
         cfs = [float(cf)]
 

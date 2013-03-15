@@ -9,6 +9,7 @@ import numpy as np
 
 from threshold_rate import calc_hearing_thresholds_rate
 from threshold_si import calc_hearing_thresholds_si
+from rate_intensity import calc_rate_intensity
 
 def calc_human_hearing_threshold(freqs):
     """Terhardt, E. (1979). Calculating virtual pitch. Hearing

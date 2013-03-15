@@ -13,7 +13,7 @@ import marlib as mr
 import marlib.thorns as th
 import marlib.waves as wv
 
-from binary import find_zero
+from bisection import find_zero
 
 
 def calc_spont_threshold(model, model_pars=None):
@@ -21,12 +21,9 @@ def calc_spont_threshold(model, model_pars=None):
     if model_pars is None:
         model_pars = {}
 
-
     pars = dict(model_pars)
 
-
     fs = pars.setdefault('fs', 100e3)
-    pars.setdefault('seed', 0)
     pars.setdefault('cf', 1e3)
 
     tmax = 250e-3
@@ -35,6 +32,7 @@ def calc_spont_threshold(model, model_pars=None):
     anf = model(
         sound=s,
         anf_num=(10000,0,0),
+        seed=0,
         **pars
     )
 
@@ -56,14 +54,14 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
 
     pars = dict(model_pars)
 
-    fs = model_pars.setdefault('fs', 100e3)
-    model_pars.setdefault('seed', 0)
+    fs = pars.setdefault('fs', 100e3)
 
     tone_duration = 250e-3
     onset = 15e-3
 
     s = wv.make_ramped_tone(
-        fs, cf,
+        fs,
+        cf,
         duration=tone_duration,
         ramp=2.5e-3,
         pad=0,
@@ -74,7 +72,8 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
         sound=s,
         anf_num=(1000, 0, 0),
         cf=cf,
-        **model_pars
+        seed=0,
+        **pars
     )
 
     trains = th.trim(anf, onset, None)
@@ -113,8 +112,8 @@ def calc_hearing_threshold_rate(model, cf, spont_rate, model_pars=None):
 
 def calc_hearing_thresholds_rate(
         model,
-        model_pars=None,
-        cfs=None
+        cfs=None,
+        **model_pars
 ):
 
     if cfs is None:
