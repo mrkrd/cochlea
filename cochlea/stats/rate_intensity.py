@@ -18,6 +18,8 @@ def _run_model(model, dbspl, cf, model_pars):
     onset = 10e-3
 
     fs = model_pars.setdefault('fs', 100e3)
+    model_pars.setdefault('anf_num', (250,250,250))
+    model_pars.setdefault('seed', 0)
 
     s = wv.make_ramped_tone(
         fs=fs,
@@ -29,9 +31,7 @@ def _run_model(model, dbspl, cf, model_pars):
 
     anf = model(
         sound=s,
-        anf_num=(250,250,250),
         cf=cf,
-        seed=0,
         **model_pars
     )
 

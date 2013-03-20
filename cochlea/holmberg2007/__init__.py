@@ -42,7 +42,7 @@ def run_holmberg2007(
     else:
         cfs = cf
 
-    assert set(cfs) <= set(tw.real_freq_map)
+    assert set(cfs) <= set(tw.real_freq_map), set(cfs) - set(tw.real_freq_map)
 
 
     duration = len(sound) / fs
