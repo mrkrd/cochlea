@@ -59,7 +59,6 @@ def run_zilany2009(
             'cihc': cihc,
             'anf_num': anf_num,
             'powerlaw': powerlaw,
-            'seed': seed
         }
         for freq in cfs
     ]
@@ -91,7 +90,6 @@ def _run_channel(args):
     cohc = args['cohc']
     cihc = args['cihc']
     powerlaw = args['powerlaw']
-    seed = args['seed']
     anf_num = args['anf_num']
 
 
