@@ -10,7 +10,6 @@ import warnings
 import itertools
 import numpy as np
 import pandas as pd
-import logging
 
 import _zilany2013
 
@@ -20,28 +19,25 @@ def run_zilany2013(
         fs,
         anf_num,
         cf,
+        species,
         seed,
         cohc=1,
         cihc=1,
         powerlaw='approximate',
-        species='cat'
 ):
 
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
-
+    assert species in ('cat', 'human')
 
     np.random.seed(seed)
 
-    logging.info("Zilany2013: {}".format(species))
-
-    cfs = _calc_cfs(cf)
-
+    cfs = _calc_cfs(cf, species)
 
     channel_args = [
         {
             'signal': sound,
-            'cf': freq,
+            'cf': cf,
             'fs': fs,
             'cohc': cohc,
             'cihc': cihc,
@@ -50,7 +46,7 @@ def run_zilany2013(
             'seed': seed,
             'species': species
         }
-        for freq in cfs
+        for cf in cfs
     ]
 
 
@@ -135,16 +131,31 @@ def _run_channel(args):
 
 
 
-def _calc_cfs(cf):
-    print("Fix CFs")
+def _calc_cfs(cf, species):
+
     if np.isscalar(cf):
         cfs = [float(cf)]
 
-    elif isinstance(cf, tuple):
+    elif isinstance(cf, tuple) and species == 'cat':
         # Based on GenerateGreenwood_CFList() from DSAM
         # Liberman (1982)
         aA = 456
         k = 0.8
+        a = 2.1
+
+        freq_min, freq_max, freq_num = cf
+
+        xmin = np.log10( freq_min / aA + k) / a
+        xmax = np.log10( freq_max / aA + k) / a
+
+        x_map = np.linspace(xmin, xmax, freq_num)
+        cfs = aA * ( 10**( a*x_map ) - k)
+
+    elif isinstance(cf, tuple) and species == 'human':
+        # Based on GenerateGreenwood_CFList() from DSAM
+        # Liberman (1982)
+        aA = 165.4
+        k = 0.88
         a = 2.1
 
         freq_min, freq_max, freq_num = cf
