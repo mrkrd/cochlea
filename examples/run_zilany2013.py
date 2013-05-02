@@ -8,9 +8,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import marlib.thorns as th
+import elmar.thorns as th
+import elmar as mr
 
 import cochlea
+
+from scikits import audiolab
 
 def main():
 
