@@ -20,7 +20,6 @@ def run_zilany2013_rate(
         anf_types,
         cf,
         species,
-        seed,
         cohc=1,
         cihc=1,
         powerlaw='approximate',
@@ -30,7 +29,6 @@ def run_zilany2013_rate(
     assert sound.ndim == 1
     assert species in ('cat', 'human')
 
-    np.random.seed(seed)
 
     if isinstance(anf_types, str):
         anf_types = [anf_types]
@@ -46,7 +44,6 @@ def run_zilany2013_rate(
             'cihc': cihc,
             'anf_types': anf_types,
             'powerlaw': powerlaw,
-            'seed': seed,
             'species': species
         }
         for cf in cfs
@@ -79,7 +76,6 @@ def _run_channel(args):
     cohc = args['cohc']
     cihc = args['cihc']
     powerlaw = args['powerlaw']
-    seed = args['seed']
     anf_types = args['anf_types']
     species = args['species']
 
