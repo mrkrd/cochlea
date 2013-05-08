@@ -13,8 +13,6 @@ import elmar as mr
 
 import cochlea
 
-from scikits import audiolab
-
 def main():
 
     fs = 100e3
