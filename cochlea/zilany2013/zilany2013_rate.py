@@ -9,6 +9,7 @@ import warnings
 import itertools
 import numpy as np
 import pandas as pd
+import itertools
 
 import _zilany2013
 from zilany2013 import _calc_cfs
@@ -50,15 +51,23 @@ def run_zilany2013_rate(
 
 
     ### Run model for each channel
-    rates = map(
+    results = map(
         _run_channel,
         channel_args
     )
+    results = sum(results, [])
 
 
-    ### Unpack the results
-    rates = pd.DataFrame(rates)
-    rates = rates.set_index('cf')
+    columns = pd.MultiIndex.from_tuples(
+        [(r['anf_type'],r['cf']) for r in results],
+        names=['anf_type','cf']
+    )
+    rates = np.array([r['rate'] for r in results]).T
+
+    rates = pd.DataFrame(
+        rates,
+        columns=columns
+    )
 
     np.fft.fftpack._fft_cache = {}
 
@@ -93,7 +102,7 @@ def _run_channel(args):
     duration = len(vihc) / fs
 
 
-    rates = {}
+    rates = []
     for anf_type in anf_types:
 
         ### Run synapse
@@ -106,10 +115,10 @@ def _run_channel(args):
             ffGn=False
         )
 
-
-        rates[anf_type] = synout / (1 + 0.75e-3*synout)
-
-
-    rates['cf'] = cf
+        rates.append({
+            'rate': synout / (1 + 0.75e-3*synout),
+            'cf': cf,
+            'anf_type': anf_type
+        })
 
     return rates
