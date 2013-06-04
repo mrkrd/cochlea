@@ -8,8 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import elmar.thorns as th
-import elmar as mr
+import mrlib.thorns as th
+import mrlib as mr
 
 import cochlea
 
