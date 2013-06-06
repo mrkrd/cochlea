@@ -28,7 +28,7 @@ def main():
     rates = cochlea.run_zilany2013_rate(
         s,
         fs,
-        anf_types=['lsr'],
+        anf_types=['msr'],
         cf=(125, 20000, 100),
         powerlaw='approximate',
         species='human'
