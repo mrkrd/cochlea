@@ -8,9 +8,9 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import pandas as pd
 
-import marlib as mr
-import marlib.thorns as th
-import marlib.waves as wv
+import mrlib as mr
+import mrlib.thorns as th
+import mrlib.waves as wv
 
 def _run_model(model, dbspl, cf, model_pars):
 
@@ -21,7 +21,7 @@ def _run_model(model, dbspl, cf, model_pars):
     model_pars.setdefault('anf_num', (250,250,250))
     model_pars.setdefault('seed', 0)
 
-    s = wv.make_ramped_tone(
+    s = wv.ramped_tone(
         fs=fs,
         freq=cf,
         duration=duration,
@@ -37,15 +37,15 @@ def _run_model(model, dbspl, cf, model_pars):
 
     hsr = anf[anf['type']=='hsr']
     hsr = th.trim(hsr, onset, None)
-    rate_hsr = th.calc_rate(hsr)
+    rate_hsr = th.rate(hsr)
 
     msr = anf[anf['type']=='msr']
     msr = th.trim(msr, onset, None)
-    rate_msr = th.calc_rate(msr)
+    rate_msr = th.rate(msr)
 
     lsr = anf[anf['type']=='lsr']
     lsr = th.trim(lsr, onset, None)
-    rate_lsr = th.calc_rate(lsr)
+    rate_lsr = th.rate(lsr)
 
     out = {
         'cf': cf,
@@ -96,6 +96,7 @@ def main():
         model=cochlea.run_zilany2013,
         cfs=[5e3],
         fs=100e3,
+        species='human'
         # dbspls=[0, 20, 50]
     )
 
