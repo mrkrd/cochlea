@@ -100,13 +100,12 @@ def main():
         # dbspls=[0, 20, 50]
     )
 
+    print(rates)
 
     rates.hsr.plot()
     rates.msr.plot()
     rates.lsr.plot()
     mr.show()
-
-    print(rates)
 
 if __name__ == "__main__":
     main()
