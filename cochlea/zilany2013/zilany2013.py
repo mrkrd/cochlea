@@ -145,8 +145,8 @@ def _calc_cfs(cf, species):
 
         freq_min, freq_max, freq_num = cf
 
-        xmin = np.log10( freq_min / aA + k) / a
-        xmax = np.log10( freq_max / aA + k) / a
+        xmin = np.log10(freq_min / aA + k) / a
+        xmax = np.log10(freq_max / aA + k) / a
 
         x_map = np.linspace(xmin, xmax, freq_num)
         cfs = aA * ( 10**( a*x_map ) - k)
@@ -160,8 +160,8 @@ def _calc_cfs(cf, species):
 
         freq_min, freq_max, freq_num = cf
 
-        xmin = np.log10( freq_min / aA + k) / a
-        xmax = np.log10( freq_max / aA + k) / a
+        xmin = np.log10(freq_min / aA + k) / a
+        xmax = np.log10(freq_max / aA + k) / a
 
         x_map = np.linspace(xmin, xmax, freq_num)
         cfs = aA * ( 10**( a*x_map ) - k)
