@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import marlib.thorns as th
+import mrlib.thorns as th
 
 import cochlea
 
