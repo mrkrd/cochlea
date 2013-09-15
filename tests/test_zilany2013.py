@@ -36,9 +36,10 @@ def test_ihc():
         cihc=1.
     )
 
-    assert_array_equal(
+    assert_array_almost_equal(
         vihc_cat,
-        vihc_cat_target
+        vihc_cat_target,
+        decimal=15
     )
 
 
@@ -52,9 +53,10 @@ def test_ihc():
         cihc=1.
     )
 
-    assert_array_equal(
+    assert_array_almost_equal(
         vihc_human,
-        vihc_human_target
+        vihc_human_target,
+        decimal=15
     )
 
 

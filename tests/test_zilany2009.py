@@ -86,5 +86,5 @@ def test_synapse():
     assert_array_almost_equal(
         synout,
         synout_target,
-        decimal=10
+        decimal=9
     )

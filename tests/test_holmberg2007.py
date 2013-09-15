@@ -75,9 +75,10 @@ def test_ihcrp():
         cf=cf
     )
 
-    assert_array_equal(
+    assert_array_almost_equal(
         ihcrp,
-        ihcrp_target
+        ihcrp_target,
+        decimal=16
     )
 
 
@@ -116,7 +117,7 @@ def test_ihc_meddis2000():
     assert_array_almost_equal(
         psp,
         psp_target,
-        decimal=17
+        decimal=16
     )
 
 
