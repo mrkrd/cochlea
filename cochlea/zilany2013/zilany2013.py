@@ -30,16 +30,16 @@ def run_zilany2013(
 
     Args:
 
-        sound: (array_like 1D) The input sound in Pa.
+        sound (array_like 1D): The input sound in Pa.
 
-        fs: (float) Sampling frequency of the sound in Hz.
+        fs (float): Sampling frequency of the sound in Hz.
 
-        anf_num: (three element tuple) The desired number of auditory
+        anf_num (three element tuple): The desired number of auditory
             nerve fibers per frequency channel (CF), (HSR#, MSR#,
             LSR#).  For example, (100, 75, 25) means that we want 100
             HSR fibers, 75 MSR fibers and 25 LSR fibers per CF.
 
-        cf: (float, array_like or tuple) The center frequency(s) of
+        cf (float, array_like or tuple): The center frequency(s) of
             the simulated auditory nerve fibers.
 
             If float, then defines a single frequency channel.  If
@@ -48,20 +48,20 @@ def run_zilany2013(
             (min_cf, max_cf, num_cf) and the frequencies are
             calculated using the Greenwood function.
 
-        species: (str) 'cat' or 'human'.
+        species (str): 'cat' or 'human'.
 
-        seed: (int) Random seed for the spike generator.
+        seed (int): Random seed for the spike generator.
 
 
     Kwargs:
 
-        cohc: (float between 0 and 1) Degredation of the outer hair
+        cohc (float between 0 and 1): Degredation of the outer hair
              cells
 
-        cihc: (float between 0 and 1) Degredation of the inner hair
+        cihc (float between 0 and 1): Degredation of the inner hair
             cells
 
-        powerlaw: (str) Defines which power law implementation should
+        powerlaw (str): Defines which power law implementation should
             be used.  Can be either 'approximate' or 'actual'.
 
 
