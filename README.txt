@@ -23,8 +23,8 @@ Numpy
 Scipy
 Cython
 Pandas
-matplotlib (optional, for demos)
 
+matplotlib (optional, for demos)
 mrlib (optional, for demos and stats)
 
 
