@@ -25,7 +25,52 @@ def run_zilany2013(
         cihc=1,
         powerlaw='approximate',
 ):
+    """Run Zilany et al. (2013/2014) JASA inner ear model.
 
+
+    Args:
+
+        sound (array_like 1D): The input sound in Pa.
+
+        fs (float): Sampling frequency of the sound in Hz.
+
+        anf_num (three element tuple): The desired number of auditory
+            nerve fibers per frequency channel (CF), (HSR#, MSR#,
+            LSR#).  For example, (100, 75, 25) means that we want 100
+            HSR fibers, 75 MSR fibers and 25 LSR fibers per CF.
+
+        cf (float, array_like or tuple): The center frequency(s) of
+            the simulated auditory nerve fibers.
+
+            If float, then defines a single frequency channel.  If
+            array_like (e.g. list or ndarray), then the frequencies
+            are used.  If tuple, then must have exactly 3 elements
+            (min_cf, max_cf, num_cf) and the frequencies are
+            calculated using the Greenwood function.
+
+        species (str): 'cat' or 'human'.
+
+        seed (int): Random seed for the spike generator.
+
+
+    Kwargs:
+
+        cohc (float between 0 and 1): Degredation of the outer hair
+             cells
+
+        cihc (float between 0 and 1): Degredation of the inner hair
+            cells
+
+        powerlaw (str): Defines which power law implementation should
+            be used.  Can be either 'approximate' or 'actual'.
+
+
+    Returns:
+
+        spike_train, which is a pandas.DataFrame (TODO: describe the
+        format)
+
+    """
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
     assert species in ('cat', 'human')
@@ -145,8 +190,8 @@ def _calc_cfs(cf, species):
 
         freq_min, freq_max, freq_num = cf
 
-        xmin = np.log10( freq_min / aA + k) / a
-        xmax = np.log10( freq_max / aA + k) / a
+        xmin = np.log10(freq_min / aA + k) / a
+        xmax = np.log10(freq_max / aA + k) / a
 
         x_map = np.linspace(xmin, xmax, freq_num)
         cfs = aA * ( 10**( a*x_map ) - k)
@@ -160,8 +205,8 @@ def _calc_cfs(cf, species):
 
         freq_min, freq_max, freq_num = cf
 
-        xmin = np.log10( freq_min / aA + k) / a
-        xmax = np.log10( freq_max / aA + k) / a
+        xmin = np.log10(freq_min / aA + k) / a
+        xmax = np.log10(freq_max / aA + k) / a
 
         x_map = np.linspace(xmin, xmax, freq_num)
         cfs = aA * ( 10**( a*x_map ) - k)

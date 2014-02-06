@@ -16,6 +16,7 @@ import numpy as np
 import os
 import pandas as pd
 import itertools
+import warnings
 
 import traveling_waves as tw
 from traveling_waves import real_freq_map
@@ -70,6 +71,7 @@ def run_holmberg2007(
         ### IHCRP
         ihcrp[cf] = tw.run_ihcrp(lcr4, fs, cf)
 
+    warnings.warn("Delay compensation after LCR4 is not implemented.")
 
 
     anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)

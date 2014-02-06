@@ -8,13 +8,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import marlib.thorns as th
+import mrlib.thorns as th
 
 import cochlea
 
 def main():
 
-    fs = 48e3
+    fs = 100e3
 
     ### Make sound
     t = np.arange(0, 0.1, 1/fs)
@@ -25,16 +25,19 @@ def main():
 
 
     ### Run model
-    anf_trains = cochlea.run_holmberg2007(
+    anf = cochlea.run_zilany2009(
         s,
         fs,
         anf_num=(100,0,0),
+        cf=(80, 20000, 100),
         seed=0,
+        powerlaw='approximate'
     )
 
 
+
     ### Plot auditory nerve response
-    anf_acc = th.accumulate(anf_trains, keep=['cf', 'duration'])
+    anf_acc = th.accumulate(anf, keep=['cf', 'duration'])
     anf_acc.sort('cf', ascending=False, inplace=True)
 
 

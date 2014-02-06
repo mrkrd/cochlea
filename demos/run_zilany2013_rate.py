@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import marlib.thorns as th
+import mrlib.thorns as th
 
 import cochlea
 
@@ -25,28 +25,23 @@ def main():
 
 
     ### Run model
-    anf = cochlea.run_zilany2009(
+    rates = cochlea.run_zilany2013_rate(
         s,
         fs,
-        anf_num=(100,0,0),
-        cf=(80, 20000, 100),
-        seed=0,
-        powerlaw='approximate'
+        anf_types=['msr'],
+        cf=(125, 20000, 100),
+        powerlaw='approximate',
+        species='human'
     )
 
 
-
-    ### Plot auditory nerve response
-    anf_acc = th.accumulate(anf, keep=['cf', 'duration'])
-    anf_acc.sort('cf', ascending=False, inplace=True)
-
-
+    ### Plot rates
     fig, ax = plt.subplots()
-    th.plot_neurogram(
-        anf_acc,
-        fs,
-        axis=ax
+    img = ax.imshow(
+        rates.T,
+        aspect='auto'
     )
+    plt.colorbar(img)
     plt.show()
 
 

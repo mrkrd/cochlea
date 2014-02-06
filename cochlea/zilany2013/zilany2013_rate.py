@@ -3,13 +3,13 @@
 from __future__ import division
 from __future__ import print_function
 
-
 __author__ = "Marek Rudnicki"
 
 import warnings
 import itertools
 import numpy as np
 import pandas as pd
+import itertools
 
 import _zilany2013
 from zilany2013 import _calc_cfs
@@ -20,7 +20,6 @@ def run_zilany2013_rate(
         anf_types,
         cf,
         species,
-        seed,
         cohc=1,
         cihc=1,
         powerlaw='approximate',
@@ -30,7 +29,6 @@ def run_zilany2013_rate(
     assert sound.ndim == 1
     assert species in ('cat', 'human')
 
-    np.random.seed(seed)
 
     if isinstance(anf_types, str):
         anf_types = [anf_types]
@@ -46,7 +44,6 @@ def run_zilany2013_rate(
             'cihc': cihc,
             'anf_types': anf_types,
             'powerlaw': powerlaw,
-            'seed': seed,
             'species': species
         }
         for cf in cfs
@@ -54,15 +51,23 @@ def run_zilany2013_rate(
 
 
     ### Run model for each channel
-    rates = map(
+    results = map(
         _run_channel,
         channel_args
     )
+    results = sum(results, [])
 
 
-    ### Unpack the results
-    rates = pd.DataFrame(rates)
-    rates = rates.set_index('cf')
+    columns = pd.MultiIndex.from_tuples(
+        [(r['anf_type'],r['cf']) for r in results],
+        names=['anf_type','cf']
+    )
+    rates = np.array([r['rate'] for r in results]).T
+
+    rates = pd.DataFrame(
+        rates,
+        columns=columns
+    )
 
     np.fft.fftpack._fft_cache = {}
 
@@ -79,7 +84,6 @@ def _run_channel(args):
     cohc = args['cohc']
     cihc = args['cihc']
     powerlaw = args['powerlaw']
-    seed = args['seed']
     anf_types = args['anf_types']
     species = args['species']
 
@@ -98,7 +102,7 @@ def _run_channel(args):
     duration = len(vihc) / fs
 
 
-    rates = {}
+    rates = []
     for anf_type in anf_types:
 
         ### Run synapse
@@ -111,10 +115,10 @@ def _run_channel(args):
             ffGn=False
         )
 
-
-        rates[anf_type] = synout / (1 + 0.75e-3*synout)
-
-
-    rates['cf'] = cf
+        rates.append({
+            'rate': synout / (1 + 0.75e-3*synout),
+            'cf': cf,
+            'anf_type': anf_type
+        })
 
     return rates
