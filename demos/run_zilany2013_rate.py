@@ -35,6 +35,7 @@ def main():
     )
 
 
+    ### Plot rates
     fig, ax = plt.subplots()
     img = ax.imshow(
         rates.T,

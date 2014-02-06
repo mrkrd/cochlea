@@ -5,7 +5,6 @@ from __future__ import print_function
 import numpy as np
 
 from cochlea.zilany2009.zilany2009 import run_zilany2009
-from cochlea.zilany2009.zilany2009_human import run_zilany2009_human
 from cochlea.holmberg2007 import run_holmberg2007
 from cochlea.zilany2013.zilany2013 import run_zilany2013
 from cochlea.zilany2013.zilany2013_rate import run_zilany2013_rate

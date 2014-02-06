@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
 import mrlib.thorns as th
-import mrlib as mr
 
 import cochlea
 
