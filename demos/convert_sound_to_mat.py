@@ -62,6 +62,10 @@ def convert_sound_to_mat(sound_fname):
 
 def main():
 
+    if sys.argv < 2:
+        print("Usage: python convert_sounds_to_mat.py a.wav b.wav c.sph")
+        exit()
+
     map(convert_sound_to_mat, sys.argv[1:])
 
     # TODO: add some sounds to the repository
