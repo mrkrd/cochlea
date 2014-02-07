@@ -9,13 +9,18 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import scipy.io
 import os
+import sys
+import logging
 
 from scikits import audiolab
 
 import cochlea
 import mrlib.waves as wv
 
+
 def convert_sound_to_mat(sound_fname):
+
+    print("Processing " + sound_fname)
 
     fs = 100e3
     dbspl = 50
@@ -23,10 +28,10 @@ def convert_sound_to_mat(sound_fname):
 
 
     ### Read the sound file + resample + scale
-    f = audiolab.Sndfile(fname, 'r')
+    f = audiolab.Sndfile(sound_fname, 'r')
     sound_raw = f.read_frames(f.nframes)
     sound_raw = wv.resample(sound_raw, f.samplerate, fs)
-    sound = wv.set_dbspl(s, dbspl)
+    sound = wv.set_dbspl(sound_raw, dbspl)
 
 
 
@@ -37,15 +42,29 @@ def convert_sound_to_mat(sound_fname):
         anf_num=(100,75,25),
         cf=cf,
         species='human',
-        seed=seed
+        seed=0
     )
 
+
+
+    ### Save spikes to matlab file
+    trains = anf_trains.to_records()
+    mat_fname = os.path.splitext(sound_fname)[0]
+    mdict = {'trains': trains}
+
+    scipy.io.savemat(
+        mat_fname,
+        mdict,
+        do_compression=True
+    )
 
 
 
 def main():
 
-    pass
+    map(convert_sound_to_mat, sys.argv[1:])
+
+    # TODO: add some sounds to the repository
 
 
 if __name__ == "__main__":
