@@ -1,0 +1,163 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Run inner ear model by Zilany et al. (2014).
+
+Usage:
+  run_zilany2014 --hsr=<int> --msr=<int> --lsr=<int> (--cf=<Hz> | --cf_min=<Hz> --cf_max=<Hz> --cf_num=<int>) --species=<str> --seed=<int> [--dbspl=<dBSPL>] <sounds>...
+  run_zilany2014 -h | --help
+  run_zilany2014 --version
+
+Options:
+  -h --help          Show this screen.
+  --version          Show version.
+  --hsr=<int>        Number of high-spontaneous rate fibers per frequency.
+  --msr=<int>        Number of medium-spontaneous rate fibers per frequency.
+  --lsr=<int>        Number of low-spontaneous rate fibers per frequency.
+  --cf=<Hz>          Center frequency (CF) of a single frequency channel.
+  --cf_min=<Hz>      Min CF in a the frequency map (calculated with a Greenwood function).
+  --cf_max=<Hz>      Max CF in a the frequency map (calculated with a Greenwood function).
+  --cf_num=<int>     Number of CFs in the frequency map (calculated with a Greenwood function).
+  --species=<str>    Species: 'human' or 'cat'.
+  --seed=<int>       Random seed.
+  --dbspl=<dBSPL>    Sound level applied to the sound before entering the inner ear.
+  <sounds>           List of sound files for processing.
+
+Examaple:
+  run_zilany2014 --hsr=100 --msr=75 --lsr=25 --cf=1000 --species=human --seed=0 --dbspl=60 tone.wav
+
+  Will generate spike trains of 100 high-, 75 medium- and 25
+  low-spontaneous rate fibers at 1000 Hz CF in a human cochlea from
+  tone.wav sound file.
+
+"""
+
+from __future__ import division
+from __future__ import print_function
+
+__author__ = "Marek Rudnicki"
+
+import numpy as np
+import scipy.io
+import os
+import logging
+
+from scikits import audiolab
+
+import cochlea
+import mrlib.waves as wv
+
+
+from docopt import docopt
+args = docopt(__doc__)
+
+
+
+
+def convert_sound_to_mat(
+        sound_file,
+        anf_num,
+        cf,
+        species,
+        seed,
+        dbspl
+):
+
+    print("Processing " + sound_file)
+
+    fs = 100e3
+
+
+    ### Read the sound file + resample + scale
+    f = audiolab.Sndfile(sound_file, 'r')
+    sound_raw = f.read_frames(f.nframes)
+    sound_raw = wv.resample(sound_raw, f.samplerate, fs)
+    if dbspl is not None:
+        sound = wv.set_dbspl(sound_raw, dbspl)
+    else:
+        sound = sound_raw
+
+
+
+    ### Run the inner ear model
+    anf_trains = cochlea.run_zilany2013(
+        sound=sound,
+        fs=fs,
+        anf_num=anf_num,
+        cf=cf,
+        species=species,
+        seed=seed
+    )
+
+
+
+    ### Save spikes to matlab file
+    trains = anf_trains.to_records()
+    mat_fname = os.path.splitext(sound_file)[0]
+    mdict = {'trains': trains}
+
+    scipy.io.savemat(
+        mat_fname,
+        mdict,
+        do_compression=True
+    )
+
+
+
+
+def convert_sound_to_mat_unpack(args):
+    """Unpack the args (dict) and pass to convert_sound_to_mat()"""
+    convert_sound_to_mat(**args)
+
+
+
+def main(args):
+
+
+    ### Process the command line arguments
+    anf_num = int(args['--hsr']),int(args['--msr']),int(args['--lsr'])
+
+    if args['--cf'] is not None:
+        cf = float(args['--cf'])
+    else:
+        cf = float(args['--cf_min']),float(args['--cf_max']),float(args['--cf_num'])
+
+    species = args['--species']
+
+    seed = int(args['--seed'])
+
+    if args['--dbspl'] is not None:
+        dbspl = float(args['--dbspl'])
+    else:
+        dbspl = None
+
+    sound_files = args['<sounds>']
+
+
+
+    ### Prepare a list of dict arguments.  Each dict contains
+    ### parameters for the processing function (convert_sound_to_mat)
+    space = [
+        {
+            'anf_num': anf_num,
+            'cf': cf,
+            'species': species,
+            'seed': seed,
+            'dbspl': dbspl,
+            'sound_file': sound_file
+        }
+        for sound_file in sound_files
+    ]
+
+
+
+    ### Apply the function to each parameter dict
+    map(
+        convert_sound_to_mat_unpack,
+        space
+    )
+
+    # TODO: add some sounds to the repository
+
+
+if __name__ == "__main__":
+    main(args)

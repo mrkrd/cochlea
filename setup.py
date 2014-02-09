@@ -34,21 +34,22 @@ extensions = [
 
 
 setup(
-    name = "cochlea",
-    version = "6",
-    description = "Collection of inner ear models",
-    author = "Marek Rudnicki",
-    author_email = "marek.rudnicki@tum.de",
-    packages = [
+    name="cochlea",
+    version="6",
+    description="Collection of inner ear models",
+    author="Marek Rudnicki",
+    author_email="marek.rudnicki@tum.de",
+    packages=[
         "cochlea",
         "cochlea.stats",
         "cochlea.zilany2009",
         "cochlea.zilany2013",
         "cochlea.holmberg2007",
     ],
-    package_data = {
+    package_data={
         "cochlea": ["*.csv"]
     },
-    include_dirs = [numpy.get_include()],
-    ext_modules = cythonize(extensions)
+    include_dirs=[numpy.get_include()],
+    ext_modules=cythonize(extensions),
+    scripts=["scripts/run_ear"],
 )

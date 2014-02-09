@@ -27,6 +27,7 @@ Cython
 Pandas
 
 matplotlib (optional, for demos)
+docopt (optional, for the command line scripts)
 mrlib (optional, for demos and stats)
 
 
@@ -64,6 +65,8 @@ cochlea/zilany2013
 demos: small demos scripts, good point to start
 
 tests: unit tests (nose)
+
+scripts: command line interface
 
 
 
