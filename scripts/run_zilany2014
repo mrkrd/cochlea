@@ -48,7 +48,7 @@ import mrlib.waves as wv
 
 
 from docopt import docopt
-args = docopt(__doc__)
+args = docopt(__doc__, version=cochlea.__version__)
 
 
 

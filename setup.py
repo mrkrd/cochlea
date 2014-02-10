@@ -35,7 +35,7 @@ extensions = [
 
 setup(
     name="cochlea",
-    version="6",
+    version="0.6",
     description="Collection of inner ear models",
     author="Marek Rudnicki",
     author_email="marek.rudnicki@tum.de",

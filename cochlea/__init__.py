@@ -10,6 +10,8 @@ from cochlea.zilany2013.zilany2013 import run_zilany2013
 from cochlea.zilany2013.zilany2013_rate import run_zilany2013_rate
 
 
+__version__ = "0.6"
+
 
 def set_dbspl(signal, dbspl):
     p0 = 20e-6
