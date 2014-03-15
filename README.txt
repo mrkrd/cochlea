@@ -62,7 +62,7 @@ cochlea/holmberg2007
 cochlea/zilany2009
 cochlea/zilany2013
 
-demos: small demos scripts, good point to start
+demos: small demos scripts, a good place to start
 
 tests: unit tests (nose)
 
