@@ -20,7 +20,8 @@ def main():
     t = np.arange(0, 0.1, 1/fs)
     s = dsp.chirp(t, 80, t[-1], 20000)
     s = cochlea.set_dbspl(s, 50)
-    sound = np.concatenate( (s, np.zeros(10e-3 * fs)) )
+    pad = np.zeros(10e-3 * fs)
+    sound = np.concatenate( (s, pad) )
 
 
 
