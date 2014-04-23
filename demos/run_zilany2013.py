@@ -49,7 +49,7 @@ def main():
     th.plot_neurogram(
         anf_acc,
         fs,
-        axis=ax[1]
+        ax=ax[1]
     )
     plt.show()
 

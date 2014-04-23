@@ -42,7 +42,7 @@ def main():
     th.plot_neurogram(
         anf_acc,
         fs,
-        axis=ax
+        ax=ax
     )
     plt.show()
 

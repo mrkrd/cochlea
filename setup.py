@@ -51,5 +51,5 @@ setup(
     },
     include_dirs=[numpy.get_include()],
     ext_modules=cythonize(extensions),
-    scripts=["scripts/run_ear"],
+    scripts=["scripts/run_zilany2014"],
 )
