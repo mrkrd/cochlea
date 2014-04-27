@@ -1,7 +1,7 @@
 *.pyc
 build
 dist
-Cochlea.egg-info
+*.egg-info
 _pycat.c
 _pycat.h
 _pycat.so
