@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
-from distutils.extension import Extension
+from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
 import numpy
@@ -34,22 +33,20 @@ extensions = [
 
 
 setup(
-    name="cochlea",
-    version="0.6",
-    description="Collection of inner ear models",
-    author="Marek Rudnicki",
-    author_email="marek.rudnicki@tum.de",
-    packages=[
-        "cochlea",
-        "cochlea.stats",
-        "cochlea.zilany2009",
-        "cochlea.zilany2013",
-        "cochlea.holmberg2007",
-    ],
-    package_data={
+    name = "Cochlea",
+    version = "0.7",
+    packages = find_packages(),
+    scripts = ["scripts/run_zilany2014"],
+
+    package_data = {
         "cochlea": ["*.csv"]
     },
-    include_dirs=[numpy.get_include()],
-    ext_modules=cythonize(extensions),
-    scripts=["scripts/run_zilany2014"],
+
+    author = "Marek Rudnicki",
+    author_email = "marek.rudnicki@tum.de",
+    description = "Inner ear models",
+    license = "GPL",
+
+    include_dirs = [numpy.get_include()],
+    ext_modules = cythonize(extensions),
 )

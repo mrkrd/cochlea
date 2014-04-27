@@ -1,0 +1,4 @@
+include README.rst
+include MANIFEST.in
+recursive-include tests/data *
+recursive-include cochlea *.pyx
