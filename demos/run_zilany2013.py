@@ -45,7 +45,11 @@ def main():
 
     ### Plot auditory nerve response
     fig, ax = plt.subplots(2,1)
-    ax[0].plot(sound)           # TODO: fix the time axis
+    th.plot_signal(
+        signal=sound,
+        fs=fs,
+        ax=ax[0]
+    )
     th.plot_neurogram(
         anf_acc,
         fs,

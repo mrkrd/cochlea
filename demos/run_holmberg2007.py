@@ -38,11 +38,16 @@ def main():
     anf_acc.sort('cf', ascending=False, inplace=True)
 
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(2,1)
+    th.plot_signal(
+        signal=s,
+        fs=fs,
+        ax=ax[0]
+    )
     th.plot_neurogram(
         anf_acc,
         fs,
-        ax=ax
+        ax=ax[1]
     )
     plt.show()
 
