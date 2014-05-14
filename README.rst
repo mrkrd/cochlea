@@ -36,19 +36,25 @@ mrlib (optional, for demos and stats)
 Installation
 ============
 
-System wide installation:
+Developer
+---------
+
+./build_inplace.sh
+python setup.py develop --user
+
+
+Administrator
+-------------
 
 python setup.py install
 
 
-Single user installation:
+User
+----
 
 python setup.py install --user
 
 
-Build in-place:
-
-./build_inplace.sh
 
 
 
