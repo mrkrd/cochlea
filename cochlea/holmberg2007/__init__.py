@@ -64,14 +64,19 @@ def run_holmberg2007(
 
 
     ihcrp = {}
-    for cf in cfs:
+    for i,cf in enumerate(cfs):
         ### Amplification
         lcr4 = tw.run_lcr4(xbm[cf], fs, cf)
 
-        ### IHCRP
-        ihcrp[cf] = tw.run_ihcrp(lcr4, fs, cf)
+        ### Delay correction (1/cf).
+        lcr4_rolled = np.roll(
+            lcr4,
+            -int(np.round(tw.delay_time[99-i]*fs))
+        )
 
-    warnings.warn("Delay compensation after LCR4 is not implemented.")
+        ### IHCRP
+        ihcrp[cf] = tw.run_ihcrp(lcr4_rolled, fs, cf)
+
 
 
     anf_types = np.repeat(['hsr', 'msr', 'lsr'], anf_num)

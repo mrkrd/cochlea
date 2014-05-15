@@ -12,6 +12,7 @@ from cochlea.holmberg2007.bm_pars import (
     outer_ear_b_48kHz,
     outer_ear_a_100kHz,
     outer_ear_b_100kHz,
+    delay_time,
 )
 from _traveling_waves import (
     run_bm_wave,
