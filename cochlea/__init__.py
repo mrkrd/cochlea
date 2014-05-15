@@ -3,6 +3,7 @@ from __future__ import division, print_function, absolute_import
 __author__ = "Marek Rudnicki"
 
 
+import warnings
 import numpy as np
 
 from cochlea.zilany2009.zilany2009 import run_zilany2009
@@ -10,7 +11,11 @@ from cochlea.holmberg2007 import run_holmberg2007
 from cochlea.zilany2013.zilany2013 import run_zilany2013
 from cochlea.zilany2013.zilany2013_rate import run_zilany2013_rate
 
-from cochlea.matlab_auditory_periphery import run_matlab_auditory_periphery
+try:
+    from cochlea.matlab_auditory_periphery import run_matlab_auditory_periphery
+except ImportError:
+    warnings.warn("run_matlab_auditory_periphery() not imported (check if you have pymatlab)")
+
 
 __version__ = "0.7"
 
