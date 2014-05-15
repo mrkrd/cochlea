@@ -1,5 +1,6 @@
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
+
+__author__ = "Marek Rudnicki"
 
 
 import numpy as np
@@ -9,11 +10,27 @@ from cochlea.holmberg2007 import run_holmberg2007
 from cochlea.zilany2013.zilany2013 import run_zilany2013
 from cochlea.zilany2013.zilany2013_rate import run_zilany2013_rate
 
+from cochlea.matlab_auditory_periphery import run_matlab_auditory_periphery
 
-__version__ = "0.6"
+__version__ = "0.7"
 
 
 def set_dbspl(signal, dbspl):
+    """Rescale the signal to a new level in dB SPL.
+
+    Parameters
+    ----------
+    signal : array_like
+        Signal for scaling.
+    dbspl : float
+        Desired level of the output signal in dB SPL.
+
+    Returns
+    -------
+    array_like
+        Scaled version of the original signal.
+
+    """
     p0 = 20e-6
     rms = np.sqrt( np.sum(signal**2) / signal.size )
 
