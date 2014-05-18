@@ -37,7 +37,8 @@ Auditory Periphery (Meddis et al.).
         assert len(cf) == 3
     elif len(cf) == 3:
         raise RuntimeError("Three frequency channels are forbidden, because they mask the tuple (min_cf, max_cf, cf_num).")
-
+    elif np.isscalar(cf):
+        cf = [float(cf)]
 
     matlab = pymatlab.session_factory('-nojvm')
 

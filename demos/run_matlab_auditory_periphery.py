@@ -11,6 +11,7 @@ import scipy.signal as dsp
 import mrlib.thorns as th
 
 import cochlea
+from cochlea.external import run_matlab_auditory_periphery
 
 def main():
 
@@ -26,7 +27,7 @@ def main():
 
 
     ### Run model
-    anf = cochlea.run_matlab_auditory_periphery(
+    anf = run_matlab_auditory_periphery(
         sound,
         fs,
         anf_num=(100,100,100),
