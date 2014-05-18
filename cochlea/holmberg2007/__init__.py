@@ -27,8 +27,37 @@ def run_holmberg2007(
         fs,
         anf_num,
         seed,
-        cf=None
+        cf=None,
+        approximate_cfs=False
 ):
+    """Run the inner ear model by Marcus Holmberg (2007).  It simulates
+the traveling wave on the basilar membrane, inner hair cell, synapses
+and generates auditory nerve spikes.
+
+    Parameters
+    ----------
+    sound : array_like
+        Input sound signal.
+    fs : float
+        Sampling frequency of the sound.
+    anf_num : tuple
+        Number of auditory nerve fibers per channel (HSR#, MSR#, LSR#).
+    seed : int
+        Random seed.
+    cf : float or array_like or None, optional
+        Characteristic frequencies.  If `None`, then calculate all 100
+        predefined CFs.  Unless `approximate_cfs` is True, then CFs
+        must be a subset of `real_freq_map`.
+    approximate_cfs : bool
+        If True, then CFs will be aproximated to the closest
+        precalculated frequencies from `real_freq_map`.
+
+    Returns
+    -------
+    spike_trains
+        Auditory nerve fiber spike trains.
+
+    """
 
     assert np.max(np.abs(sound)) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
@@ -42,6 +71,16 @@ def run_holmberg2007(
         cfs = [cf]
     else:
         cfs = cf
+
+
+    ### Calculate approximate CFs
+    if approximate_cfs:
+        new_cfs = []
+        for cf in cfs:
+            idx = np.argmin(np.abs(tw.real_freq_map - cf))
+            new_cfs.append(tw.real_freq_map[idx])
+        cfs = np.array(new_cfs)
+
 
     assert set(cfs) <= set(tw.real_freq_map), set(cfs) - set(tw.real_freq_map)
 
@@ -64,14 +103,15 @@ def run_holmberg2007(
 
 
     ihcrp = {}
-    for i,cf in enumerate(cfs):
+    for cf in cfs:
         ### Amplification
         lcr4 = tw.run_lcr4(xbm[cf], fs, cf)
 
         ### Delay correction (1/cf)
+        sec = np.where(bm_pars.real_freq_map == cf)[0][0]
         lcr4_rolled = np.roll(
             lcr4,
-            -int(np.round(tw.delay_time[99-i]*fs))
+            -int(np.round(tw.delay_time[99-sec]*fs))
         )
 
         ### IHCRP

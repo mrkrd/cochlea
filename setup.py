@@ -34,7 +34,7 @@ extensions = [
 
 setup(
     name = "cochlea",
-    version = "0.7",
+    version = "0.8",
     packages = find_packages(),
     scripts = ["scripts/run_zilany2014"],
 

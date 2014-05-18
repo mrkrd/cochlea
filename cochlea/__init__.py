@@ -11,13 +11,9 @@ from cochlea.holmberg2007 import run_holmberg2007
 from cochlea.zilany2013.zilany2013 import run_zilany2013
 from cochlea.zilany2013.zilany2013_rate import run_zilany2013_rate
 
-try:
-    from cochlea.matlab_auditory_periphery import run_matlab_auditory_periphery
-except ImportError:
-    warnings.warn("run_matlab_auditory_periphery() not imported (check if you have pymatlab)")
 
 
-__version__ = "0.7"
+__version__ = "0.8"
 
 
 def set_dbspl(signal, dbspl):
