@@ -3,17 +3,22 @@
 from __future__ import division
 from __future__ import print_function
 
+
+raise NotImplementedError
+
+
 __author__ = "Marek Rudnicki"
 
 import numpy as np
 import pandas as pd
 import logging
 
-import marlib as mr
-import marlib.thorns as th
-import marlib.waves as wv
+import mrlib as mr
+import mrlib.thorns as th
+import mrlib.waves as wv
 
 from bisection import find_zero
+
 
 
 def calc_spont_threshold(model, model_pars=None):

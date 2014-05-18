@@ -4,6 +4,8 @@ from __future__ import division
 
 __author__ = "Marek Rudnicki"
 
+raise NotImplementedError
+
 import numpy as np
 import os
 import multiprocessing

@@ -1,18 +1,34 @@
 #!/usr/bin/env python
 
-from __future__ import division
+"""Binary search for threshold finding.
+
+"""
+
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
 import numpy as np
 
-def find_zero(func, kwargs, x1, x2, xtol):
-    """We assume that the function is increasing and
+def find_zero(func, x1, x2, kwargs, xtol):
+    """Find a zero crossing of a function using binary search.
 
-    func(xrange[0]) < 0
-    func(xrange[1]) > 0
+    Parameters
+    ----------
+    func : function
+        Function must be increasing and have one zero crossing.
+    x1, x2 : float
+        Lower and upper range.  Requirements (func(x1) < 0) and
+        (func(x2) > 0).
+    kwargs : dict
+        Extra keyword arguments for the function.
+    xtol : float
+        Range (x2-x1) at which the search stops.
 
-    We perform binary search to find func's zero.
+    Returns
+    -------
+    float
+        Function argument `x0` for which `func(x0) ~ 0`.
 
     """
 
@@ -38,11 +54,3 @@ def find_zero(func, kwargs, x1, x2, xtol):
     x = (x1 + x2) / 2
 
     return x
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()

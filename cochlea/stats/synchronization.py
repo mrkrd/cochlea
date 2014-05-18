@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""Rate-intensity charactersitics for inner ear models.
+"""Synchronization of inner ear models.
 
 """
 
-from __future__ import division, print_function, absolute_import
+from __future__ import division, absolute_import, print_function
 
 __author__ = "Marek Rudnicki"
 
@@ -16,20 +17,22 @@ import mrlib.thorns as th
 import mrlib.waves as wv
 
 
-def calc_rate_intensity(
+def calc_synchronization(
         model,
-        dbspls=None,
-        cf=1000,
+        cfs=None,
+        dbspl=50,
         model_pars=None
 ):
-    """Calculate rate-intensity characteristic of an auditory model.
+    """Calculate synchronization index (vector strength) of an inner ear
+    model.
 
     """
     if model_pars is None:
         model_pars = {}
 
-    if dbspls is None:
-        dbspls = np.arange(-10, 100, 5)
+    if cfs is None:
+        cfs = np.logspace(np.log10(125), np.log10(16e3), 16)
+
 
     space = [
         {
@@ -38,18 +41,20 @@ def calc_rate_intensity(
             'cf': cf,
             'model_pars': model_pars,
         }
-        for dbspl in dbspls
+        for cf in cfs
     ]
 
-    rates = mr.map(
+
+    sis = mr.map(
         _run_model,
         space
     )
 
-    rates = pd.DataFrame(list(rates))
-    rates = rates.set_index('dbspl')
+    sis = pd.DataFrame(list(sis))
+    sis = sis.set_index('cf')
 
-    return rates
+    return sis
+
 
 
 
@@ -76,23 +81,33 @@ def _run_model(model, dbspl, cf, model_pars):
         **model_pars
     )
 
+
+    ### We want to make sure the the output CF is equal to the desired
+    ### CF.
+    real_cf, = np.unique(anf['cf'])
+    assert real_cf == cf
+
     hsr = anf[anf['type']=='hsr']
     hsr = th.trim(hsr, onset, None)
-    rate_hsr = th.rate(hsr)
+    si_hsr = th.si(hsr, cf)
 
     msr = anf[anf['type']=='msr']
     msr = th.trim(msr, onset, None)
-    rate_msr = th.rate(msr)
+    si_msr = th.si(msr, cf)
 
     lsr = anf[anf['type']=='lsr']
     lsr = th.trim(lsr, onset, None)
-    rate_lsr = th.rate(lsr)
+    si_lsr = th.si(lsr, cf)
 
-    rates = {
-        'dbspl': dbspl,
-        'hsr': rate_hsr,
-        'msr': rate_msr,
-        'lsr': rate_lsr
+    # print(si_hsr)
+    # th.plot_raster(anf)
+    # th.show()
+
+    sis = {
+        'cf': cf,
+        'hsr': si_hsr,
+        'msr': si_msr,
+        'lsr': si_lsr
     }
 
-    return rates
+    return sis

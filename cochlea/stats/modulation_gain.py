@@ -1,77 +1,96 @@
 #!/usr/bin/env python
 
-from __future__ import division
+"""Modulation gain of inner ear models.
+
+"""
+
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-import multiprocessing
-import os
+import pandas as pd
 
-import thorns as th
-import thorns.waves as wv
-
-
-def _run_model( (model, fm) ):
-    print os.getpid(), fm
-
-    tmax = 600                  # ms
-    cf = 10000                  # Hz
-    fs = 1e5                    # Hz
-    m = 1                       # modulation depth
-
-    ear = model((200, 0, 0), cf=cf,
-                powerlaw_implnt='approx',
-                with_ffGn=False)
-
-    s = wv.generate_am_tone(fs,
-                            fm=fm,
-                            fc=cf,
-                            modulation_depth=m,
-                            tone_duration=tmax)
-    s = wv.set_dbspl(10, s)
-    anf = ear.run(fs, s)
-
-    si = th.calc_si(anf['spikes'], fm)
-    gain = 20 * np.log10(2*si / m)
-
-    return gain
+import mrlib as mr
+import mrlib.thorns as th
+import mrlib.waves as wv
 
 
-def calc_modulation_gain(model):
-    fms = np.logspace(1, 3.3, 16)
+def calc_modulation_gain(
+        model,
+        fms=None,
+        cf=10e3,
+        dbspl=10,
+        model_pars=None,
+        m=1,
+):
+    """Calculate modulation gain of an inner ear model.
 
-    space = [(m, fm)
-             for m in [model]
-             for fm in fms]
+    Parameters
+    ----------
+    fms : array_like
+        List of modulation frequencies [Hz].
 
-    pool = multiprocessing.Pool()
+    TODO: document parameters
 
-    gains = pool.map(_run_model, space)
+    """
+    if model_pars is None:
+        model_pars = {}
 
-    gains = [(fm,gain) for fm,gain in zip(fms,gains)]
-    gains = np.rec.array(gains, names='fm,gain')
+    if fms is None:
+        fms = np.logspace(np.log10(10), np.log10(2e3), 16)
+
+    space = [
+        {
+            'model': model,
+            'fm': fm,
+            'cf': cf,
+            'dbspl': dbspl,
+            'model_pars': model_pars,
+            'm': m,
+        }
+        for fm in fms
+    ]
+
+    gains = mr.map(
+        _run_model,
+        space
+    )
+
+    gains = pd.Series(gains, index=fms)
+    gains.index.name = 'fm'
 
     return gains
 
 
-def main():
-    import biggles
 
-    # import cochlea
-    # gains = calc_modulation_gain(cochlea.Sumner2003)
 
-    import pycat
-    gains = calc_modulation_gain(pycat.Zilany2009)
+def _run_model(model, fm, cf, dbspl, model_pars, m):
 
-    plot = biggles.FramedPlot()
-    plot.add( biggles.Curve(gains['fm'], gains['gain']) )
-    plot.xlog = 1
-    plot.xlabel = "Modulation Frequency (Hz)"
-    plot.ylabel = "Modulation Gain (dB)"
+    duration = 0.6
+    onset = 10e-3
 
-    plot.write_eps("plots/modulation_gain.eps")
-    plot.show()
+    fs = model_pars.setdefault('fs', 100e3)
+    model_pars.setdefault('anf_num', (250,0,0))
+    model_pars.setdefault('seed', 0)
 
-if __name__ == "__main__":
-    main()
+
+    sound = wv.am_tone(
+        fs=fs,
+        fm=fm,
+        fc=cf,
+        m=m,
+        duration=duration,
+        dbspl=dbspl,
+    )
+
+    anf = model(
+        sound=sound,
+        cf=cf,
+        **model_pars
+    )
+
+    si = th.synchronization_index(anf, fm)
+    gain = 20 * np.log10(2*si / m)
+
+    return gain
