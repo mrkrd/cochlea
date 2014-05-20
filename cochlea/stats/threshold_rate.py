@@ -18,12 +18,14 @@ import mrlib.waves as wv
 
 from . bisection import find_zero
 
+from cochlea.asr import adjust_to_human_thresholds
 
 
 def calc_thresholds_rate(
         model,
         cfs=None,
-        model_pars=None
+        model_pars=None,
+        asr_filter=False,
 ):
     """Calculate rate based hearing threshold of an inner ear model.
 
@@ -48,7 +50,8 @@ def calc_thresholds_rate(
             'model': model,
             'model_pars': model_pars,
             'spont_rate': spont_rate,
-            'cf': cf
+            'cf': cf,
+            'asr_filter': asr_filter
         }
         for cf in cfs
     ]
@@ -95,13 +98,14 @@ def calc_spont_threshold(model, cf, model_pars):
 
 
 
-def calc_threshold(model, cf, spont_rate, model_pars):
+def calc_threshold(model, cf, spont_rate, model_pars, asr_filter=False):
 
     kwargs = {
         'model':model,
         'model_pars': model_pars,
         'cf': cf,
-        'spont_rate': spont_rate
+        'spont_rate': spont_rate,
+        'asr_filter': asr_filter
     }
 
     dbspl_opt = find_zero(
@@ -117,7 +121,7 @@ def calc_threshold(model, cf, spont_rate, model_pars):
 
 
 
-def error_func(dbspl, model, cf, spont_rate, model_pars):
+def error_func(dbspl, model, cf, spont_rate, model_pars, asr_filter=False):
 
     pars = dict(model_pars)
 
@@ -128,7 +132,7 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
     tone_duration = 250e-3
     onset = 15e-3
 
-    s = wv.ramped_tone(
+    sound = wv.ramped_tone(
         fs,
         cf,
         duration=tone_duration,
@@ -137,8 +141,11 @@ def error_func(dbspl, model, cf, spont_rate, model_pars):
         dbspl=dbspl
     )
 
+    if asr_filter:
+        sound = adjust_to_human_thresholds(sound, fs, model)
+
     anf = model(
-        sound=s,
+        sound=sound,
         cf=cf,
         **pars
     )
