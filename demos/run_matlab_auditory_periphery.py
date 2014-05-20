@@ -30,7 +30,7 @@ def main():
     anf = run_matlab_auditory_periphery(
         sound,
         fs,
-        anf_num=(100,100,100),
+        anf_num=(100,50,20),
         cf=(125, 20000, 100),
         seed=0,
     )

@@ -90,12 +90,8 @@ def run_outer_ear_filter(signal, fs):
 
 
 
-def find_closest_freq_idx_in_map(freq):
-    m = np.abs(real_freq_map - freq)
+def get_nearest_cf(cf):
+    idx = np.argmin(np.abs(real_freq_map - cf))
+    nearest_cf = real_freq_map[idx]
 
-    return int(np.argmin(m))
-
-
-def find_closest_freq_in_map(freq):
-    idx = find_closest_freq_idx_in_map(freq)
-    return real_freq_map[idx]
+    return nearest_cf

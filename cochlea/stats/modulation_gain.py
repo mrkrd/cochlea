@@ -15,12 +15,19 @@ import mrlib as mr
 import mrlib.thorns as th
 import mrlib.waves as wv
 
+from . threshold_rate import calc_thresholds_rate
+
+
+import logging
+logging.basicConfig()
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+
 
 def calc_modulation_gain(
         model,
         fms=None,
         cf=10e3,
-        dbspl=10,
         model_pars=None,
         m=1,
 ):
@@ -39,6 +46,17 @@ def calc_modulation_gain(
 
     if fms is None:
         fms = np.logspace(np.log10(10), np.log10(2e3), 16)
+
+
+    ### Calculate dbspl = threshold + 10 dB
+    threshod = calc_thresholds_rate(
+        model=model,
+        cfs=[cf],
+        model_pars=model_pars
+    )
+
+    dbspl = threshod.iloc[0] + 10
+    log.info("Sound level: {} dB SPL".format(dbspl))
 
     space = [
         {

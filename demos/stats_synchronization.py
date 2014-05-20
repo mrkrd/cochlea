@@ -19,22 +19,26 @@ from cochlea.stats import calc_synchronization
 
 def main():
 
-    # sis = calc_synchronization_index(
+    # sis = calc_synchronization(
     #     model=cochlea.run_holmberg2007,
     #     cfs=cochlea.holmberg2007.real_freq_map[10::5],
     #     model_pars={'fs': 48e3}
     # )
 
-    sis = calc_synchronization_index(
+    sis = calc_synchronization(
         model=cochlea.run_zilany2013,
-        model_pars={'fs': 100e3, 'species': 'human'}
+        model_pars={'species': 'human'}
     )
 
     print(sis)
 
-    sis.plot(logx=True)
+    hsr_sis = sis.pivot(index='dbspl', columns='cf', values='hsr')
 
-    plt.legend()
+    fig,ax = plt.subplots(2,1)
+
+    ax[0].imshow(hsr_sis, aspect='auto', interpolation='nearest')
+    hsr_sis.max().plot(ax=ax[1], logx=True)
+
     plt.show()
 
 if __name__ == "__main__":

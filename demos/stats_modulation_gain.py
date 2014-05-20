@@ -23,6 +23,20 @@ def main():
         model_pars={'species': 'cat'}
     )
 
+
+    # gains = calc_modulation_gain(
+    #     model=cochlea.run_holmberg2007,
+    #     cf=cochlea.get_nearest_cf_holmberg2007(10e3),
+    #     model_pars={'fs': 48e3}
+    # )
+
+
+    # from cochlea.external import run_matlab_auditory_periphery
+    # gains = calc_modulation_gain(
+    #     model=run_matlab_auditory_periphery,
+    #     model_pars={'fs': 48e3}
+    # )
+
     print(gains)
 
     gains.plot(logx=True)

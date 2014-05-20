@@ -19,7 +19,7 @@ import itertools
 import warnings
 
 import traveling_waves as tw
-from traveling_waves import real_freq_map
+from traveling_waves import real_freq_map, get_nearest_cf
 
 
 def run_holmberg2007(
@@ -28,7 +28,6 @@ def run_holmberg2007(
         anf_num,
         seed,
         cf=None,
-        approximate_cfs=False
 ):
     """Run the inner ear model by Marcus Holmberg (2007).  It simulates
 the traveling wave on the basilar membrane, inner hair cell, synapses
@@ -46,11 +45,8 @@ and generates auditory nerve spikes.
         Random seed.
     cf : float or array_like or None, optional
         Characteristic frequencies.  If `None`, then calculate all 100
-        predefined CFs.  Unless `approximate_cfs` is True, then CFs
-        must be a subset of `real_freq_map`.
-    approximate_cfs : bool
-        If True, then CFs will be aproximated to the closest
-        precalculated frequencies from `real_freq_map`.
+        predefined CFs.  CFs must be a subset of `real_freq_map`.
+
 
     Returns
     -------
@@ -71,15 +67,6 @@ and generates auditory nerve spikes.
         cfs = [cf]
     else:
         cfs = cf
-
-
-    ### Calculate approximate CFs
-    if approximate_cfs:
-        new_cfs = []
-        for cf in cfs:
-            idx = np.argmin(np.abs(tw.real_freq_map - cf))
-            new_cfs.append(tw.real_freq_map[idx])
-        cfs = np.array(new_cfs)
 
 
     assert set(cfs) <= set(tw.real_freq_map), set(cfs) - set(tw.real_freq_map)

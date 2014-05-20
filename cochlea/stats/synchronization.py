@@ -20,8 +20,9 @@ import mrlib.waves as wv
 def calc_synchronization(
         model,
         cfs=None,
-        dbspl=50,
-        model_pars=None
+        dbspls=None,
+        model_pars=None,
+        map_backend='serial'
 ):
     """Calculate synchronization index (vector strength) of an inner ear
     model.
@@ -33,6 +34,9 @@ def calc_synchronization(
     if cfs is None:
         cfs = np.logspace(np.log10(125), np.log10(16e3), 16)
 
+    if dbspls is None:
+        dbspls = [20, 40, 60]
+
 
     space = [
         {
@@ -42,16 +46,18 @@ def calc_synchronization(
             'model_pars': model_pars,
         }
         for cf in cfs
+        for dbspl in dbspls
     ]
 
 
     sis = mr.map(
         _run_model,
-        space
+        space,
+        backend=map_backend,
     )
 
     sis = pd.DataFrame(list(sis))
-    sis = sis.set_index('cf')
+    # sis = sis.set_index(['dbspl', 'cf'])
 
     return sis
 
@@ -105,6 +111,7 @@ def _run_model(model, dbspl, cf, model_pars):
 
     sis = {
         'cf': cf,
+        'dbspl': dbspl,
         'hsr': si_hsr,
         'msr': si_msr,
         'lsr': si_lsr
