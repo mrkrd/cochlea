@@ -100,14 +100,22 @@ def calc_spont_threshold(model, cf, model_pars):
 
 
 
-def calc_threshold(model, cf, spont_rate, model_pars, asr_filter=False):
+def calc_threshold(
+        model,
+        cf,
+        spont_rate,
+        model_pars,
+        asr_filter=False,
+        freq=None
+):
 
     kwargs = {
         'model':model,
         'model_pars': model_pars,
         'cf': cf,
         'spont_rate': spont_rate,
-        'asr_filter': asr_filter
+        'asr_filter': asr_filter,
+        'freq': freq,
     }
 
     dbspl_opt = find_zero(
@@ -123,7 +131,15 @@ def calc_threshold(model, cf, spont_rate, model_pars, asr_filter=False):
 
 
 
-def error_func(dbspl, model, cf, spont_rate, model_pars, asr_filter=False):
+def error_func(
+        dbspl,
+        model,
+        cf,
+        spont_rate,
+        model_pars,
+        asr_filter=False,
+        freq=None
+):
 
     pars = dict(model_pars)
 
@@ -131,12 +147,15 @@ def error_func(dbspl, model, cf, spont_rate, model_pars, asr_filter=False):
     pars.setdefault('seed', 0)
     pars.setdefault('anf_num', (1000, 0, 0))
 
+    if freq is None:
+        freq = cf
+
     tone_duration = 250e-3
     onset = 15e-3
 
     sound = wv.ramped_tone(
         fs,
-        cf,
+        freq,
         duration=tone_duration,
         ramp=2.5e-3,
         pad=0,

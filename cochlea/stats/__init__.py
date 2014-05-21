@@ -11,6 +11,7 @@ from . threshold_rate import calc_thresholds_rate
 from . rate_intensity import calc_rate_intensity
 from . synchronization import calc_synchronization
 from . modulation_gain import calc_modulation_gain
+from . tuning import calc_tuning
 
 
 def calc_human_hearing_thresholds(freqs):
