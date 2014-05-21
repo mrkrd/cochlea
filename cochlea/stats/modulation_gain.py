@@ -30,6 +30,7 @@ def calc_modulation_gain(
         cf=10e3,
         model_pars=None,
         m=1,
+        map_backend='serial'
 ):
     """Calculate modulation gain of an inner ear model.
 
@@ -72,7 +73,8 @@ def calc_modulation_gain(
 
     gains = mr.map(
         _run_model,
-        space
+        space,
+        backend=map_backend
     )
 
     gains = pd.Series(gains, index=fms)

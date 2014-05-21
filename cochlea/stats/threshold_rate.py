@@ -26,6 +26,7 @@ def calc_thresholds_rate(
         cfs=None,
         model_pars=None,
         asr_filter=False,
+        map_backend='serial'
 ):
     """Calculate rate based hearing threshold of an inner ear model.
 
@@ -60,6 +61,7 @@ def calc_thresholds_rate(
     thresholds = mr.map(
         calc_threshold,
         space,
+        backend=map_backend,
     )
 
     thresholds = pd.Series(thresholds, index=cfs)
