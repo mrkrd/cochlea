@@ -51,7 +51,7 @@ def adjust_to_human_thresholds(signal, fs, model):
         y=filt.h,
         kind='cubic',
         bounds_error=False,
-        fill_value=0
+        fill_value=-100
     )
 
 
