@@ -22,13 +22,16 @@ def main():
 
     cfs = np.logspace(np.log10(125), np.log10(16000), 32)
 
-    human_ths = calc_human_hearing_thresholds(cfs)
-
     ths = calc_thresholds_rate(
         model=cochlea.run_zilany2014,
+        cfs=cfs,
         model_pars={'species': 'human'},
         asr_filter=True
     )
+
+
+
+    human_ths = calc_human_hearing_thresholds(cfs)
 
     human_ths.plot(logx=True, style='--', linewidth=5)
     ths.plot(logx=True)

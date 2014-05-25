@@ -33,6 +33,8 @@ def adjust_to_human_thresholds(signal, fs, model):
         fname = _data_dir("zilany2014.csv")
     elif 'holmberg2007' in name:
         fname = _data_dir("holmberg2007.csv")
+    elif 'matlab_auditory_periphery' in name:
+        fname = _data_dir("matlab_auditory_periphery.csv")
     else:
         raise NotImplementedError
 

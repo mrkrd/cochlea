@@ -19,9 +19,10 @@ def run_matlab_auditory_periphery(
         anf_num,
         cf,
         seed,
+        matlab_session=None
 ):
     """Wrapper function for an auditory model implemented in Matlab
-Auditory Periphery (Meddis et al.).
+    Auditory Periphery (Meddis et al.).
 
     Requires Matlab and pymatlab.
 
@@ -39,7 +40,10 @@ Auditory Periphery (Meddis et al.).
     elif len(cf) == 3:
         raise RuntimeError("Three frequency channels are forbidden, because they mask the tuple (min_cf, max_cf, cf_num).")
 
-    matlab = pymatlab.session_factory('-nojvm')
+    if matlab_session is None:
+        matlab = pymatlab.session_factory('-nojvm')
+    else:
+        matlab = matlab_session
 
     matlab.run("rng({})".format(seed))
 
