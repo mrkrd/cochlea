@@ -1,4 +1,4 @@
-/* This is Version 5 of the code for auditory periphery model of:
+/* This is Version 5.2 of the code for auditory periphery model of:
 
     Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (2009). "A Phenomenological
         model of the synapse between the inner hair cell and auditory nerve : Long-term adaptation
@@ -6,15 +6,14 @@
 
    with the modifications and simulation options described in:
 
-    Zilany, M.S.A., Bruce, I.C., Ibrahim, R.A., and Carney, L.H. "Improved parameters
+    Zilany, M.S.A., Bruce, I.C., Ibrahim, R.A., and Carney, L.H. (2013). "Improved parameters
         and expanded simulation options for a model of the auditory periphery,"
-        submitted to Journal of the Acoustical Society of America.
+        in Abstracts of the 36th ARO Midwinter Research Meeting.
 
    Humanization in this version includes:
    - Human middle-ear filter, based on the linear middle-ear circuit model of Pascal et al. (JASA 1998)
-   - Human BM tuning, based on Shera et al. (PNAS 2002)
+   - Human BM tuning, based on Shera et al. (PNAS 2002) or Glasberg & Moore (Hear. Res. 1990)
    - Human frequency-offset of control-path filter (i.e., cochlear amplifier mechanism), based on Greenwood (JASA 1990)
-   - Human latency vs CF function, based on Harte et al. (JASA 2009)
 
    The modifications to the BM tuning are described in:
 
@@ -28,7 +27,7 @@
    See the file readme.txt for details of compiling and running the model.
 
    %%% © M. S. Arefeen Zilany (msazilany@gmail.com), Ian C. Bruce (ibruce@ieee.org),
-         Rasha A. Ibrahim, Paul C. Nelson, and Laurel H. Carney - December 2012 %%%
+         Rasha A. Ibrahim, Paul C. Nelson, and Laurel H. Carney - November 2013 %%%
 
 */
 
@@ -115,7 +114,7 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
         centerfreq = 456.0*(pow(10,(bmplace+1.2)/11.9)-0.80); /* shift the center freq */
     }
 
-	if (species==2) /* for human */
+	if (species>1) /* for human */
     {
         /* Human frequency shift corresponding to 1.2 mm */
         bmplace = (35/2.1) * log10(1.0 + cf / 165.4); /* Calculate the location on basilar membrane from CF */
@@ -126,7 +125,7 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
 	/*====== Parameters for the gain ===========*/
 
 	if(species==1) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for cat */
-    if(species==2) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for human */
+    if(species>1) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for human */
     /*gain = 52/2*(tanh(2.2*log10(cf/1e3)+0.15)+1);*/
     if(gain>60.0) gain = 60.0;
     if(gain<15.0) gain = 15.0;
@@ -169,7 +168,7 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
          m34 = 5.7585e5*C + 7.1665e7;             m35 = 14.333e7;                  m36 = 7.1665e7 - 5.7585e5*C;
          megainmax=41.1405;
      };
-     if (species==2) /* for human */
+     if (species>1) /* for human */
      {
          /* Human middle-ear filter - based on Pascal et al. (JASA 1998)  */
          m11=1/(pow(C,2)+5.9761e+003*C+2.5255e+007);m12=(-2*pow(C,2)+2*2.5255e+007);m13=(pow(C,2)-5.9761e+003*C+2.5255e+007);m14=(pow(C,2)+5.6665e+003*C);             m15=-2*pow(C,2);					m16=(pow(C,2)-5.6665e+003*C);
@@ -182,7 +181,7 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
         if (n==0)  /* Start of the middle-ear filtering section  */
 		{
 	    	mey1[0]  = m11*px[0];
-            if (species==2) mey1[0] = m11*m14*px[0];
+            if (species>1) mey1[0] = m11*m14*px[0];
             mey2[0]  = mey1[0]*m24*m21;
             mey3[0]  = mey2[0]*m34*m31;
             meout = mey3[0]/megainmax ;
@@ -191,7 +190,7 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
         else if (n==1)
 		{
             mey1[1]  = m11*(-m12*mey1[0] + px[1]       - px[0]);
-            if (species==2) mey1[1] = m11*(-m12*mey1[0]+m14*px[1]+m15*px[0]);
+            if (species>1) mey1[1] = m11*(-m12*mey1[0]+m14*px[1]+m15*px[0]);
 			mey2[1]  = m21*(-m22*mey2[0] + m24*mey1[1] + m25*mey1[0]);
             mey3[1]  = m31*(-m32*mey3[0] + m34*mey2[1] + m35*mey2[0]);
             meout = mey3[1]/megainmax;
@@ -199,7 +198,7 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
 	    else
 		{
             mey1[n]  = m11*(-m12*mey1[n-1]  + px[n]         - px[n-1]);
-            if (species==2) mey1[n]= m11*(-m12*mey1[n-1]-m13*mey1[n-2]+m14*px[n]+m15*px[n-1]+m16*px[n-2]);
+            if (species>1) mey1[n]= m11*(-m12*mey1[n-1]-m13*mey1[n-2]+m14*px[n]+m15*px[n-1]+m16*px[n-2]);
             mey2[n]  = m21*(-m22*mey2[n-1] - m23*mey2[n-2] + m24*mey1[n] + m25*mey1[n-1] + m26*mey1[n-2]);
             mey3[n]  = m31*(-m32*mey3[n-1] - m33*mey3[n-2] + m34*mey2[n] + m35*mey2[n-1] + m36*mey2[n-2]);
             meout = mey3[n]/megainmax;
@@ -264,9 +263,11 @@ void IHCAN(double *px, double cf, int nrep, double tdres, int totalstim,
    	/* Adjust total path delay to IHC output signal */
     if (species==1)
         delay      = delay_cat(cf);
-    if (species==2)
-        delay      = delay_human(cf);
-	delaypoint =__max(0,(int) ceil(delay/tdres));
+    if (species>1)
+    {/*    delay      = delay_human(cf); */
+        delay      = delay_cat(cf); /* signal delay changed back to cat function for version 5.2 */
+    };
+    delaypoint =__max(0,(int) ceil(delay/tdres));
 
     for(i=delaypoint;i<totalstim*nrep;i++)
 	{
@@ -291,7 +292,7 @@ double Get_tauwb(double cf, int species, int order, double *taumax,double *taumi
   double Q10,bw,gain,ratio;
 
   if(species==1) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for cat */
-  if(species==2) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for human */
+  if(species>1) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for human */
   /*gain = 52/2*(tanh(2.2*log10(cf/1e3)+0.15)+1);*/ /* older values */
 
   if(gain>60.0) gain = 60.0;
@@ -300,13 +301,15 @@ double Get_tauwb(double cf, int species, int order, double *taumax,double *taumi
   ratio = pow(10,(-gain/(20.0*order)));       /* ratio of TauMin/TauMax according to the gain, order */
   if (species==1) /* cat Q10 values */
   {
-   /*Q10 = pow(10,0.4708*log10(cf/1e3)+0.5469);  /* 75th percentile */
-    Q10 = pow(10,0.4708*log10(cf/1e3)+0.4664); /* 50th percentile */
-   /*Q10 = pow(10,0.4708*log10(cf/1e3)+0.3934);  /* 25th percentile */
+    Q10 = pow(10,0.4708*log10(cf/1e3)+0.4664);
   }
-  if (species==2) /* human Q10 values */
+  if (species==2) /* human Q10 values from Shera et al. (PNAS 2002) */
   {
-    Q10 = pow((cf/1000),0.3)*12.7*0.505+0.2085;  /* human Q10 values */
+    Q10 = pow((cf/1000),0.3)*12.7*0.505+0.2085;
+  }
+  if (species==3) /* human Q10 values from Glasberg & Moore (Hear. Res. 1990) */
+  {
+    Q10 = cf/24.7/(4.37*(cf/1000)+1)*0.505+0.2085;
   }
   bw     = cf/Q10;
   taumax[0] = 2.0/(TWOPI*bw);
@@ -321,7 +324,7 @@ double Get_taubm(double cf, int species, double taumax,double *bmTaumax,double *
   double gain,factor,bwfactor;
 
   if(species==1) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for cat */
-  if(species==2) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for human */
+  if(species>1) gain = 52.0/2.0*(tanh(2.2*log10(cf/0.6e3)+0.15)+1.0); /* for human */
   /*gain = 52/2*(tanh(2.2*log10(cf/1e3)+0.15)+1);*/ /* older values */
 
 

@@ -43,7 +43,7 @@ def run_zilany2013(
         used.  If tuple, then must have exactly 3 elements (min_cf,
         max_cf, num_cf) and the frequencies are calculated using the
         Greenwood function.
-    species : {'cat', 'human'}
+    species : {'cat', 'human', 'human_glasberg1990'}
         Species.
     seed : int
         Random seed for the spike generator.
@@ -63,7 +63,7 @@ def run_zilany2013(
     """
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
-    assert species in ('cat', 'human')
+    assert species in ('cat', 'human', 'human_glasberg1990')
 
     np.random.seed(seed)
 
@@ -186,7 +186,7 @@ def _calc_cfs(cf, species):
         x_map = np.linspace(xmin, xmax, freq_num)
         cfs = aA * ( 10**( a*x_map ) - k)
 
-    elif isinstance(cf, tuple) and species == 'human':
+    elif isinstance(cf, tuple) and ('human' in species):
         # Based on GenerateGreenwood_CFList() from DSAM
         # Liberman (1982)
         aA = 165.4

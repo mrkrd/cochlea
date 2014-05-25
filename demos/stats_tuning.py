@@ -18,13 +18,23 @@ from cochlea.stats import calc_tuning
 
 def main():
 
-    ths = calc_tuning(
+    ths_human = calc_tuning(
         model=cochlea.run_zilany2013,
         cf=5e3,
         model_pars={'species': 'human'}
     )
 
-    ths.plot(logx=True)
+    ths_human_glasberg1990 = calc_tuning(
+        model=cochlea.run_zilany2013,
+        cf=5e3,
+        model_pars={'species': 'human_glasberg1990'}
+    )
+
+    ths_human.plot(logx=True, label="Shera et al. (2002)")
+    ths_human_glasberg1990.plot(logx=True, label="Glasberg & Moore (1990)")
+
+    plt.title("Zilany et al. (2014)")
+    plt.legend(loc='best')
     plt.show()
 
 

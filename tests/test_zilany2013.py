@@ -18,16 +18,15 @@ import cochlea.zilany2013._zilany2013 as _zilany2013
 def test_ihc():
 
     m = scipy.io.loadmat(
-        'data/zilany2013.mat',
+        'data_zilany2014/data_zilany2014.mat',
         squeeze_me=True
     )
     fs = float(m['fs'])
     cf = float(m['cf'])
     sound = m['sound'].astype(float)
-    vihc_cat_target = m['vihc_cat']
-    vihc_human_target = m['vihc_human']
+    vihc_target = m['vihc']
 
-    vihc_cat = _zilany2013.run_ihc(
+    vihc = _zilany2013.run_ihc(
         signal=sound,
         cf=cf,
         fs=fs,
@@ -37,25 +36,8 @@ def test_ihc():
     )
 
     assert_array_almost_equal(
-        vihc_cat,
-        vihc_cat_target,
-        decimal=15
-    )
-
-
-
-    vihc_human = _zilany2013.run_ihc(
-        signal=sound,
-        cf=cf,
-        fs=fs,
-        species='human',
-        cohc=1.,
-        cihc=1.
-    )
-
-    assert_array_almost_equal(
-        vihc_human,
-        vihc_human_target,
+        vihc,
+        vihc_target,
         decimal=15
     )
 
@@ -81,27 +63,26 @@ def test_synapse():
 
     """
     m = scipy.io.loadmat(
-        'data/zilany2013.mat',
+        'data_zilany2014/data_zilany2014.mat',
         squeeze_me=True
     )
     fs = float(m['fs'])
     cf = float(m['cf'])
-    vihc_cat = m['vihc_cat']
-    meanrate_cat_target = m['meanrate_cat']
+    vihc = m['vihc']
+    meanrate_target = m['meanrate']
 
-    synout_cat = _zilany2013.run_synapse(
-        vihc=vihc_cat,
+    synout = _zilany2013.run_synapse(
+        vihc=vihc,
         fs=fs,
         cf=cf,
         anf_type='hsr',
         powerlaw='approximate',
         ffGn=False
     )
-    meanrate_cat = synout_cat / (1 + 0.75e-3*synout_cat)
-
+    meanrate = synout / (1 + 0.75e-3*synout)
 
     assert_array_almost_equal(
-        meanrate_cat,
-        meanrate_cat_target,
+        meanrate,
+        meanrate_target,
         decimal=10
     )

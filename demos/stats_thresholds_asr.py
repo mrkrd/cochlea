@@ -20,14 +20,19 @@ from cochlea.stats import calc_thresholds_rate, calc_human_hearing_thresholds
 
 def main():
 
+    cfs = np.logspace(np.log10(125), np.log10(16000), 32)
+
+    human_ths = calc_human_hearing_thresholds(cfs)
+
     ths = calc_thresholds_rate(
         model=cochlea.run_zilany2013,
         model_pars={'species': 'human'},
         asr_filter=True
     )
-    print(ths)
 
+    human_ths.plot(logx=True, style='--', linewidth=5)
     ths.plot(logx=True)
+
     plt.show()
 
 

@@ -26,7 +26,7 @@ vihc = model_IHC(sound, cf, nrep, 1/fs, tmax, cohc, cihc, species);
 
 
 %%% Save results
-save('data_zilany2014.mat', 'fs', 'sound', 'vihc', 'meanrate')
+save('data_zilany2014.mat', 'fs', 'cf', 'sound', 'vihc', 'meanrate')
 
 
 %%% Plots

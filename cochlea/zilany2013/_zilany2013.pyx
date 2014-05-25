@@ -76,18 +76,28 @@ def run_ihc(
 ):
     """Run middle ear filter, BM filters and IHC model.
 
-    signal: output of the middle ear filter [Pa]
-    cf: characteristic frequency [Hz]
-    fs: sampling frequency [Hz]
-    species: cat/human
-    cohc, cihc: degeneration parameters for IHC and OHC cells
+    Parameters
+    ----------
+    signal : array_like
+        Output of the middle ear filter in Pascal.
+    cf : float
+        Characteristic frequency in Hz.
+    fs : float
+        Sampling frequency in Hz.
+    species : {'cat', 'human', 'human_glasberg1990'}
+        Species.
+    cihc, cohc : float
+        Degeneration parameters for IHC and OHC cells.
 
-    return: IHC receptor potential
+    Returns
+    -------
+    array_like
+        IHC receptor potential.
 
     """
     if species == 'cat':
         assert (cf > 124.9) and (cf < 40e3), "Wrong CF: 125 <= cf < 40e3, CF = %s"%str(cf)
-    elif species == 'human':
+    elif 'human' in species:
         assert (cf > 124.9) and (cf < 20001.), "Wrong CF: 125 <= cf <= 20e3, CF = %s"%str(cf)
 
     assert (fs >= 100e3) and (fs <= 500e3), "Wrong Fs: 100e3 <= fs <= 500e3"
@@ -97,7 +107,8 @@ def run_ihc(
 
     species_map = {
         'cat': 1,
-        'human': 2
+        'human': 2,
+        'human_glasberg1990': 3,
     }
 
     # Input sound
