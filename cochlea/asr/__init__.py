@@ -29,8 +29,8 @@ def adjust_to_human_thresholds(signal, fs, model):
         name = str(model)
 
 
-    if 'zilany2013' in name:
-        fname = _data_dir("zilany2013.csv")
+    if 'zilany2014' in name:
+        fname = _data_dir("zilany2014.csv")
     elif 'holmberg2007' in name:
         fname = _data_dir("holmberg2007.csv")
     else:

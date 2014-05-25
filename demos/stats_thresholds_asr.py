@@ -25,7 +25,7 @@ def main():
     human_ths = calc_human_hearing_thresholds(cfs)
 
     ths = calc_thresholds_rate(
-        model=cochlea.run_zilany2013,
+        model=cochlea.run_zilany2014,
         model_pars={'species': 'human'},
         asr_filter=True
     )

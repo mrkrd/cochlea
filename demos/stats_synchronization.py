@@ -26,7 +26,7 @@ def main():
     # )
 
     sis = calc_synchronization(
-        model=cochlea.run_zilany2013,
+        model=cochlea.run_zilany2014,
         model_pars={'species': 'human'}
     )
 

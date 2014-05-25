@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
@@ -11,10 +10,10 @@ import numpy as np
 import pandas as pd
 import itertools
 
-import _zilany2013
-from zilany2013 import _calc_cfs
+from . import _zilany2014
+from cochlea.zilany2014 import _calc_cfs
 
-def run_zilany2013_rate(
+def run_zilany2014_rate(
         sound,
         fs,
         anf_types,
@@ -89,7 +88,7 @@ def _run_channel(args):
 
 
     ### Run BM, IHC
-    vihc = _zilany2013.run_ihc(
+    vihc = _zilany2014.run_ihc(
         signal=signal,
         cf=cf,
         fs=fs,
@@ -106,7 +105,7 @@ def _run_channel(args):
     for anf_type in anf_types:
 
         ### Run synapse
-        synout = _zilany2013.run_synapse(
+        synout = _zilany2014.run_synapse(
             fs=fs,
             vihc=vihc,
             cf=cf,

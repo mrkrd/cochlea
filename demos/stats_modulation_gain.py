@@ -19,7 +19,7 @@ from cochlea.stats import calc_modulation_gain
 def main():
 
     gains = calc_modulation_gain(
-        model=cochlea.run_zilany2013,
+        model=cochlea.run_zilany2014,
         model_pars={'species': 'cat'}
     )
 

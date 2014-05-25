@@ -9,10 +9,10 @@ import itertools
 import numpy as np
 import pandas as pd
 
-from . import _zilany2013
+from . import _zilany2014
 
 
-def run_zilany2013(
+def run_zilany2014(
         sound,
         fs,
         anf_num,
@@ -23,7 +23,7 @@ def run_zilany2013(
         cihc=1,
         powerlaw='approximate',
 ):
-    """Run Zilany et al. (2013/2014) JASA inner ear model.
+    """Run Zilany et al. (2014) JASA inner ear model.
 
     Parameters
     ----------
@@ -117,7 +117,7 @@ def _run_channel(args):
 
 
     ### Run BM, IHC
-    vihc = _zilany2013.run_ihc(
+    vihc = _zilany2014.run_ihc(
         signal=signal,
         cf=cf,
         fs=fs,
@@ -136,7 +136,7 @@ def _run_channel(args):
 
         if anf_type not in synout:
             ### Run synapse
-            synout[anf_type] = _zilany2013.run_synapse(
+            synout[anf_type] = _zilany2014.run_synapse(
                 fs=fs,
                 vihc=vihc,
                 cf=cf,
@@ -146,7 +146,7 @@ def _run_channel(args):
             )
 
         ### Run spike generator
-        spikes = _zilany2013.run_spike_generator(
+        spikes = _zilany2014.run_spike_generator(
             synout=synout[anf_type],
             fs=fs,
         )

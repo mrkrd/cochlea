@@ -66,7 +66,7 @@ cochlea: model implementation, e.g.,
 
 cochlea/holmberg2007
 cochlea/zilany2009
-cochlea/zilany2013
+cochlea/zilany2014
 
 demos: small demos scripts, a good place to start
 

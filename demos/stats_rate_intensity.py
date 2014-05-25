@@ -27,7 +27,7 @@ def main():
     # )
 
     rates = calc_rate_intensity(
-        model=cochlea.run_zilany2013,
+        model=cochlea.run_zilany2014,
         cf=1000,
         model_pars={'fs': 100e3, 'species': 'human'}
     )

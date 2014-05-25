@@ -25,7 +25,7 @@ def main():
 
 
     ### Run model
-    rates = cochlea.run_zilany2013_rate(
+    rates = cochlea.run_zilany2014_rate(
         s,
         fs,
         anf_types=['msr'],

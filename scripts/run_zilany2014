@@ -79,7 +79,7 @@ def convert_sound_to_mat(
 
 
     ### Run the inner ear model
-    anf_trains = cochlea.run_zilany2013(
+    anf_trains = cochlea.run_zilany2014(
         sound=sound,
         fs=fs,
         anf_num=anf_num,

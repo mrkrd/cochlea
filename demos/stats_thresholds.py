@@ -20,7 +20,7 @@ from cochlea.stats import calc_thresholds_rate
 def main():
 
     ths = calc_thresholds_rate(
-        model=cochlea.run_zilany2013,
+        model=cochlea.run_zilany2014,
         model_pars={'species': 'cat'}
     )
     print(ths)

@@ -12,7 +12,7 @@ from numpy.testing import (
 )
 import scipy.io
 
-import cochlea.zilany2013._zilany2013 as _zilany2013
+import cochlea.zilany2014._zilany2014 as _zilany2014
 
 
 def test_ihc():
@@ -26,7 +26,7 @@ def test_ihc():
     sound = m['sound'].astype(float)
     vihc_target = m['vihc']
 
-    vihc = _zilany2013.run_ihc(
+    vihc = _zilany2014.run_ihc(
         signal=sound,
         cf=cf,
         fs=fs,
@@ -71,7 +71,7 @@ def test_synapse():
     vihc = m['vihc']
     meanrate_target = m['meanrate']
 
-    synout = _zilany2013.run_synapse(
+    synout = _zilany2014.run_synapse(
         vihc=vihc,
         fs=fs,
         cf=cf,

@@ -21,12 +21,12 @@ extensions = [
         ]
     ),
     Extension(
-        "cochlea.zilany2013._zilany2013",
+        "cochlea.zilany2014._zilany2014",
         [
-            "cochlea/zilany2013/_zilany2013.pyx",
-            "cochlea/zilany2013/model_IHC.c",
-            "cochlea/zilany2013/model_Synapse.c",
-            "cochlea/zilany2013/complex.c"
+            "cochlea/zilany2014/_zilany2014.pyx",
+            "cochlea/zilany2014/model_IHC.c",
+            "cochlea/zilany2014/model_Synapse.c",
+            "cochlea/zilany2014/complex.c"
         ]
     ),
 ]
@@ -34,7 +34,7 @@ extensions = [
 
 setup(
     name = "cochlea",
-    version = "0.8",
+    version = "0.10",
     packages = find_packages(),
     scripts = ["scripts/run_zilany2014"],
 
