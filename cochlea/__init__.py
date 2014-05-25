@@ -12,6 +12,9 @@ from cochlea.zilany2014 import run_zilany2014
 from cochlea.zilany2014 import run_zilany2014_rate
 
 
+run_zilany2013 = run_zilany2014
+
+
 from cochlea.holmberg2007 import real_freq_map as freq_map_holmberg2007
 from cochlea.holmberg2007 import get_nearest_cf as get_nearest_cf_holmberg2007
 
