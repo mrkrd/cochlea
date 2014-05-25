@@ -84,6 +84,53 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1):
         return y[0:nop]
 
 
+
+def calc_cfs(cf, species):
+
+    if np.isscalar(cf):
+        cfs = [float(cf)]
+
+    elif isinstance(cf, tuple) and ('cat' in species):
+        # Based on GenerateGreenwood_CFList() from DSAM
+        # Liberman (1982)
+        aA = 456
+        k = 0.8
+        a = 2.1
+
+        freq_min, freq_max, freq_num = cf
+
+        xmin = np.log10(freq_min / aA + k) / a
+        xmax = np.log10(freq_max / aA + k) / a
+
+        x_map = np.linspace(xmin, xmax, freq_num)
+        cfs = aA * ( 10**( a*x_map ) - k)
+
+    elif isinstance(cf, tuple) and ('human' in species):
+        # Based on GenerateGreenwood_CFList() from DSAM
+        # Liberman (1982)
+        aA = 165.4
+        k = 0.88
+        a = 2.1
+
+        freq_min, freq_max, freq_num = cf
+
+        xmin = np.log10(freq_min / aA + k) / a
+        xmax = np.log10(freq_max / aA + k) / a
+
+        x_map = np.linspace(xmin, xmax, freq_num)
+        cfs = aA * ( 10**( a*x_map ) - k)
+
+    elif isinstance(cf, list) or isinstance(cf, np.ndarray):
+        cfs = cf
+
+    else:
+        raise RuntimeError("CF must be a scalar, a tuple or a list.")
+
+    return cfs
+
+
+
+
 def main():
     y = ffGn(10, 1e-1, 0.2, 1, debug=True)
     print y

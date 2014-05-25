@@ -11,7 +11,7 @@ import pandas as pd
 import itertools
 
 from . import _zilany2014
-from cochlea.zilany2014 import _calc_cfs
+from . helper import calc_cfs
 
 def run_zilany2014_rate(
         sound,
@@ -32,7 +32,7 @@ def run_zilany2014_rate(
     if isinstance(anf_types, str):
         anf_types = [anf_types]
 
-    cfs = _calc_cfs(cf, species)
+    cfs = calc_cfs(cf, species)
 
     channel_args = [
         {

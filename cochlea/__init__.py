@@ -8,8 +8,8 @@ import numpy as np
 
 from cochlea.zilany2009 import run_zilany2009
 from cochlea.holmberg2007 import run_holmberg2007
-from cochlea.zilany2014 import run_zilany2014
-from cochlea.zilany2014.zilany2014_rate import run_zilany2014_rate
+from cochlea.zilany2014 import run_zilany2013, run_zilany2014
+from cochlea.zilany2014 import run_zilany2014_rate
 
 
 from cochlea.holmberg2007 import real_freq_map as freq_map_holmberg2007

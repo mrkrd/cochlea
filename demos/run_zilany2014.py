@@ -26,7 +26,7 @@ def main():
 
 
     ### Run model
-    anf = cochlea.run_zilany2014(
+    anf = cochlea.run_zilany2013(
         sound,
         fs,
         anf_num=(100,0,0),

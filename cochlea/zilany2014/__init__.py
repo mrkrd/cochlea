@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 
 from . import _zilany2014
+from . helper import calc_cfs
+from . zilany2014_rate import run_zilany2014_rate
 
 
 def run_zilany2014(
@@ -67,7 +69,7 @@ def run_zilany2014(
 
     np.random.seed(seed)
 
-    cfs = _calc_cfs(cf, species)
+    cfs = calc_cfs(cf, species)
 
     channel_args = [
         {
@@ -161,50 +163,3 @@ def _run_channel(args):
 
 
     return trains
-
-
-
-
-
-def _calc_cfs(cf, species):
-
-    if np.isscalar(cf):
-        cfs = [float(cf)]
-
-    elif isinstance(cf, tuple) and species == 'cat':
-        # Based on GenerateGreenwood_CFList() from DSAM
-        # Liberman (1982)
-        aA = 456
-        k = 0.8
-        a = 2.1
-
-        freq_min, freq_max, freq_num = cf
-
-        xmin = np.log10(freq_min / aA + k) / a
-        xmax = np.log10(freq_max / aA + k) / a
-
-        x_map = np.linspace(xmin, xmax, freq_num)
-        cfs = aA * ( 10**( a*x_map ) - k)
-
-    elif isinstance(cf, tuple) and ('human' in species):
-        # Based on GenerateGreenwood_CFList() from DSAM
-        # Liberman (1982)
-        aA = 165.4
-        k = 0.88
-        a = 2.1
-
-        freq_min, freq_max, freq_num = cf
-
-        xmin = np.log10(freq_min / aA + k) / a
-        xmax = np.log10(freq_max / aA + k) / a
-
-        x_map = np.linspace(xmin, xmax, freq_num)
-        cfs = aA * ( 10**( a*x_map ) - k)
-
-    elif isinstance(cf, list) or isinstance(cf, np.ndarray):
-        cfs = cf
-
-    else:
-        raise RuntimeError("CF must be a scalar, a tuple or a list.")
-
-    return cfs

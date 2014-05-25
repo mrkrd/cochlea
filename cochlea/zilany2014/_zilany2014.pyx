@@ -1,9 +1,8 @@
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function
 
 import numpy as np
 from libc.stdlib cimport malloc
-import _ffGn
+import helper
 import scipy.signal as dsp
 
 cimport numpy as np
@@ -315,9 +314,9 @@ cdef public double* decimate(
 
 
 cdef public double* ffGn(int N, double tdres, double Hinput, double noiseType, double mu):
-    """_ffGn.ffGn() wrapper"""
+    """helper.ffGn() wrapper"""
 
-    a = _ffGn.ffGn(N, tdres, Hinput, noiseType, mu)
+    a = helper.ffGn(N, tdres, Hinput, noiseType, mu)
 
     if not a.flags['C_CONTIGUOUS']:
         a = a.copy(order='C')
