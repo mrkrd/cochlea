@@ -8,7 +8,7 @@ import numpy as np
 
 from cochlea.zilany2009 import run_zilany2009
 from cochlea.holmberg2007 import run_holmberg2007
-from cochlea.zilany2014 import run_zilany2013, run_zilany2014
+from cochlea.zilany2014 import run_zilany2014
 from cochlea.zilany2014 import run_zilany2014_rate
 
 
