@@ -33,7 +33,7 @@ def main():
 
     human_ths = calc_human_hearing_thresholds(cfs)
 
-    human_ths.plot(logx=True, style='.', linewidth=5)
+    human_ths.plot(logx=True, style='--', linewidth=5)
     ths.plot(logx=True)
 
     plt.show()
