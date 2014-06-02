@@ -26,9 +26,9 @@ Scipy
 Cython
 Pandas
 
-matplotlib (optional, for demos)
+matplotlib (optional, for examples)
 docopt (optional, for the command line scripts)
-mrlib (optional, for demos and stats)
+mrlib (optional, for examples and stats)
 
 
 
@@ -68,7 +68,7 @@ cochlea/holmberg2007
 cochlea/zilany2009
 cochlea/zilany2014
 
-demos: small demos scripts, a good place to start
+examples: small demo scripts, a good place to start
 
 tests: unit tests (nose)
 
@@ -80,4 +80,4 @@ scripts: command line interface
 Usage
 =====
 
-Examples are in the `demos' directory.
+Examples are in the `examples' directory.
