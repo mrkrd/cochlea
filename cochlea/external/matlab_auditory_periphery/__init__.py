@@ -35,25 +35,28 @@ def run_matlab_auditory_periphery(
     ### Validate `cf`
     if isinstance(cf, tuple):
         assert len(cf) == 3
-    elif np.isscalar(cf):
-        cf = [float(cf)]
     elif len(cf) == 3:
         raise RuntimeError("Three frequency channels are forbidden, because they mask the tuple (min_cf, max_cf, cf_num).")
 
+
+    ### Generate pymatlab session as needed
     if matlab_session is None:
         matlab = pymatlab.session_factory('-nojvm')
     else:
         matlab = matlab_session
 
+
+    ### Set Matlab environment
     matlab.run("rng({})".format(seed))
 
     matlab.run("global dtSpikes ANoutput savedBFlist")
 
-    matlab.putvalue("inputSignal", sound)
-    matlab.putvalue("sampleRate", np.array([fs], dtype=float))
-    matlab.putvalue("BFlist", np.array(cf, dtype=float))
+    matlab.putvalue("inputSignal", np.array(sound, dtype=float, ndmin=2))
+    matlab.putvalue("sampleRate", np.array(fs, dtype=float, ndmin=2))
+    matlab.putvalue("BFlist", np.array(cf, dtype=float, ndmin=2))
 
 
+    ### Run the model
     cmd = "MAP1_14(inputSignal, sampleRate, BFlist, 'Normal', 'spikes', {{'AN_IHCsynapseParams.numFibers={anf_num};','AN_IHCsynapseParams.spikesTargetSampleRate={fs};'}})".format(
         anf_num=max(anf_num),
         fs=fs,
