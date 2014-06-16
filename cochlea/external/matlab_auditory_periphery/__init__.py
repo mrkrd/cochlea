@@ -41,7 +41,7 @@ def run_matlab_auditory_periphery(
 
     ### Generate pymatlab session as needed
     if matlab_session is None:
-        matlab = pymatlab.session_factory('-nojvm')
+        matlab = pymatlab.session_factory('-nojvm -singleCompThread')
     else:
         matlab = matlab_session
 
