@@ -8,7 +8,7 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import pandas as pd
 
-import pymatlab
+import matlab_wrapper
 
 import mrlib.thorns as th
 
@@ -24,7 +24,7 @@ def run_matlab_auditory_periphery(
     """Wrapper function for an auditory model implemented in Matlab
     Auditory Periphery (Meddis et al.).
 
-    Requires Matlab and pymatlab.
+    Requires Matlab and matlab_wrapper.
 
     """
 
@@ -39,21 +39,21 @@ def run_matlab_auditory_periphery(
         raise RuntimeError("Three frequency channels are forbidden, because they mask the tuple (min_cf, max_cf, cf_num).")
 
 
-    ### Generate pymatlab session as needed
+    ### Generate matlab_wrapper session as needed
     if matlab_session is None:
-        matlab = pymatlab.session_factory('-nojvm -singleCompThread')
+        matlab = matlab_wrapper.MatlabSession(options='-nosplash -singleCompThread')
     else:
         matlab = matlab_session
 
 
     ### Set Matlab environment
-    matlab.run("rng({})".format(seed))
+    matlab.eval("rng({})".format(seed))
 
-    matlab.run("global dtSpikes ANoutput savedBFlist")
+    matlab.eval("global dtSpikes ANoutput savedBFlist")
 
-    matlab.putvalue("inputSignal", np.array(sound, dtype=float, ndmin=2))
-    matlab.putvalue("sampleRate", np.array(fs, dtype=float, ndmin=2))
-    matlab.putvalue("BFlist", np.array(cf, dtype=float, ndmin=2))
+    matlab.put("inputSignal", np.array(sound, dtype=float, ndmin=2))
+    matlab.put("sampleRate", np.array(fs, dtype=float, ndmin=2))
+    matlab.put("BFlist", np.array(cf, dtype=float, ndmin=2))
 
 
     ### Run the model
@@ -62,16 +62,16 @@ def run_matlab_auditory_periphery(
         fs=fs,
     )
 
-    matlab.run(cmd)
+    matlab.eval(cmd)
 
 
     ### Collect results from Matlab
-    anf_raw = matlab.getvalue("ANoutput")
+    anf_raw = matlab.get("ANoutput")
 
-    cf_raw = matlab.getvalue("savedBFlist")
+    cf_raw = matlab.get("savedBFlist")
     cf_raw = np.atleast_1d(cf_raw)
 
-    dt_raw = matlab.getvalue("dtSpikes")
+    dt_raw = matlab.get("dtSpikes")
 
 
 

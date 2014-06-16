@@ -15,4 +15,4 @@ import warnings
 try:
     from . matlab_auditory_periphery import run_matlab_auditory_periphery
 except ImportError:
-    warnings.warn("run_matlab_auditory_periphery() not imported (check if you have pymatlab)")
+    warnings.warn("Error importing run_matlab_auditory_periphery().  Probably matlab_wrapper not installed.")
