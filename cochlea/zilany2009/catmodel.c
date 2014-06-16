@@ -1,3 +1,19 @@
+/* This is Version 3 of the public distribution of the code for the auditory
+   periphery model of:
+
+    Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (2009). "A Phenomenological
+        model of the synapse between the inner hair cell and auditory nerve : Long-term adaptation
+        with power-law dynamics," Journal of the Acoustical Society of America 126(5): 2390-2412.
+
+   Please cite this paper if you publish any research
+   results obtained with this code or any modified versions of this code.
+
+   See the file readme.txt for details of compiling and running the model.
+
+   %%% © Muhammad S.A. Zilany (msazilany@gmail.com), Ian C. Bruce, Paul C. Nelson, and laurel H. Carney October 2008 %%%
+
+*/
+
 #include "Python.h"
 #include "_pycat.h"
 
