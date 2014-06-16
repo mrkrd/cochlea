@@ -1,10 +1,13 @@
-Inner ear models in Python.
+cochela
+=======
+
+*Inner ear models in Python*
 
 
 
 
 Currently implemented models
-============================
+----------------------------
 
 Holmbert (2007)
 
@@ -13,12 +16,16 @@ Zilany et al. (2009)
 Zilany et al. (2013/2014)
 
 
+External
+--------
+
+MATLAB Auditory Periphery (Meddis et al.)
 
 
 
 
 Requirements
-============
+------------
 
 Python
 Numpy
@@ -34,39 +41,37 @@ mrlib (optional, for examples and stats)
 
 
 Installation
-============
+------------
 
-Developer
----------
+Developer::
 
-./build_inplace.sh
-python setup.py develop --user
-
-
-Administrator
--------------
-
-python setup.py install
+  ./build_inplace.sh
+  python setup.py develop --user
 
 
-User
-----
+Administrator::
 
-python setup.py install --user
+  python setup.py install
 
+
+User::
+
+  python setup.py install --user
 
 
 
 
 
 Directory structure
-===================
+-------------------
 
 cochlea: model implementation, e.g.,
 
 cochlea/holmberg2007
 cochlea/zilany2009
 cochlea/zilany2014
+
+external: external models
 
 examples: small demo scripts, a good place to start
 
@@ -78,6 +83,6 @@ scripts: command line interface
 
 
 Usage
-=====
+-----
 
-Examples are in the `examples' directory.
+Please check examples directory.
