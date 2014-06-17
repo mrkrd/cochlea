@@ -12,6 +12,7 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1):
     assert (tdres < 1)
     assert (Hinput >= 0) and (Hinput <= 2)
 
+    # TODO: test ffGn() against the original implementation ffGn.m
     assert noiseType == 0, "Not tested against ffGn.m"
 
 

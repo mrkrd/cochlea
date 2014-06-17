@@ -48,8 +48,9 @@ def set_dbspl(signal, dbspl):
 
 def set_dba_isolet(signal, dba):
     p0 = 20e-6
-    rms_dba = 0.02972401089     # value from miclib (precalculated for
-                                # all ISOLET files)
+
+    ### value from miclib (precalculated for all ISOLET files)
+    rms_dba = 0.02972401089
 
     scaled = signal * 10**(dba/20) * p0 / rms_dba
 
