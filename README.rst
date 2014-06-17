@@ -45,7 +45,7 @@ Installation
 
 Developer::
 
-  ./build_inplace.sh
+  make
   python setup.py develop --user
 
 
