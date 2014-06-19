@@ -41,37 +41,35 @@ def run_matlab_auditory_periphery(
 
     ### Generate matlab_wrapper session as needed
     if matlab_session is None:
-        matlab = matlab_wrapper.MatlabSession(options='-nosplash -singleCompThread')
+        matlab = matlab_wrapper.MatlabSession(options='-nosplash -singleCompThread', buffer_size=1000)
     else:
         matlab = matlab_session
 
 
     ### Set Matlab environment
-    matlab.eval("rng({})".format(seed))
+    matlab.workspace.rng(seed)
 
     matlab.eval("global dtSpikes ANoutput savedBFlist")
 
-    matlab.put("inputSignal", np.array(sound, dtype=float, ndmin=2))
-    matlab.put("sampleRate", np.array(fs, dtype=float, ndmin=2))
-    matlab.put("BFlist", np.array(cf, dtype=float, ndmin=2))
-
-
-    ### Run the model
-    cmd = "MAP1_14(inputSignal, sampleRate, BFlist, 'Normal', 'spikes', {{'AN_IHCsynapseParams.numFibers={anf_num};','AN_IHCsynapseParams.spikesTargetSampleRate={fs};'}})".format(
-        anf_num=max(anf_num),
-        fs=fs,
+    matlab.workspace.MAP1_14(
+        sound,
+        float(fs),
+        np.array(cf, dtype=float),
+        'Normal',
+        'spikes',
+        ['AN_IHCsynapseParams.numFibers={};'.format(max(anf_num)),
+         'AN_IHCsynapseParams.spikesTargetSampleRate={};'.format(fs)],
+        nout=0
     )
-
-    matlab.eval(cmd)
 
 
     ### Collect results from Matlab
-    anf_raw = matlab.get("ANoutput")
+    anf_raw = matlab.workspace.ANoutput
 
-    cf_raw = matlab.get("savedBFlist")
+    cf_raw = matlab.workspace.savedBFlist
     cf_raw = np.atleast_1d(cf_raw)
 
-    dt_raw = matlab.get("dtSpikes")
+    dt_raw = matlab.workspace.dtSpikes
 
 
 

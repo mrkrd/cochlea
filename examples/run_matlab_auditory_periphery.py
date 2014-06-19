@@ -18,11 +18,10 @@ def main():
     fs = 48e3
 
     ### Make sound
-    t = np.arange(0, 0.1, 1/fs)
-    s = dsp.chirp(t, 80, t[-1], 20000)
-    s = cochlea.set_dbspl(s, 50)
-    pad = np.zeros(10e-3 * fs)
-    sound = np.concatenate( (s, pad) )
+    tmax = 0.03
+    t = np.arange(0, tmax, 1/fs)
+    s = dsp.chirp(t, 80, t[-1], 16000)
+    sound = cochlea.set_dbspl(s, 50)
 
 
 
@@ -31,7 +30,7 @@ def main():
         sound,
         fs,
         anf_num=(100,50,20),
-        cf=(125, 20000, 100),
+        cf=(125, 16000, 80),
         seed=0,
     )
 
@@ -44,7 +43,7 @@ def main():
 
 
     ### Plot auditory nerve response
-    fig, ax = plt.subplots(2,1)
+    fig, ax = plt.subplots(2, 1, sharex=True)
     th.plot_signal(
         signal=sound,
         fs=fs,
