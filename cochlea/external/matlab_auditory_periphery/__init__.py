@@ -10,7 +10,7 @@ import pandas as pd
 
 import matlab_wrapper
 
-import mrlib.thorns as th
+import thorns as th
 
 
 def run_matlab_auditory_periphery(
