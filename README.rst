@@ -27,7 +27,7 @@ MATLAB Auditory Periphery (Meddis et al.)
 Requirements
 ------------
 
-Python
+Python (2.7)
 Numpy
 Scipy
 Cython
