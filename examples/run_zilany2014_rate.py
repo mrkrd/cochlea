@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+"""This example illustrates how to run Zilany et al. (2014) model with
+the rate (not spikes) as output.
+
+Note that this functionality is given for convenience and not very
+well supported.
+
+"""
+
 from __future__ import division
 
 __author__ = "Marek Rudnicki"
@@ -8,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import mrlib.thorns as th
+import thorns as th
 
 import cochlea
 

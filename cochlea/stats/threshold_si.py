@@ -13,9 +13,8 @@ import numpy as np
 import pandas as pd
 import logging
 
-import mrlib as mr
-import mrlib.thorns as th
-import mrlib.waves as wv
+import thorns as th
+import thorns.waves as wv
 
 from bisection import find_zero
 
@@ -123,7 +122,7 @@ def calc_hearing_thresholds_si(
         cfs = np.logspace(np.log10(100), np.log10(16000), 32)
 
 
-    spont_si = mr.apply(
+    spont_si = th.util.apply(
         calc_spont_threshold,
         model=model,
         model_pars=model_pars
@@ -140,7 +139,7 @@ def calc_hearing_thresholds_si(
     ]
 
 
-    thresholds = mr.map(
+    thresholds = th.util.map(
         calc_hearing_threshold_si,
         space,
         # backend='multiprocessing'

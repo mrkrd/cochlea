@@ -12,9 +12,8 @@ import numpy as np
 import pandas as pd
 import logging
 
-import mrlib as mr
-import mrlib.thorns as th
-import mrlib.waves as wv
+import thorns as th
+import thorns.waves as wv
 
 from . bisection import find_zero
 
@@ -39,7 +38,7 @@ def calc_thresholds_rate(
 
 
     ### Calculate spontaneous rate for reference
-    spont_rate = mr.apply(
+    spont_rate = th.util.apply(
         calc_spont_threshold,
         model=model,
         cf=cfs[0],
@@ -58,7 +57,7 @@ def calc_thresholds_rate(
     ]
 
 
-    thresholds = mr.map(
+    thresholds = th.util.map(
         calc_threshold,
         space,
         backend=map_backend,

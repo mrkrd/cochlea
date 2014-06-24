@@ -4,6 +4,9 @@
 """This demo calculates rate based hearing threshold of an innear ear
 model.
 
+On a fast computer it will take around 1 min to finish.  If you set
+shell variable THmap=m, then it will use multiple cores.
+
 """
 
 from __future__ import division, absolute_import, print_function

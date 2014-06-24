@@ -3,6 +3,9 @@
 
 """This demo calculates tuning of cochelar filters.
 
+On a fast computer it will take around 2 minutes to finish.  If you
+set shell variable THmap=m, then it will use multiple cores.
+
 """
 
 from __future__ import division, absolute_import, print_function

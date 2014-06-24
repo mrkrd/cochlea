@@ -3,9 +3,10 @@
 
 """Run Zilany et al. (2014) model and plot a PSTH.
 
-Tip: This script has no extra dependencies (e.g. thorns).  However,
-it's recommended to install thorns and use plot_psth() instead of
-using own or even this this PSTH implementation.
+Unlike other examples, this script does not need any extra (unusual)
+dependencies (e.g. thorns) for visualization.  It depends only on
+matplotlib.  If you want to run more advanced examples, you will need
+to install `thorns'.
 
 """
 

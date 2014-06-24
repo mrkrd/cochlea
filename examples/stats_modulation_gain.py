@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""This demo calculates modulation gaoin of an innear ear model.
+"""This demo calculates modulation gain of an innear ear model.
 
 """
 

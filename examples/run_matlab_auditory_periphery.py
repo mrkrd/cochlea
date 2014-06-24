@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import mrlib.thorns as th
+import thorns as th
 
 import cochlea
 from cochlea.external import run_matlab_auditory_periphery

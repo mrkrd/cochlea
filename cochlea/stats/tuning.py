@@ -11,7 +11,7 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import pandas as pd
 
-import mrlib as mr
+import thorns as th
 
 from . threshold_rate import calc_spont_threshold, calc_threshold
 
@@ -31,7 +31,7 @@ def calc_tuning(
         freqs = np.logspace(np.log10(cf/2), np.log10(cf*2), 32)
 
 
-    spont_rate = mr.apply(
+    spont_rate = th.util.apply(
         calc_spont_threshold,
         model=model,
         cf=cf,
@@ -51,7 +51,7 @@ def calc_tuning(
     ]
 
 
-    thresholds = mr.map(
+    thresholds = th.util.map(
         calc_threshold,
         space,
         backend=map_backend,

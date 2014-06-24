@@ -11,9 +11,8 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import pandas as pd
 
-import mrlib as mr
-import mrlib.thorns as th
-import mrlib.waves as wv
+import thorns as th
+import thorns.waves as wv
 
 from . threshold_rate import calc_thresholds_rate
 
@@ -71,7 +70,7 @@ def calc_modulation_gain(
         for fm in fms
     ]
 
-    gains = mr.map(
+    gains = th.util.map(
         _run_model,
         space,
         backend=map_backend

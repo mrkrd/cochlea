@@ -12,9 +12,8 @@ __author__ = "Marek Rudnicki"
 import numpy as np
 import pandas as pd
 
-import mrlib as mr
-import mrlib.thorns as th
-import mrlib.waves as wv
+import thorns as th
+import thorns.waves as wv
 
 
 def calc_synchronization(
@@ -50,7 +49,7 @@ def calc_synchronization(
     ]
 
 
-    sis = mr.map(
+    sis = th.util.map(
         _run_model,
         space,
         backend=map_backend,

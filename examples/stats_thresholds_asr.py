@@ -5,6 +5,9 @@
 model with automatic speach prefiltering in order to adjust thresholds
 to human hearing thresholds.
 
+On a fast computer it will take around 1 min to finish.  If you set
+shell variable THmap=m, then it will use multiple cores.
+
 """
 
 from __future__ import division, absolute_import, print_function

@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as dsp
 
-import mrlib.thorns as th
+import thorns as th
 
 import cochlea
 
@@ -40,13 +40,22 @@ def main():
     anf_acc = th.accumulate(anf, keep=['cf', 'duration'])
     anf_acc.sort('cf', ascending=False, inplace=True)
 
+    cfs = anf.cf.unique()
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(2,1, sharex=True)
     th.plot_neurogram(
         anf_acc,
         fs,
-        ax=ax
+        ax=ax[0]
     )
+
+    th.plot_raster(
+        anf[anf.cf==cfs[30]],
+        ax=ax[1]
+    )
+
+    ax[1].set_title("CF = {}".format(cfs[30]))
+
     plt.show()
 
 
