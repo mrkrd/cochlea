@@ -6,10 +6,7 @@ from __future__ import print_function
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-from numpy.testing import (
-    assert_array_almost_equal,
-    assert_array_equal,
-)
+from numpy.testing import assert_almost_equal, assert_equal
 
 import cochlea.holmberg2007.traveling_waves as tw
 
@@ -30,7 +27,7 @@ def test_bm_wave():
         fs
     )
 
-    assert_array_equal(
+    assert_equal(
         xbm[cf],
         xbm_target
     )
@@ -53,7 +50,7 @@ def test_lcr4():
         cf=cf
     )
 
-    assert_array_equal(
+    assert_equal(
         lcr4,
         lcr4_target
     )
@@ -75,7 +72,7 @@ def test_ihcrp():
         cf=cf
     )
 
-    assert_array_almost_equal(
+    assert_almost_equal(
         ihcrp,
         ihcrp_target,
         decimal=16
@@ -114,7 +111,7 @@ def test_ihc_meddis2000():
         max_free_pool=8,
     )
 
-    assert_array_almost_equal(
+    assert_almost_equal(
         psp,
         psp_target,
         decimal=16

@@ -8,10 +8,8 @@ __author__ = "Marek Rudnicki"
 from unittest import skip
 
 import numpy as np
-from numpy.testing import (
-    assert_array_almost_equal,
-    assert_array_equal,
-)
+from numpy.testing import assert_almost_equal, assert_equal
+
 import scipy.io
 
 import cochlea.zilany2009._pycat as _pycat
@@ -40,7 +38,7 @@ def test_ihc():
         cihc=1.
     )
 
-    assert_array_almost_equal(
+    assert_almost_equal(
         vihc,
         vihc_target,
         decimal=15
@@ -83,7 +81,7 @@ def test_synapse():
         ffGn=False
     )
 
-    assert_array_almost_equal(
+    assert_almost_equal(
         synout,
         synout_target,
         decimal=9

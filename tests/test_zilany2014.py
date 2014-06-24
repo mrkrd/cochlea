@@ -6,10 +6,7 @@ from __future__ import print_function
 __author__ = "Marek Rudnicki"
 
 import numpy as np
-from numpy.testing import (
-    assert_array_almost_equal,
-    assert_array_equal,
-)
+from numpy.testing import assert_almost_equal, assert_equal
 import scipy.io
 
 import cochlea.zilany2014._zilany2014 as _zilany2014
@@ -35,7 +32,7 @@ def test_ihc():
         cihc=1.
     )
 
-    assert_array_almost_equal(
+    assert_almost_equal(
         vihc,
         vihc_target,
         decimal=15
@@ -81,7 +78,7 @@ def test_synapse():
     )
     meanrate = synout / (1 + 0.75e-3*synout)
 
-    assert_array_almost_equal(
+    assert_almost_equal(
         meanrate,
         meanrate_target,
         decimal=10
