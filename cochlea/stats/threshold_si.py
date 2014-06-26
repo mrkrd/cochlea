@@ -16,8 +16,6 @@ import logging
 import thorns as th
 import thorns.waves as wv
 
-from bisection import find_zero
-
 
 
 def calc_spont_threshold(model, model_pars=None):
@@ -97,7 +95,7 @@ def calc_hearing_threshold_si(model, cf, spont_si, model_pars=None):
         'cf': cf,
         'spont_si': spont_si
     }
-    dbspl_opt = find_zero(
+    dbspl_opt = th.util.find_zero(
         error_func,
         kwargs=kwargs,
         x1=-100,

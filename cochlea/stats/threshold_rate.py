@@ -15,8 +15,6 @@ import logging
 import thorns as th
 import thorns.waves as wv
 
-from . bisection import find_zero
-
 from cochlea.asr import adjust_to_human_thresholds
 
 
@@ -117,7 +115,7 @@ def calc_threshold(
         'freq': freq,
     }
 
-    dbspl_opt = find_zero(
+    dbspl_opt = th.util.find_zero(
         error_func,
         kwargs=kwargs,
         x1=-100,
