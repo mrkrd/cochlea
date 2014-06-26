@@ -1,24 +1,31 @@
 #!/usr/bin/env python
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
-
-from unittest import skip
 
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 
+import os
+from os.path import join
+
 import scipy.io
 
-import cochlea.zilany2009._pycat as _pycat
+import cochlea.zilany2009._pycat as pycat
+
+
+DATADIR = os.path.join(
+    os.path.dirname(__file__),
+    'data'
+)
+
 
 
 def test_ihc():
 
     m = scipy.io.loadmat(
-        'data/zilany2009.mat',
+        join(DATADIR, 'zilany2009.mat'),
         squeeze_me=True
     )
     fs = float(m['Fs'])
@@ -26,11 +33,11 @@ def test_ihc():
     sound = m['sound'].astype(float)
     vihc_target = m['vihc']
 
-    meout = _pycat.run_middle_ear_filter(
+    meout = pycat.run_middle_ear_filter(
         signal=sound,
         fs=fs
     )
-    vihc = _pycat.run_ihc(
+    vihc = pycat.run_ihc(
         signal=meout,
         cf=cf,
         fs=fs,
@@ -64,7 +71,7 @@ def test_synapse():
 
     """
     m = scipy.io.loadmat(
-        'data/zilany2009.mat',
+        join(DATADIR, 'zilany2009.mat'),
         squeeze_me=True
     )
     fs = float(m['Fs'])
@@ -72,7 +79,7 @@ def test_synapse():
     vihc = m['vihc']
     synout_target = m['synout']
 
-    synout = _pycat.run_synapse(
+    synout = pycat.run_synapse(
         fs=fs,
         vihc=vihc,
         cf=cf,

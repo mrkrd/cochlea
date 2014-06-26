@@ -9,13 +9,20 @@ import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 import scipy.io
 
-import cochlea.zilany2014._zilany2014 as _zilany2014
+import os
+from os.path import join
 
+import cochlea.zilany2014._zilany2014 as zilany2014
+
+DATADIR = os.path.join(
+    os.path.dirname(__file__),
+    'data_zilany2014'
+)
 
 def test_ihc():
 
     m = scipy.io.loadmat(
-        'data_zilany2014/data_zilany2014.mat',
+        join(DATADIR, 'data_zilany2014.mat'),
         squeeze_me=True
     )
     fs = float(m['fs'])
@@ -23,7 +30,7 @@ def test_ihc():
     sound = m['sound'].astype(float)
     vihc_target = m['vihc']
 
-    vihc = _zilany2014.run_ihc(
+    vihc = zilany2014.run_ihc(
         signal=sound,
         cf=cf,
         fs=fs,
@@ -60,7 +67,7 @@ def test_synapse():
 
     """
     m = scipy.io.loadmat(
-        'data_zilany2014/data_zilany2014.mat',
+        join(DATADIR, 'data_zilany2014.mat'),
         squeeze_me=True
     )
     fs = float(m['fs'])
@@ -68,7 +75,7 @@ def test_synapse():
     vihc = m['vihc']
     meanrate_target = m['meanrate']
 
-    synout = _zilany2014.run_synapse(
+    synout = zilany2014.run_synapse(
         vihc=vihc,
         fs=fs,
         cf=cf,

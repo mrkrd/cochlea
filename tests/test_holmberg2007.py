@@ -1,20 +1,27 @@
 #!/usr/bin/env python
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 
+import os
+from os.path import join
+
 import cochlea.holmberg2007.traveling_waves as tw
 
+
+DATADIR = os.path.join(
+    os.path.dirname(__file__),
+    'data'
+)
 
 
 def test_bm_wave():
 
-    data = np.load('data/holmberg2007.npz')
+    data = np.load(join(DATADIR, 'holmberg2007.npz'))
 
     fs = data['fs']
     sound_scaled = data['sound_scaled']
@@ -38,7 +45,7 @@ def test_bm_wave():
 
 def test_lcr4():
 
-    data = np.load('data/holmberg2007.npz')
+    data = np.load(join(DATADIR,'holmberg2007.npz'))
     xbm = data['xbm']
     lcr4_target = data['lcr4']
     channel = int(data['channel'])
@@ -59,7 +66,7 @@ def test_lcr4():
 
 def test_ihcrp():
 
-    data = np.load('data/holmberg2007.npz')
+    data = np.load(join(DATADIR,'holmberg2007.npz'))
     fs = data['fs']
     lcr4 = data['lcr4']
     ihcrp_target = data['ihcrp']
@@ -86,7 +93,7 @@ def test_ihc_meddis2000():
     Testing against the DSAM implementation
 
     """
-    data = np.load('data/holmberg2007.npz')
+    data = np.load(join(DATADIR, 'holmberg2007.npz'))
 
     fs = data['fs']
     ihcrp = data['ihcrp']
