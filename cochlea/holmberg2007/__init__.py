@@ -1,5 +1,4 @@
-"""
-Copyright 2009-2014 Marek Rudnicki
+"""Copyright 2009-2014 Marek Rudnicki
 
 This file is part of cochlea.
 
