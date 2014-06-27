@@ -1,25 +1,36 @@
 #!/usr/bin/env python
 
-"""Holmberg, M. (2007). Speech Encoding in the Human Auditory
-Periphery: Modeling and Quantitative Assessment by Means of Automatic
-Speech Recognition. PhD thesis, Technical University Darmstadt.
+"""
+Copyright 2009-2014 Marek Rudnicki
+
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
+
 import numpy as np
-import os
 import pandas as pd
 import itertools
-import warnings
 
-import traveling_waves as tw
-from traveling_waves import real_freq_map, get_nearest_cf
+from . import traveling_waves as tw
+from . traveling_waves import real_freq_map, get_nearest_cf
 
 
 def run_holmberg2007(
@@ -29,9 +40,11 @@ def run_holmberg2007(
         seed,
         cf=None,
 ):
-    """Run the inner ear model by Marcus Holmberg (2007).  It simulates
-the traveling wave on the basilar membrane, inner hair cell, synapses
-and generates auditory nerve spikes.
+    """Run the inner ear model by [Holmberg2007]_.  It simulates the
+    traveling wave on the basilar membrane, inner hair cell, synapses
+    and generates auditory nerve spikes.  The model takes sound signal
+    as input and outputs auditory nerve spike trains.
+
 
     Parameters
     ----------
@@ -51,7 +64,18 @@ and generates auditory nerve spikes.
     Returns
     -------
     spike_trains
-        Auditory nerve fiber spike trains.
+        Auditory nerve spike trains.
+
+
+    References
+    ----------
+    If you are using results of this or modified version of the model
+    in your research, please cite [Holmberg2007]_.
+
+    .. [Holmberg2007] Holmberg, M. (2007). Speech Encoding in the
+    Human Auditory Periphery: Modeling and Quantitative Assessment by
+    Means of Automatic Speech Recognition. PhD thesis, Technical
+    University Darmstadt.
 
     """
 
