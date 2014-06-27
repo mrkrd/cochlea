@@ -1,4 +1,27 @@
-from __future__ import division
+"""
+Copyright 2009-2014 Marek Rudnicki
+
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+
+from __future__ import division, print_function, absolute_import
+
+__author__ = "Marek Rudnicki"
+
 
 import numpy as np
 import scipy.signal as dsp
@@ -14,7 +37,7 @@ from cochlea.holmberg2007.bm_pars import (
     outer_ear_b_100kHz,
     delay_time,
 )
-from _traveling_waves import (
+from . _traveling_waves import (
     run_bm_wave,
     run_lcr4,
     run_ihcrp,
@@ -29,7 +52,7 @@ scaling_factor = S_ST * S_ED
 
 
 def run_middle_ear_filter_orig(signal, fs):
-    """ Middle ear filter designed using digital wave techinique. """
+    """Middle ear filter designed using digital wave techinique."""
     assert fs == 48000
 
     R2_ME = 1. / (2. * fs * C_eardrum)
@@ -64,7 +87,8 @@ def _calc_middle_ear_coefs(fs):
 
 
 def run_middle_ear_filter(signal, fs):
-    """ Middle ear filter model. """
+    """Run middle ear filter model."""
+
     b,a = _calc_middle_ear_coefs(fs)
 
     return dsp.lfilter(b, a, signal)
@@ -84,6 +108,8 @@ def _calc_outer_ear_coefs(fs):
 
 
 def run_outer_ear_filter(signal, fs):
+    """Run outer ear filter."""
+
     b, a = _calc_outer_ear_coefs(fs)
 
     return dsp.lfilter(b, a, signal)
@@ -91,6 +117,8 @@ def run_outer_ear_filter(signal, fs):
 
 
 def get_nearest_cf(cf):
+    """Return nearest valid frequency relative to `cf`."""
+
     idx = np.argmin(np.abs(real_freq_map - cf))
     nearest_cf = real_freq_map[idx]
 
