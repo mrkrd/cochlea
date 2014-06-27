@@ -9,17 +9,15 @@ cochela
 Currently implemented models
 ----------------------------
 
-Holmbert (2007)
-
-Zilany et al. (2009)
-
-Zilany et al. (2013/2014)
+- Holmbert (2007)
+- Zilany et al. (2009)
+- Zilany et al. (2013/2014)
 
 
 External
 --------
 
-MATLAB Auditory Periphery (Meddis et al.)
+- MATLAB Auditory Periphery (Meddis et al.)
 
 
 
@@ -27,15 +25,15 @@ MATLAB Auditory Periphery (Meddis et al.)
 Requirements
 ------------
 
-Python (2.7)
-Numpy
-Scipy
-Cython
-Pandas
+- Python (2.7)
+- Numpy
+- Scipy
+- Cython
+- Pandas
 
-matplotlib (optional, for examples)
-docopt (optional, for the command line scripts)
-mrlib (optional, for examples and stats)
+- matplotlib (optional, for examples)
+- docopt (optional, for the command line scripts)
+- thorns (optional, for examples and stats)
 
 
 
@@ -86,3 +84,19 @@ Usage
 -----
 
 Please check examples directory.
+
+
+
+
+Other implementations
+---------------------
+
+- `Carney Lab`_
+- `Matlab Auditory Periphery`_
+- DSAM_
+- `Brian Hears`_
+
+.. _`Carney Lab`: http://www.urmc.rochester.edu/labs/Carney-Lab/publications/auditory-models.cfm
+.. _DSAM: http://dsam.org.uk/
+.. _`Matlab Auditory Periphery`: http://www.essexpsychology.macmate.me/HearingLab/modelling.html
+.. _`Brian Hears`: http://www.briansimulator.org/docs/hears.html
