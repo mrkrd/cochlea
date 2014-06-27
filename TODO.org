@@ -11,3 +11,7 @@
 * Sphinx documentation
 
 * IPython notebook example
+
+* Update setup.py
+
+Programming Language :: Cython
