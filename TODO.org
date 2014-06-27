@@ -1,0 +1,13 @@
+#+TITLE: TODO list for cochlea
+#+AUTHOR: Marek Rudnicki
+
+
+* GPL notes
+
+* Functions docstrings
+
+* Compile wheels for Windows
+
+* Sphinx documentation
+
+* IPython notebook example
