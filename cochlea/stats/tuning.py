@@ -1,9 +1,27 @@
-#!/usr/bin/env python
+"""
+Copyright 2009-2014 Marek Rudnicki
 
-"""Cochlear filter tuning.
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Description
+-----------
+Cochlear filter tuning.
 
 """
-
 from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
@@ -23,9 +41,7 @@ def calc_tuning(
         model_pars=None,
         map_backend='serial',
 ):
-    """Calculate runing of the cochlea at `cf`.
-
-    """
+    """Calculate runing of the cochlea at `cf`."""
 
     if freqs is None:
         freqs = np.logspace(np.log10(cf/2), np.log10(cf*2), 32)

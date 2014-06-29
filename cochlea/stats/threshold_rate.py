@@ -1,12 +1,31 @@
-#!/usr/bin/env python
+"""
+Copyright 2009-2014 Marek Rudnicki
 
-"""Rate based threshold for inner ear models.
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Description
+-----------
+Rate based threshold for inner ear models.
 
 """
-
 from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
+
 
 import numpy as np
 import pandas as pd
@@ -25,9 +44,8 @@ def calc_thresholds_rate(
         asr_filter=False,
         map_backend='serial'
 ):
-    """Calculate rate based hearing threshold of an inner ear model.
+    """Calculate rate based hearing threshold of an inner ear model."""
 
-    """
     if cfs is None:
         cfs = np.logspace(np.log10(125), np.log10(16000), 32)
 
@@ -86,7 +104,7 @@ def calc_spont_threshold(model, cf, model_pars):
         **pars
     )
 
-    rates = anf.apply(th.rate, axis=1)
+    rates = anf.apply(th.firing_rate, axis=1)
 
     threshold = rates.mean() + rates.std()
 
@@ -169,7 +187,7 @@ def error_func(
     )
 
     trains = th.trim(anf, onset, None)
-    rate = th.rate(trains)
+    rate = th.firing_rate(trains)
 
     error = rate - spont_rate
 

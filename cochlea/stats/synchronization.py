@@ -1,13 +1,31 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""
+Copyright 2009-2014 Marek Rudnicki
 
-"""Synchronization of inner ear models.
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Description
+-----------
+Synchronization of inner ear models.
 
 """
-
 from __future__ import division, absolute_import, print_function
 
 __author__ = "Marek Rudnicki"
+
 
 import numpy as np
 import pandas as pd
@@ -23,8 +41,7 @@ def calc_synchronization(
         model_pars=None,
         map_backend='serial'
 ):
-    """Calculate synchronization index (vector strength) of an inner ear
-    model.
+    """Calculate vector strength of an inner ear model.
 
     """
     if model_pars is None:
@@ -94,15 +111,15 @@ def _run_model(model, dbspl, cf, model_pars):
 
     hsr = anf[anf['type']=='hsr']
     hsr = th.trim(hsr, onset, None)
-    si_hsr = th.si(hsr, cf)
+    si_hsr = th.vector_strength(hsr, cf)
 
     msr = anf[anf['type']=='msr']
     msr = th.trim(msr, onset, None)
-    si_msr = th.si(msr, cf)
+    si_msr = th.vector_strength(msr, cf)
 
     lsr = anf[anf['type']=='lsr']
     lsr = th.trim(lsr, onset, None)
-    si_lsr = th.si(lsr, cf)
+    si_lsr = th.vector_strength(lsr, cf)
 
     # print(si_hsr)
     # th.plot_raster(anf)

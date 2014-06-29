@@ -1,6 +1,25 @@
-#!/usr/bin/env python
+"""
+Copyright 2009-2014 Marek Rudnicki
 
-"""Rate-intensity charactersitics for inner ear models.
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Description
+-----------
+Rate-intensity charactersitics for inner ear models.
 
 """
 
@@ -77,15 +96,15 @@ def _run_model(model, dbspl, cf, model_pars):
 
     hsr = anf[anf['type']=='hsr']
     hsr = th.trim(hsr, onset, None)
-    rate_hsr = th.rate(hsr)
+    rate_hsr = th.firing_rate(hsr)
 
     msr = anf[anf['type']=='msr']
     msr = th.trim(msr, onset, None)
-    rate_msr = th.rate(msr)
+    rate_msr = th.firing_rate(msr)
 
     lsr = anf[anf['type']=='lsr']
     lsr = th.trim(lsr, onset, None)
-    rate_lsr = th.rate(lsr)
+    rate_lsr = th.firing_rate(lsr)
 
     rates = {
         'dbspl': dbspl,
