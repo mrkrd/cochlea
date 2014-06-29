@@ -47,7 +47,7 @@ setup(
     author = "Marek Rudnicki",
     author_email = "marek.rudnicki@tum.de",
 
-    description = "Inner ear models",
+    description = "Inner ear models in Python",
     license = "GPLv3+",
     url = "https://github.com/mrkrd/cochlea",
     download_url = "https://github.com/mrkrd/cochlea/tarball/master",
