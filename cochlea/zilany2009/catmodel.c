@@ -23,6 +23,13 @@ along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Notes
+=====
+
+The modification include replacing of the MEX specific code by Python
+specific code.
+
+
 
 The Oryginal Note
 =================

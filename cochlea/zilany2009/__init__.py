@@ -46,6 +46,7 @@ def run_zilany2009(
     files.  We also compared the outputs of both implementation (see
     the `tests` directory for unit tests).
 
+
     Parameters
     ----------
     sound : array_like
@@ -90,7 +91,7 @@ def run_zilany2009(
     References
     ----------
     If you are using results of this or modified version of the model
-    in your research, please cite [Holmberg2007]_.
+    in your research, please cite [Zilany2009]_.
 
 
     .. [Zilany2009] Zilany, M. S., Bruce, I. C., Nelson, P. C., &

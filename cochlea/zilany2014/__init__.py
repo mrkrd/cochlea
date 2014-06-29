@@ -1,10 +1,27 @@
-#!/usr/bin/env python
+"""Copyright 2013-2014 Marek Rudnicki
+
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
 
 from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
-import warnings
+
 import itertools
 import numpy as np
 import pandas as pd
@@ -25,7 +42,13 @@ def run_zilany2014(
         cihc=1,
         powerlaw='approximate',
 ):
-    """Run Zilany et al. (2014) JASA inner ear model.
+    """Run the inner ear model by [Zilany2014]_.
+
+    This model is based on the original implementation provided by the
+    authors.  The MEX specific code was replaced by Python code in C
+    files.  We also compared the outputs of both implementation (see
+    the `tests` directory for unit tests).
+
 
     Parameters
     ----------
@@ -56,10 +79,29 @@ def run_zilany2014(
     powerlaw : {'approximate', 'actual'}, optional
         Defines which power law implementation should be used.
 
+
     Returns
     -------
     spike_trains
         Auditory nerve spike trains.
+
+
+    Note
+    ----
+    The fractorial Gausian noise from the oryginal implementation is
+    disabled at the moment.
+
+
+    References
+    ----------
+    If you are using results of this or modified version of the model
+    in your research, please cite [Zilany2014]_.
+
+
+    .. [Zilany2014] Zilany, M. S., Bruce, I. C., & Carney,
+    L. H. (2014). Updated parameters and expanded simulation options
+    for a model of the auditory periphery. The Journal of the
+    Acoustical Society of America, 135(1), 283-286.
 
     """
     assert np.max(sound) < 1000, "Signal should be given in Pa"

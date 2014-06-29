@@ -1,4 +1,40 @@
-/* This is Version 5.2 of the code for auditory periphery model of:
+/*
+Copyright 2013 Muhammad S.A. Zilany
+Copyright 2013 Ian C. Bruce
+Copyright 2013 Rasha A. Ibrahim
+Copyright 2013 Paul C. Nelson
+Copyright 2013 Laurel H. Carney
+Copyright 2014 Marek Rudnicki
+
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+Notes
+=====
+
+The modification include replacing of the MEX specific code by Python
+specific code.
+
+
+
+The Oryginal Note
+=================
+
+   This is Version 5.2 of the code for auditory periphery model of:
 
     Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (2009). "A Phenomenological
         model of the synapse between the inner hair cell and auditory nerve : Long-term adaptation
