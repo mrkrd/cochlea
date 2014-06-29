@@ -5,6 +5,14 @@ from Cython.Build import cythonize
 
 import numpy
 
+
+
+with open('README.rst') as file:
+    long_description = file.read()
+
+
+
+
 extensions = [
     Extension(
         "cochlea.zilany2009._pycat",
@@ -32,21 +40,40 @@ extensions = [
 ]
 
 
+
 setup(
     name = "cochlea",
     version = "0.10",
+    author = "Marek Rudnicki",
+    author_email = "marek.rudnicki@tum.de",
+
+    description = "Inner ear models",
+    license = "GPLv3+",
+    url = "https://github.com/mrkrd/cochlea",
+    download_url = "https://github.com/mrkrd/cochlea/tarball/master",
+
     packages = find_packages(),
     scripts = ["scripts/run_zilany2014"],
-
     package_data = {
         "cochlea": ["*.csv"]
     },
-
-    author = "Marek Rudnicki",
-    author_email = "marek.rudnicki@tum.de",
-    description = "Inner ear models",
-    license = "GPLv3+",
-
     include_dirs = [numpy.get_include()],
     ext_modules = cythonize(extensions),
+    long_description = long_description,
+    classifiers = [
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Operating System :: POSIX",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Cython",
+        "Programming Language :: C",
+    ],
+
+    platforms = ["Linux", "Windows", "FreeBSD"],
+    install_requires=["numpy", "pandas", "scipy"],
 )

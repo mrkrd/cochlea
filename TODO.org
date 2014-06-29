@@ -2,20 +2,14 @@
 #+AUTHOR: Marek Rudnicki
 
 
-* GPL notes
-
-* Functions docstrings
-
 * Compile wheels for Windows
 
 * Sphinx documentation
 
 * IPython notebook example
 
-* Update setup.py
-
-Programming Language :: Cython
-
 * Test and activate ffGn
 
-* Generate test data for Zilany2009 model
+- Remove the notes in docstrings
+
+* Generate new test data for Zilany2009 model
