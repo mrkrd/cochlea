@@ -45,7 +45,7 @@ setup(
     author = "Marek Rudnicki",
     author_email = "marek.rudnicki@tum.de",
     description = "Inner ear models",
-    license = "GPL",
+    license = "GPLv3+",
 
     include_dirs = [numpy.get_include()],
     ext_modules = cythonize(extensions),

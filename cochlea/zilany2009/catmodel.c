@@ -1,4 +1,33 @@
-/* This is Version 3 of the public distribution of the code for the auditory
+/*
+Copyright 2008 Muhammad S.A. Zilany
+Copyright 2008 Ian C. Bruce
+Copyright 2008 Paul C. Nelson
+Copyright 2008 Laurel H. Carney
+Copyright 2009-2014 Marek Rudnicki
+
+This file is part of cochlea.
+
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+
+The Oryginal Note
+=================
+
+   This is Version 3 of the public distribution of the code for the auditory
    periphery model of:
 
     Zilany, M.S.A., Bruce, I.C., Nelson, P.C., and Carney, L.H. (2009). "A Phenomenological

@@ -54,8 +54,7 @@ def run_zilany2014(
     cihc : float <0-1>, optional
         Degredation of the inner hair cells.
     powerlaw : {'approximate', 'actual'}, optional
-        Defines which power law implementation should be used.  Can be
-        either 'approximate' or 'actual'.
+        Defines which power law implementation should be used.
 
     Returns
     -------

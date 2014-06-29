@@ -1,17 +1,32 @@
-#!/usr/bin/env python
+"""Copyright 2009-2014 Marek Rudnicki
 
-from __future__ import division
-from __future__ import print_function
+This file is part of cochlea.
 
+cochlea is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+cochlea is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
-import warnings
+
 import itertools
 import numpy as np
 import pandas as pd
 
-import _pycat
+from . import _pycat
 
 
 def run_zilany2009(
@@ -24,15 +39,67 @@ def run_zilany2009(
         cihc=1,
         powerlaw='approximate',
 ):
-    """Zilany, M. S. A., Bruce, I. C., Nelson, P. C., and Carney,
-    L. H. (2009). A phenomenological model of the synapse between the
-    inner hair cell and auditory nerve: long-term adaptation with
-    power-law dynamics. The Journal of the Acoustical Society of America,
-    126(5):2390-2412.
+    """Run the inner ear model by [Zilany2009]_.
+
+    This model is based on the original implementation provided by the
+    authors.  The MEX specific code was replaced by Python code in C
+    files.  We also compared the outputs of both implementation (see
+    the `tests` directory for unit tests).
+
+    Parameters
+    ----------
+    sound : array_like
+        Input sound signal.
+    fs : float
+        Sampling frequency of the signal.
+    anf_num : tuple
+        The desired number of auditory nerve fibers per frequency
+        channel (CF), (HSR#, MSR#, LSR#).  For example, (100, 75, 25)
+        means that we want 100 HSR fibers, 75 MSR fibers and 25 LSR
+        fibers per CF.
+    cf : float or array_like or tuple
+        The center frequency(s) of the simulated auditory nerve fibers.
+        If float, then defines a single frequency channel.  If
+        array_like (e.g. list or ndarray), then the frequencies are
+        used.  If tuple, then must have exactly 3 elements (min_cf,
+        max_cf, num_cf) and the frequencies are calculated using the
+        Greenwood function.
+    seed : int
+        Random seed.
+    cohc : flaot, optional
+        Outer hair cell impairment parameter, must be between <0; 1>.
+    cihc : flaot, optional
+        Inner hair cell impairment parameter, must be between <0; 1>.
+    powerlaw: {'approximate', 'actual'}, optional
+        Type of the power-law implementation.
+
+
+    Returns
+    -------
+    spike_trains
+        Auditory nerve spike trains.
+
+
+    Note
+    ----
+    The fractorial Gausian noise from the oryginal implementation is
+    disabled at the moment.
+
+
+
+    References
+    ----------
+    If you are using results of this or modified version of the model
+    in your research, please cite [Holmberg2007]_.
+
+
+    .. [Zilany2009] Zilany, M. S., Bruce, I. C., Nelson, P. C., &
+    Carney, L. H. (2009). A phenomenological model of the synapse
+    between the inner hair cell and auditory nerve: long-term
+    adaptation with power-law dynamics. The Journal of the Acoustical
+    Society of America, 126(5), 2390-2412.
 
     """
-
-
     assert np.max(sound) < 1000, "Signal should be given in Pa"
     assert sound.ndim == 1
 

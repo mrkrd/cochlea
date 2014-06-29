@@ -15,3 +15,7 @@
 * Update setup.py
 
 Programming Language :: Cython
+
+* Test and activate ffGn
+
+* Generate test data for Zilany2009 model
