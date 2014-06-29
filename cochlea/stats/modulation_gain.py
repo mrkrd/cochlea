@@ -113,7 +113,7 @@ def _run_model(model, fm, cf, dbspl, model_pars, m):
     model_pars.setdefault('seed', 0)
 
 
-    sound = wv.am_tone(
+    sound = wv.amplitude_modulated_tone(
         fs=fs,
         fm=fm,
         fc=cf,
@@ -128,7 +128,7 @@ def _run_model(model, fm, cf, dbspl, model_pars, m):
         **model_pars
     )
 
-    si = th.synchronization_index(anf, fm)
+    si = th.vector_strength(anf, fm)
     gain = 20 * np.log10(2*si / m)
 
     return gain
