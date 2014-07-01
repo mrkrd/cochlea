@@ -157,10 +157,14 @@ low-spontaneous rate fibers.
 Advantages of the format:
 
 - easy addition of new meta data,
-- efficient grouping and filtering of trains using DataFrame
+- efficient grouping and filtering of trains using _DataFrame
   functionality,
-- export to MATLAB struct array through mat files:
-  ``scipy.io.savemat("spikes.mat", spike_trains.to_records())``.
+- export to MATLAB struct array through mat files::
+
+    scipy.io.savemat(
+        "spikes.mat",
+        {'spike_trains': spike_trains.to_records()}
+    )
 
 Please, check thorns_ for more information and functions to manipulate
 spike trains.
