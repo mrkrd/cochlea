@@ -4,8 +4,6 @@
 
 * Compile wheels for Windows
 
-* Sphinx documentation
-
 * IPython notebook example
 
 * Test and activate ffGn
