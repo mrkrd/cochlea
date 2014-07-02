@@ -8,6 +8,7 @@ cochela
 :Author: Marek Rudnicki
 :Email: marek.rudnicki@tum.de
 :URL: https://github.com/mrkrd/cochlea
+:Documentation: https://pythonhosted.org/cochlea/
 :License: GNU General Public License v3 or later (GPLv3+)
 
 
@@ -84,6 +85,7 @@ Models
 
 
 .. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
+
 
 
 Usage
