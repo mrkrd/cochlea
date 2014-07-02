@@ -231,6 +231,22 @@ Other implementations
 
 
 
+Citing
+------
+
+If you are using this software in your research, please make a
+reference.  BibTeX item::
+
+  @Misc{Rudnicki2014a,
+    Title                    = {cochlea: inner ear models in Python},
+
+    Author                   = {Marek Rudnicki},
+    HowPublished             = {\url{https://github.com/mrkrd/cochlea}},
+    Year                     = {2014}
+  }
+
+
+
 
 Acknowledgments
 ---------------
