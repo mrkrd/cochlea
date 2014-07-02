@@ -246,6 +246,9 @@ reference.  BibTeX item::
   }
 
 
+Please, when you use any of the models, always cite the original
+publications describing the model.
+
 
 
 Acknowledgments
@@ -263,9 +266,6 @@ use their code in *cochlea*.
 
 I am also grateful to Ray Meddis for support with the Matlab Auditory
 Periphery model.
-
-Please, when you use any of the models, always cite the original
-publications describing the model.
 
 
 .. _`Werner Hemmert`: http://www.imetum.tum.de/research/bai/home/?L=1
