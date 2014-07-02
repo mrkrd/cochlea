@@ -132,7 +132,7 @@ Spike Train Format
 ------------------
 
 Spike train data format is based on a standard DataFrame_ format from
-an excellent pandas_ library.  Spike trains and their meta data are
+the excellent pandas_ library.  Spike trains and their meta data are
 stored in DataFrame, where each row corresponds to a single neuron:
 
 =====  ========  ====  ====  =================================================
