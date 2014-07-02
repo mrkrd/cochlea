@@ -53,7 +53,7 @@ quite stable and we decided to release it for the community.
 
 - researchers doing computational neuroscience (combines well with
   NEURON_ and Brian_),
-- experimenters that require realistic inputs spike trains,
+- experimenters that require realistic input spike trains,
 - researchers improving inner ear models,
 - everyone interested in understanding how hearing works.
 
