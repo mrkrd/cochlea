@@ -245,7 +245,7 @@ I would also like to thank Muhammad S.A. Zilany, Ian C. Bruce and
 Laurel H. Carney for developing inner ear models and allowing us to
 use their code in *cochlea*.
 
-I also grateful to Ray Meddis for support with the Matlab Auditory
+I am also grateful to Ray Meddis for support with the Matlab Auditory
 Periphery model.
 
 Please, when you use any of the models, always cite the original
