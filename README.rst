@@ -245,8 +245,8 @@ reference.  BibTeX item::
   }
 
 
-Please, when you use any of the models, always cite the original
-publications describing the model.
+When you use any of the models, always cite the original publications
+describing the model.
 
 
 
