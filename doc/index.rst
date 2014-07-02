@@ -7,14 +7,10 @@ Welcome to cochlea's documentation!
 .. moduleauthor:: Marek Rudnicki
 
 
-*Inner ear models in Python*
 
-
-:Name: cochela
-:Author: Marek Rudnicki
-:Email: marek.rudnicki@tum.de
-:URL: https://github.com/mrkrd/cochlea
-:License: GNU General Public License v3 or later (GPLv3+)
+.. include:: ../README.rst
+   :start-after: =======
+   :end-before: Description
 
 
 
