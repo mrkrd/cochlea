@@ -255,18 +255,19 @@ describing the model.
 Acknowledgments
 ---------------
 
-
-I would like to thank `Werner Hemmert`_ for supervising my PhD.
+We would like to thank Muhammad S.A. Zilany, Ian C. Bruce and
+Laurel H. Carney for developing inner ear models and allowing us to
+use their code in *cochlea*.
 
 Thanks goes to Marcus Holmberg, who developed the traveling wave based
 model.
 
-I would also like to thank Muhammad S.A. Zilany, Ian C. Bruce and
-Laurel H. Carney for developing inner ear models and allowing us to
-use their code in *cochlea*.
-
-I am also grateful to Ray Meddis for support with the Matlab Auditory
+We are grateful to Ray Meddis for support with the Matlab Auditory
 Periphery model.
+
+And last, but not least, I would like to thank `Werner Hemmert`_ for
+supervising my PhD.
+
 
 
 .. _`Werner Hemmert`: http://www.imetum.tum.de/research/bai/home/?L=1
