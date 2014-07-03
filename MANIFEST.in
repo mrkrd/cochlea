@@ -3,7 +3,3 @@ include MANIFEST.in
 recursive-include cochlea *.pyx
 recursive-include cochlea *.h
 recursive-include cochlea *.hpp
-recursive-include tests *.m
-recursive-include tests *.mat
-recursive-include tests *.npz
-recursive-include tests *.txt
