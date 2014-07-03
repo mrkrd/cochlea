@@ -195,14 +195,16 @@ Requirements
 
 - Matplotlib (optional, for examples)
 - docopt (optional, for the command line scripts)
-- thorns (optional, for examples and stats)
-- matlab_wrapper (optional, for the MAP external model)
+- thorns_ (optional, for examples and stats)
+- matlab_wrapper_ (optional, for the MAP external model)
 
 
 Note: On Windows you can install a Python distribution such as
 Anaconda_ or `Python(x,y)`_ to fulfill most of the dependencies.
 
 
+.. _thorns: https://github.com/mrkrd/thorns
+.. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
 .. _Anaconda: https://store.continuum.io/cshop/anaconda/
 .. _`Python(x,y)`: https://code.google.com/p/pythonxy/
 
