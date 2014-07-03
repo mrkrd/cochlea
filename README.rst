@@ -242,8 +242,8 @@ Citing
 ------
 
 If you are using this software in your research, please make a
-reference: Rudnicki, M (2014) *Cochlea: inner ear models in Python*,
-https://github.com/mrkrd/cochlea.
+reference: Rudnicki, M and Hemmert, W (2014) *Cochlea: inner ear
+models in Python*, https://github.com/mrkrd/cochlea.
 
 When you use any of the models, always cite the original publications
 describing the model.
