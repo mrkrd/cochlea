@@ -91,6 +91,9 @@ Models
 Usage
 -----
 
+Check our online DEMO_!
+
+
 Initialize the modules::
 
   import cochlea
@@ -126,6 +129,10 @@ Plot the results::
   th.plot_raster(anf_trains)
   th.show()
 
+
+
+
+.. _DEMO: http://nbviewer.ipython.org/github/mrkrd/cochlea/blob/master/examples/cochlea_demo.ipynb
 
 
 Spike Train Format
