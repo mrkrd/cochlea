@@ -74,6 +74,6 @@ setup(
         "Programming Language :: C",
     ],
 
-    platforms = ["Linux", "Windows", "FreeBSD"],
+    platforms = ["Linux", "Windows", "FreeBSD", "OSX"],
     install_requires=["numpy", "pandas", "scipy"],
 )

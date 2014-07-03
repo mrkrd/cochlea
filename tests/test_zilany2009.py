@@ -17,7 +17,7 @@ import cochlea.zilany2009._pycat as pycat
 
 DATADIR = os.path.join(
     os.path.dirname(__file__),
-    'data'
+    'data_zilany2009'
 )
 
 
