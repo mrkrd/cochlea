@@ -55,7 +55,7 @@ setup(
     packages = find_packages(),
     scripts = ["scripts/run_zilany2014"],
     package_data = {
-        "cochlea": ["*.csv"]
+        "cochlea.asr": ["*.csv"]
     },
     include_dirs = [numpy.get_include()],
     ext_modules = cythonize(extensions),
