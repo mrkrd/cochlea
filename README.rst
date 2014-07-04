@@ -224,6 +224,14 @@ you need `cython and a working compiler`_ to install the package.
 
 
 
+Issues and Bugs
+---------------
+
+https://github.com/mrkrd/cochlea/issues
+
+
+
+
 Other implementations
 ---------------------
 
