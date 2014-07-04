@@ -38,6 +38,7 @@ def run_zilany2014_rate(
         cohc=1,
         cihc=1,
         powerlaw='approximate',
+        ffGn=False
 ):
     """Run the inner ear model by [Zilany2014]_.  Return mean firing rate
     of the auditory nerve fibers.
@@ -144,7 +145,7 @@ def _run_channel(args):
             cf=cf,
             anf_type=anf_type,
             powerlaw=powerlaw,
-            ffGn=False
+            ffGn=ffGn
         )
 
         rates.append({

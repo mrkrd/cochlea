@@ -40,6 +40,7 @@ def run_zilany2014(
         cohc=1,
         cihc=1,
         powerlaw='approximate',
+        ffGn=False
 ):
     """Run the inner ear model by [Zilany2014]_.
 
@@ -77,18 +78,14 @@ def run_zilany2014(
         Degredation of the inner hair cells.
     powerlaw : {'approximate', 'actual'}, optional
         Defines which power law implementation should be used.
+    ffGn : bool
+        Enable/disable factorial Gaussian noise.
 
 
     Returns
     -------
     spike_trains
         Auditory nerve spike trains.
-
-
-    Note
-    ----
-    The fractorial Gausian noise from the oryginal implementation is
-    disabled at the moment.
 
 
     References
@@ -184,7 +181,7 @@ def _run_channel(args):
                 cf=cf,
                 anf_type=anf_type,
                 powerlaw=powerlaw,
-                ffGn=False
+                ffGn=ffGn
             )
 
         ### Run spike generator
