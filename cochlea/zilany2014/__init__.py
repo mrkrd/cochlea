@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 
 from . import _zilany2014
-from . helper import calc_cfs
+from . util import calc_cfs
 from . zilany2014_rate import run_zilany2014_rate
 
 

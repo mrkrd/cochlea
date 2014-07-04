@@ -28,7 +28,7 @@ import pandas as pd
 import itertools
 
 from . import _zilany2014
-from . helper import calc_cfs
+from . util import calc_cfs
 
 def run_zilany2014_rate(
         sound,

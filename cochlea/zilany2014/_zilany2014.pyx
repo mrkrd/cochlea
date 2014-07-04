@@ -17,11 +17,11 @@ along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from __future__ import division, print_function
+from __future__ import division, print_function, absolute_import
 
 import numpy as np
 from libc.stdlib cimport malloc
-import helper
+from . import util
 import scipy.signal as dsp
 
 cimport numpy as np
@@ -332,9 +332,9 @@ cdef public double* decimate(
 
 
 cdef public double* ffGn(int N, double tdres, double Hinput, double noiseType, double mu):
-    """helper.ffGn() wrapper"""
+    """util.ffGn() wrapper"""
 
-    a = helper.ffGn(N, tdres, Hinput, noiseType, mu)
+    a = util.ffGn(N, tdres, Hinput, noiseType, mu)
 
     if not a.flags['C_CONTIGUOUS']:
         a = a.copy(order='C')
