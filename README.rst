@@ -34,10 +34,10 @@ return spike trains of the auditory nerve fibers::
 The implemented models are state-of-the-art biophysical models and
 give realistic approximation of the auditory nerve activity.
 
-They are implemented using the original code from their authors as
-much as possible.  We wanted to have implementations that gives the
-same results as the original models.  Whenever possible, it was
-verified with unit testing (tests directory).
+They are implemented using the original code from their authors
+whenever possible.  We wanted to have implementations that gives the
+same results as the original models.  We also made an effort to verify
+the implementation with unit testing (tests directory).
 
 The models are also fast.  It is easy to generate responses of
 hundreds or even thousands of auditory nerve fibers (ANFs).  It is
