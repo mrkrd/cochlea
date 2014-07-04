@@ -12,6 +12,7 @@ import os
 from os.path import join
 
 import cochlea.zilany2014._zilany2014 as zilany2014
+from cochlea.zilany2014.util import ffGn
 
 DATADIR = os.path.join(
     os.path.dirname(__file__),
@@ -89,3 +90,24 @@ def test_synapse():
         meanrate_target,
         decimal=10
     )
+
+
+def test_ffGn():
+    m = scipy.io.loadmat(
+        join(DATADIR, 'data_zilany2014.mat'),
+        squeeze_me=True
+    )
+
+    r = m['random_ffGn']
+    y = m['y_ffGn']
+
+    y_actual = ffGn(
+        N=16,
+        tdres=0.1,
+        Hinput=0.2,
+        noiseType=1,
+        mu=10,
+        random_debug=r
+    )
+
+    assert_almost_equal(y_actual, y, decimal=13)

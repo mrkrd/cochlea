@@ -35,14 +35,11 @@ from scipy.signal import resample
 from numpy.fft import fft, ifft
 
 
-def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1):
+def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1, random_debug=None):
 
     assert (N > 0)
     assert (tdres < 1)
     assert (Hinput >= 0) and (Hinput <= 2)
-
-    # TODO: test ffGn() against the original implementation ffGn.m
-    assert noiseType == 0, "Not tested against ffGn.m"
 
 
     # Here we change the meaning of `noiseType', if it's 0, then we
@@ -72,7 +69,10 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1):
     # Calculate the fGn.
     if H == 0.5:
         # If H=0.5, then fGn is equivalent to white Gaussian noise.
-        y = randn(N)
+        if random_debug is None:
+            y = randn(N)
+        else:
+            y = random_debug
     else:
         # TODO: make variables persistant
         Nfft = 2 ** np.ceil(np.log2(2*(N-1)))
@@ -86,7 +86,10 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1):
 
         Zmag = np.sqrt(Zmag)
 
-        Z = Zmag * (randn(Nfft) + 1j*randn(Nfft))
+        if random_debug is None:
+            Z = Zmag * (randn(Nfft) + 1j*randn(Nfft))
+        else:
+            Z = Zmag * (random_debug + 1j*random_debug)
 
         y = np.real(ifft(Z)) * np.sqrt(Nfft)
 
@@ -157,14 +160,3 @@ def calc_cfs(cf, species):
         raise RuntimeError("CF must be a scalar, a tuple or a list.")
 
     return cfs
-
-
-
-
-def main():
-    y = ffGn(10, 1e-1, 0.2, 1, debug=True)
-    print y
-
-
-if __name__ == "__main__":
-    main()

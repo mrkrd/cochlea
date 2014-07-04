@@ -25,8 +25,13 @@ vihc = model_IHC(sound, cf, nrep, 1/fs, tmax, cohc, cihc, species);
 [meanrate,varrate,psth] = model_Synapse(vihc, cf, nrep, 1/fs, fiber_type, noise_type, implnt);
 
 
+
+%% Test ffGn
+[y_ffGn random_ffGn] = ffGn_debug(16, 0.1, 0.2, 1, 10);
+
+
 %%% Save results
-save('data_zilany2014.mat', 'fs', 'cf', 'sound', 'vihc', 'meanrate')
+save('data_zilany2014.mat', 'fs', 'cf', 'sound', 'vihc', 'meanrate', 'y_ffGn', 'random_ffGn')
 
 
 %%% Plots
