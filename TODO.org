@@ -2,7 +2,7 @@
 #+AUTHOR: Marek Rudnicki
 
 
-* Test and activate ffGn
+* Test and activate ffGn in zilany2009
 
 - Remove the notes in docstrings
 
