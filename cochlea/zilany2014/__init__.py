@@ -118,7 +118,8 @@ def run_zilany2014(
             'anf_num': anf_num,
             'powerlaw': powerlaw,
             'seed': seed,
-            'species': species
+            'species': species,
+            'ffGn': ffGn,
         }
         for cf in cfs
     ]
@@ -153,6 +154,7 @@ def _run_channel(args):
     seed = args['seed']
     anf_num = args['anf_num']
     species = args['species']
+    ffGn = args['ffGn']
 
 
     ### Run BM, IHC
