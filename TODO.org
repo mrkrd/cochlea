@@ -2,10 +2,6 @@
 #+AUTHOR: Marek Rudnicki
 
 
-* Compile wheels for Windows
-
-* IPython notebook example
-
 * Test and activate ffGn
 
 - Remove the notes in docstrings

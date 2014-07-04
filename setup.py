@@ -43,7 +43,7 @@ extensions = [
 
 setup(
     name = "cochlea",
-    version = "1.0.2",
+    version = "1.0.4",
     author = "Marek Rudnicki",
     author_email = "marek.rudnicki@tum.de",
 
@@ -55,7 +55,7 @@ setup(
     packages = find_packages(),
     scripts = ["scripts/run_zilany2014"],
     package_data = {
-        "cochlea": ["*.csv"]
+        "cochlea.asr": ["*.csv"]
     },
     include_dirs = [numpy.get_include()],
     ext_modules = cythonize(extensions),
@@ -74,6 +74,6 @@ setup(
         "Programming Language :: C",
     ],
 
-    platforms = ["Linux", "Windows", "FreeBSD"],
+    platforms = ["Linux", "Windows", "FreeBSD", "OSX"],
     install_requires=["numpy", "pandas", "scipy"],
 )

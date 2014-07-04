@@ -1,7 +1,5 @@
 include README.rst
 include MANIFEST.in
-recursive-include tests/data *
 recursive-include cochlea *.pyx
 recursive-include cochlea *.h
 recursive-include cochlea *.hpp
-recursive-include cochlea/asr *.csv

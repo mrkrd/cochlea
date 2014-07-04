@@ -195,14 +195,16 @@ Requirements
 
 - Matplotlib (optional, for examples)
 - docopt (optional, for the command line scripts)
-- thorns (optional, for examples and stats)
-- matlab_wrapper (optional, for the MAP external model)
+- thorns_ (optional, for examples and stats)
+- matlab_wrapper_ (optional, for the MAP external model)
 
 
 Note: On Windows you can install a Python distribution such as
 Anaconda_ or `Python(x,y)`_ to fulfill most of the dependencies.
 
 
+.. _thorns: https://github.com/mrkrd/thorns
+.. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
 .. _Anaconda: https://store.continuum.io/cshop/anaconda/
 .. _`Python(x,y)`: https://code.google.com/p/pythonxy/
 
@@ -253,18 +255,19 @@ describing the model.
 Acknowledgments
 ---------------
 
-
-I would like to thank `Werner Hemmert`_ for supervising my PhD.
+We would like to thank Muhammad S.A. Zilany, Ian C. Bruce and
+Laurel H. Carney for developing inner ear models and allowing us to
+use their code in *cochlea*.
 
 Thanks goes to Marcus Holmberg, who developed the traveling wave based
 model.
 
-I would also like to thank Muhammad S.A. Zilany, Ian C. Bruce and
-Laurel H. Carney for developing inner ear models and allowing us to
-use their code in *cochlea*.
-
-I am also grateful to Ray Meddis for support with the Matlab Auditory
+We are grateful to Ray Meddis for support with the Matlab Auditory
 Periphery model.
+
+And last, but not least, I would like to thank `Werner Hemmert`_ for
+supervising my PhD.
+
 
 
 .. _`Werner Hemmert`: http://www.imetum.tum.de/research/bai/home/?L=1
