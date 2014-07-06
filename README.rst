@@ -45,9 +45,10 @@ possible, for example, to generate responses of the whole human
 auditory nerve (around 30,000 ANFs).  We usually tested the models
 with sounds up to 1 second in duration.
 
-I developed *cochlea* during my PhD in the group of `Werner Hemmert`_
-at TUM.  It went through several versions and rewrites.  Now, it is
-quite stable and we decided to release it for the community.
+I developed *cochlea* during my PhD in the group of Werner Hemmert
+(`Bio-Inspired Information Processing`_) at the TUM.  It went through
+several versions and rewrites.  Now, it is quite stable and we decided
+to release it for the community.
 
 *cochlea* could be used by:
 
@@ -58,7 +59,7 @@ quite stable and we decided to release it for the community.
 - everyone interested in understanding how hearing works.
 
 
-.. _`Werner Hemmert`: http://www.imetum.tum.de/research/bai/home/?L=1
+.. _`Bio-Inspired Information Processing`: http://www.imetum.tum.de/research/bai/home/?L=1
 .. _NEURON: http://www.neuron.yale.edu/neuron/
 .. _Brian: http://briansimulator.org/
 
@@ -273,9 +274,5 @@ model.
 We are grateful to Ray Meddis for support with the Matlab Auditory
 Periphery model.
 
-And last, but not least, I would like to thank `Werner Hemmert`_ for
+And last, but not least, I would like to thank Werner Hemmert for
 supervising my PhD.
-
-
-
-.. _`Werner Hemmert`: http://www.imetum.tum.de/research/bai/home/?L=1
