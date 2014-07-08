@@ -81,8 +81,8 @@ def run_zilany2009(
         Auditory nerve spike trains.
 
 
-    Note
-    ----
+    Notes
+    -----
     The fractorial Gausian noise from the oryginal implementation is
     disabled at the moment.
 
@@ -95,10 +95,10 @@ def run_zilany2009(
 
 
     .. [Zilany2009] Zilany, M. S., Bruce, I. C., Nelson, P. C., &
-    Carney, L. H. (2009). A phenomenological model of the synapse
-    between the inner hair cell and auditory nerve: long-term
-    adaptation with power-law dynamics. The Journal of the Acoustical
-    Society of America, 126(5), 2390-2412.
+       Carney, L. H. (2009). A phenomenological model of the synapse
+       between the inner hair cell and auditory nerve: long-term
+       adaptation with power-law dynamics. The Journal of the
+       Acoustical Society of America, 126(5), 2390-2412.
 
     """
     assert np.max(sound) < 1000, "Signal should be given in Pa"

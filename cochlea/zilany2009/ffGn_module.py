@@ -18,8 +18,8 @@ You should have received a copy of the GNU General Public License
 along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Note
-====
+Notes
+=====
 
 This implementation is based on the oryginal MATLAB implementation.
 

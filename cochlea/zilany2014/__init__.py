@@ -95,9 +95,9 @@ def run_zilany2014(
 
 
     .. [Zilany2014] Zilany, M. S., Bruce, I. C., & Carney,
-    L. H. (2014). Updated parameters and expanded simulation options
-    for a model of the auditory periphery. The Journal of the
-    Acoustical Society of America, 135(1), 283-286.
+       L. H. (2014). Updated parameters and expanded simulation
+       options for a model of the auditory periphery. The Journal of
+       the Acoustical Society of America, 135(1), 283-286.
 
     """
     assert np.max(sound) < 1000, "Signal should be given in Pa"

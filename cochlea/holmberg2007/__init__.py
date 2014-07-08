@@ -70,9 +70,9 @@ def run_holmberg2007(
     in your research, please cite [Holmberg2007]_.
 
     .. [Holmberg2007] Holmberg, M. (2007). Speech Encoding in the
-    Human Auditory Periphery: Modeling and Quantitative Assessment by
-    Means of Automatic Speech Recognition. PhD thesis, Technical
-    University Darmstadt.
+       Human Auditory Periphery: Modeling and Quantitative Assessment
+       by Means of Automatic Speech Recognition. PhD thesis, Technical
+       University Darmstadt.
 
     """
 
