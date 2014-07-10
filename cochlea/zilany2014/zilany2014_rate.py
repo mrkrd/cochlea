@@ -78,7 +78,8 @@ def run_zilany2014_rate(
             'cihc': cihc,
             'anf_types': anf_types,
             'powerlaw': powerlaw,
-            'species': species
+            'species': species,
+            'ffGn': ffGn,
         }
         for cf in cfs
     ]
@@ -120,6 +121,7 @@ def _run_channel(args):
     powerlaw = args['powerlaw']
     anf_types = args['anf_types']
     species = args['species']
+    ffGn = args['ffGn']
 
 
     ### Run BM, IHC
