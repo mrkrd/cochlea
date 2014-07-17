@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
 
-"""Copyright 2014 Marek Rudnicki
+# Copyright 2014 Marek Rudnicki
 
-This file is part of cochlea.
+# This file is part of cochlea.
 
-cochlea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# cochlea is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-cochlea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# cochlea is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
 
 from __future__ import division, absolute_import, print_function
 
@@ -95,6 +94,8 @@ def run_matlab_auditory_periphery(
     ### Validate `cf`
     if isinstance(cf, tuple):
         assert len(cf) == 3
+    elif np.isscalar(cf):
+        pass
     elif len(cf) == 3:
         raise RuntimeError("Three frequency channels are forbidden, because they mask the tuple (min_cf, max_cf, cf_num).")
 
@@ -105,6 +106,8 @@ def run_matlab_auditory_periphery(
     else:
         matlab = matlab_session
 
+    matlab.eval("clear all")
+    matlab.eval("clearvars -global")
 
     ### Set Matlab environment
     matlab.workspace.rng(seed)
