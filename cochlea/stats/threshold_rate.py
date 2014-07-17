@@ -42,7 +42,7 @@ def calc_thresholds_rate(
         cfs=None,
         model_pars=None,
         asr_filter=False,
-        map_backend='serial'
+        map_backend=None,
 ):
     """Calculate rate based hearing threshold of an inner ear model."""
 
