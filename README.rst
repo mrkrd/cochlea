@@ -1,10 +1,10 @@
-cochela
+cochlea
 =======
 
 *Inner ear models in Python*
 
 
-:Name: cochela
+:Name: cochlea
 :Author: Marek Rudnicki
 :Email: marek.rudnicki@tum.de
 :URL: https://github.com/mrkrd/cochlea
