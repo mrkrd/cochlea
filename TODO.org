@@ -7,3 +7,5 @@
 - Remove the notes in docstrings
 
 * Generate new test data for Zilany2009 model
+
+* Brian interoperability example
