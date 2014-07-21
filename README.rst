@@ -92,7 +92,7 @@ Models
 Usage
 -----
 
-Check our online DEMO_!
+Check our online DEMO_ and examples_!
 
 
 Initialize the modules::
@@ -134,6 +134,7 @@ Plot the results::
 
 
 .. _DEMO: http://nbviewer.ipython.org/github/mrkrd/cochlea/blob/master/examples/cochlea_demo.ipynb
+.. _examples: https://github.com/mrkrd/cochlea/tree/master/examples
 
 
 Spike Train Format
