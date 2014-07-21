@@ -1,6 +1,6 @@
 #+TITLE: TODO list for cochlea
 #+AUTHOR: Marek Rudnicki
-
+#+CATEGORY: cochlea
 
 * Test and activate ffGn in zilany2009
 
