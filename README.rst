@@ -234,7 +234,7 @@ https://github.com/mrkrd/cochlea/issues
 
 
 
-Other implementations
+Other Implementations
 ---------------------
 
 - `Carney Lab`_
