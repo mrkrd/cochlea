@@ -271,10 +271,17 @@ Laurel H. Carney for developing inner ear models and allowing us to
 use their code in *cochlea*.
 
 Thanks goes to Marcus Holmberg, who developed the traveling wave based
-model.
+model.  His work was supported by the General Federal Ministry of
+Education and Research within the Munich Bernstein Center for
+Computational Neuroscience (reference No. 01GQ0441, 01GQ0443 and
+01GQ1004B).
 
 We are grateful to Ray Meddis for support with the Matlab Auditory
 Periphery model.
 
 And last, but not least, I would like to thank Werner Hemmert for
 supervising my PhD.
+
+This work was supported by the General Federal Ministry of Education
+and Research within the Munich Bernstein Center for Computational
+Neuroscience (reference No. 01GQ0441 and 01GQ1004B).
