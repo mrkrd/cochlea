@@ -1,31 +1,27 @@
-"""
-Copyright 2009-2014 Marek Rudnicki
+# Copyright 2009-2014 Marek Rudnicki
 
-This file is part of cochlea.
+# This file is part of cochlea.
 
-cochlea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# cochlea is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-cochlea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# cochlea is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-
-Description
------------
-Modulation gain of inner ear models.
+"""Modulation gain of inner ear models.
 
 """
-
 from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
+
 
 import numpy as np
 import pandas as pd
@@ -35,11 +31,10 @@ import thorns.waves as wv
 
 from . threshold_rate import calc_thresholds_rate
 
-
 import logging
-logging.basicConfig()
-log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+
+log = logging.getLogger('thorns')
+
 
 
 def calc_modulation_gain(
@@ -68,35 +63,34 @@ def calc_modulation_gain(
 
 
     ### Calculate dbspl = threshold + 10 dB
-    threshod = calc_thresholds_rate(
+    threshold = calc_thresholds_rate(
         model=model,
         cfs=[cf],
         model_pars=model_pars
     )
 
-    dbspl = threshod.iloc[0] + 10
+    dbspl = threshold.iloc[0] + 10
     log.info("Sound level: {} dB SPL".format(dbspl))
 
-    space = [
-        {
-            'model': model,
-            'fm': fm,
-            'cf': cf,
-            'dbspl': dbspl,
-            'model_pars': model_pars,
-            'm': m,
-        }
-        for fm in fms
-    ]
+    space = {
+        'fm': fms,
+    }
+
+    kwargs = {
+        'model': model,
+        'cf': cf,
+        'dbspl': dbspl,
+        'model_pars': model_pars,
+        'm': m,
+    }
+
 
     gains = th.util.map(
         _run_model,
         space,
-        backend=map_backend
+        kwargs=kwargs,
+        backend=map_backend,
     )
-
-    gains = pd.Series(gains, index=fms)
-    gains.index.name = 'fm'
 
     return gains
 

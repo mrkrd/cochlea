@@ -1,25 +1,21 @@
-"""
-Copyright 2009-2014 Marek Rudnicki
+# Copyright 2009-2014 Marek Rudnicki
 
-This file is part of cochlea.
+# This file is part of cochlea.
 
-cochlea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# cochlea is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-cochlea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# cochlea is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-
-Description
------------
-Rate based threshold for inner ear models.
+"""Rate based threshold for inner ear models.
 
 """
 from __future__ import division, print_function, absolute_import
@@ -54,28 +50,27 @@ def calc_thresholds_rate(
 
 
     ### Calculate spontaneous rate for reference
-    spont_rate = th.util.apply(
-        calc_spont_threshold,
+    spont_rate = th.util.cache(calc_spont_threshold)(
         model=model,
         cf=cfs[0],
         model_pars=model_pars
     )
 
-    space = [
-        {
-            'model': model,
-            'model_pars': model_pars,
-            'spont_rate': spont_rate,
-            'cf': cf,
-            'asr_filter': asr_filter
-        }
-        for cf in cfs
-    ]
+    space = {
+        'cf': cfs
+    }
+    kwargs = {
+        'model': model,
+        'model_pars': model_pars,
+        'spont_rate': spont_rate,
+        'asr_filter': asr_filter,
+    }
 
 
     thresholds = th.util.map(
         calc_threshold,
         space,
+        kwargs=kwargs,
         backend=map_backend,
     )
 
