@@ -69,7 +69,7 @@ def calc_modulation_gain(
         model_pars=model_pars
     )
 
-    dbspl = threshold.iloc[0] + 10
+    dbspl = threshold['threshold'].iloc[0] + 10
     log.info("Sound level: {} dB SPL".format(dbspl))
 
     space = {
@@ -91,6 +91,8 @@ def calc_modulation_gain(
         kwargs=kwargs,
         backend=map_backend,
     )
+
+    gains.columns = ['gain']
 
     return gains
 

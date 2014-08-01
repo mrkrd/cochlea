@@ -74,8 +74,7 @@ def calc_thresholds_rate(
         backend=map_backend,
     )
 
-    thresholds = pd.Series(thresholds, index=cfs)
-    thresholds.index.name = 'cf'
+    thresholds.columns = ['threshold']
 
     return thresholds
 

@@ -47,34 +47,33 @@ def calc_tuning(
         freqs = np.logspace(np.log10(cf/2), np.log10(cf*2), 32)
 
 
-    spont_rate = th.util.apply(
-        calc_spont_threshold,
+    spont_rate = th.util.cache(calc_spont_threshold)(
         model=model,
         cf=cf,
         model_pars=model_pars
     )
 
 
-    space = [
-        {
-            'model': model,
-            'model_pars': model_pars,
-            'spont_rate': spont_rate,
-            'cf': cf,
-            'freq': freq,
-        }
-        for freq in freqs
-    ]
+    space = {
+        'freq': freqs
+    }
+
+    kwargs = {
+        'model': model,
+        'model_pars': model_pars,
+        'spont_rate': spont_rate,
+        'cf': cf,
+    }
+
 
 
     thresholds = th.util.map(
         calc_threshold,
         space,
+        kwargs=kwargs,
         backend=map_backend,
     )
 
-    thresholds = pd.Series(thresholds, index=freqs)
-    thresholds.index.name = 'freq'
-
+    thresholds.columns = ['threshold']
 
     return thresholds

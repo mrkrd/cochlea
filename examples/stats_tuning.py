@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-
 """This demo calculates tuning of cochlear filters.
 
 On a fast computer it will take around 2 minutes to finish.  If you
@@ -45,17 +44,16 @@ def main():
         model_pars={'species': 'human'}
     )
 
-    ths_human_glasberg1990 = calc_tuning(
-        model=cochlea.run_zilany2014,
-        cf=5e3,
-        model_pars={'species': 'human_glasberg1990'}
-    )
+    print(ths_human)
 
-    ths_human.plot(logx=True, label="Shera et al. (2002)")
-    ths_human_glasberg1990.plot(logx=True, label="Glasberg & Moore (1990)")
 
-    plt.title("Zilany et al. (2014)")
-    plt.legend(loc='best')
+    fig,ax = plt.subplots()
+
+    ths_human.plot(logx=True, ax=ax)
+
+    ax.set_title("Zilany et al. (2014)")
+    ax.legend(loc='best')
+
     plt.show()
 
 
