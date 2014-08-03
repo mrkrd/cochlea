@@ -1,31 +1,28 @@
-"""
-Copyright 2009-2014 Marek Rudnicki
+# Copyright 2009-2014 Marek Rudnicki
 
-This file is part of cochlea.
+# This file is part of cochlea.
 
-cochlea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# cochlea is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-cochlea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# cochlea is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 
-Description
------------
-Rate-intensity charactersitics for inner ear models.
+"""Rate-intensity charactersitics for inner ear models.
 
 """
-
 from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
+
 
 import numpy as np
 import pandas as pd
@@ -49,23 +46,21 @@ def calc_rate_intensity(
     if dbspls is None:
         dbspls = np.arange(-10, 100, 5)
 
-    space = [
-        {
-            'model': model,
-            'dbspl': dbspl,
-            'cf': cf,
-            'model_pars': model_pars,
-        }
-        for dbspl in dbspls
-    ]
+    space = {
+        'dbspl': dbspls
+    }
+
+    kwargs = {
+        'model': model,
+        'cf': cf,
+        'model_pars': model_pars,
+    }
 
     rates = th.util.map(
         _run_model,
-        space
+        space,
+        kwargs=kwargs,
     )
-
-    rates = pd.DataFrame(list(rates))
-    rates = rates.set_index('dbspl')
 
     return rates
 
@@ -107,10 +102,9 @@ def _run_model(model, dbspl, cf, model_pars):
     rate_lsr = th.firing_rate(lsr)
 
     rates = {
-        'dbspl': dbspl,
         'hsr': rate_hsr,
         'msr': rate_msr,
-        'lsr': rate_lsr
+        'lsr': rate_lsr,
     }
 
     return rates

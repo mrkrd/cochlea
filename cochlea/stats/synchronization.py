@@ -54,28 +54,24 @@ def calc_synchronization(
         dbspls = [20, 40, 60]
 
 
-    space = [
-        {
-            'model': model,
-            'dbspl': dbspl,
-            'cf': cf,
-            'model_pars': model_pars,
-        }
-        for cf in cfs
-        for dbspl in dbspls
-    ]
+    space = {
+        'dbspl': dbspls,
+        'cf': cfs,
+    }
 
+    kwargs = {
+        'model': model,
+        'model_pars': model_pars,
+    }
 
-    sis = th.util.map(
+    vss = th.util.map(
         _run_model,
         space,
+        kwargs=kwargs,
         backend=map_backend,
     )
 
-    sis = pd.DataFrame(list(sis))
-    # sis = sis.set_index(['dbspl', 'cf'])
-
-    return sis
+    return vss
 
 
 
@@ -125,12 +121,10 @@ def _run_model(model, dbspl, cf, model_pars):
     # th.plot_raster(anf)
     # th.show()
 
-    sis = {
-        'cf': cf,
-        'dbspl': dbspl,
+    vss = {
         'hsr': si_hsr,
         'msr': si_msr,
-        'lsr': si_lsr
+        'lsr': si_lsr,
     }
 
-    return sis
+    return vss
