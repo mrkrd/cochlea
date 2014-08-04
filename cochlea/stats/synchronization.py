@@ -1,25 +1,21 @@
-"""
-Copyright 2009-2014 Marek Rudnicki
+# Copyright 2009-2014 Marek Rudnicki
 
-This file is part of cochlea.
+# This file is part of cochlea.
 
-cochlea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# cochlea is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-cochlea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# cochlea is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-
-Description
------------
-Synchronization of inner ear models.
+"""Synchronization of inner ear models.
 
 """
 from __future__ import division, absolute_import, print_function
@@ -39,7 +35,7 @@ def calc_synchronization(
         cfs=None,
         dbspls=None,
         model_pars=None,
-        map_backend='serial'
+        map_backend=None,
 ):
     """Calculate vector strength of an inner ear model.
 

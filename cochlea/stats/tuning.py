@@ -39,7 +39,7 @@ def calc_tuning(
         cf,
         freqs=None,
         model_pars=None,
-        map_backend='serial',
+        map_backend=None,
 ):
     """Calculate runing of the cochlea at `cf`."""
 

@@ -43,7 +43,7 @@ def calc_modulation_gain(
         cf=10e3,
         model_pars=None,
         m=1,
-        map_backend='serial'
+        map_backend=None,
 ):
     """Calculate modulation gain of an inner ear model.
 
