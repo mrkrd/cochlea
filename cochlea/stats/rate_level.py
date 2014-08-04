@@ -16,7 +16,7 @@
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Rate-intensity charactersitics for inner ear models.
+"""Rate-level charactersitics for inner ear models.
 
 """
 from __future__ import division, print_function, absolute_import
@@ -31,13 +31,13 @@ import thorns as th
 import thorns.waves as wv
 
 
-def calc_rate_intensity(
+def calc_rate_level(
         model,
         dbspls=None,
         cf=1000,
         model_pars=None
 ):
-    """Calculate rate-intensity characteristic of an auditory model.
+    """Calculate rate-level characteristic of an auditory model.
 
     """
     if model_pars is None:

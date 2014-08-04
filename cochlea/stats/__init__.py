@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from . threshold_rate import calc_thresholds_rate
-from . rate_intensity import calc_rate_intensity
+from . rate_level import calc_rate_level
 from . synchronization import calc_synchronization
 from . modulation_gain import calc_modulation_gain
 from . tuning import calc_tuning

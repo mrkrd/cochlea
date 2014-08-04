@@ -19,7 +19,7 @@
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This demo shows show to calculate rate-intensity characteristic of
+"""This demo shows show to calculate rate-level characteristic of
 a model.
 
 """
@@ -32,19 +32,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import cochlea
-from cochlea.stats import calc_rate_intensity
+from cochlea.stats import calc_rate_level
 
 
 def main():
 
-    # rates = calc_rate_intensity(
+    # rates = calc_rate_level(
     #     model=cochlea.run_holmberg2007,
     #     cf=1000,
     #     model_pars={'approximate_cfs': True, 'fs': 48e3}
     #     # dbspls=[0, 20, 50]
     # )
 
-    rates = calc_rate_intensity(
+    rates = calc_rate_level(
         model=cochlea.run_zilany2014,
         cf=1000,
         model_pars={'fs': 100e3, 'species': 'human'}
