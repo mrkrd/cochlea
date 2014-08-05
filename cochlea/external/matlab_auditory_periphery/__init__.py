@@ -37,6 +37,7 @@ def run_matlab_auditory_periphery(
         anf_num,
         cf,
         seed,
+        params_name='Normal',
         matlab_session=None
 ):
     """Run Matlab Auditory Periphery [MAP]_ model by Ray Meddis.  This
@@ -69,6 +70,9 @@ def run_matlab_auditory_periphery(
         Greenwood function.
     seed : int
         Random seed.
+    params_name : str, optional Tail of the parameter filename
+        (parameterStore/MAPparams<params_name>.m).  Refer to MAP
+        documentation for the details.
     matlab_session : MatlabSession or None, optional
         MatlabSession object from `matlab_wrapper` module.  If `None`,
         then new session is generated.
@@ -118,7 +122,7 @@ def run_matlab_auditory_periphery(
         sound,
         float(fs),
         np.array(cf, dtype=float),
-        'Normal',
+        params_name,
         'spikes',
         ['AN_IHCsynapseParams.numFibers={};'.format(max(anf_num)),
          'AN_IHCsynapseParams.spikesTargetSampleRate={};'.format(fs)],
