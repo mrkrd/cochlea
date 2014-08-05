@@ -34,6 +34,7 @@ import matplotlib.pyplot as plt
 import cochlea
 from cochlea.stats import calc_rate_level
 
+# import cochlea.external
 
 def main():
 
@@ -49,6 +50,13 @@ def main():
         cf=1000,
         model_pars={'fs': 100e3, 'species': 'human'}
     )
+
+
+    # rates = calc_rate_level(
+    #     model=cochlea.external.run_matlab_auditory_periphery,
+    #     cf=1000,
+    #     model_pars={'fs': 48e3}
+    # )
 
     print(rates)
 
