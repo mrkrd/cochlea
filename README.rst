@@ -219,12 +219,6 @@ Quick install::
   pip install cochlea
 
 
-Note: Windows binary packages (wheels) are coming soon.  At the moment
-you need `cython and a working compiler`_ to install the package.
-
-.. _`cython and a working compiler`: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
-
-
 
 Issues and Bugs
 ---------------
