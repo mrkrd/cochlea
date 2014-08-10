@@ -106,7 +106,7 @@ def run_matlab_auditory_periphery(
 
     ### Generate matlab_wrapper session as needed
     if matlab_session is None:
-        matlab = matlab_wrapper.MatlabSession(options='-nosplash -singleCompThread', buffer_size=1000)
+        matlab = matlab_wrapper.MatlabSession(options='-nosplash -singleCompThread')
     else:
         matlab = matlab_session
 

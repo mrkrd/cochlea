@@ -214,7 +214,7 @@ Anaconda_ or `Python(x,y)`_ to fulfill most of the dependencies.
 Installation
 ------------
 
-Quick install::
+::
 
   pip install cochlea
 
