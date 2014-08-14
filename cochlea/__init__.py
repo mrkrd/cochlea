@@ -37,7 +37,7 @@ from cochlea.holmberg2007 import real_freq_map as freq_map_holmberg2007
 from cochlea.holmberg2007 import get_nearest_cf as get_nearest_cf_holmberg2007
 
 
-__version__ = "1.1"
+__version__ = "1.2"
 
 
 def set_dbspl(signal, dbspl):
