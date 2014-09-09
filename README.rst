@@ -278,4 +278,7 @@ supervising my PhD.
 
 This work was supported by the General Federal Ministry of Education
 and Research within the Munich Bernstein Center for Computational
-Neuroscience (reference No. 01GQ0441 and 01GQ1004B).
+Neuroscience (reference No. 01GQ0441 and 01GQ1004B) and the German
+Research Foundation Foundation's Priority Program PP 1608 *Ultrafast
+and temporally precise information processing: Normal and
+dysfunctional hearing*.
