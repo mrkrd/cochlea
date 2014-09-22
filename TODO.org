@@ -8,6 +8,6 @@
 
 * Generate new test data for Zilany2009 model
 
-* Brian interoperability example
+* TODO Brian interoperability example
 
 make_brian_group(trains)
