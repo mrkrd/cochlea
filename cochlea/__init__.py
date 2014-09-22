@@ -73,3 +73,38 @@ def set_dba_isolet(signal, dba):
     scaled = signal * 10**(dba/20) * p0 / rms_dba
 
     return scaled
+
+
+
+def make_brian_group(trains):
+    """Create Brian's spike generator group from spike trains.
+
+    Parameters
+    ----------
+    trains : spike_trains
+        Input spike trains
+
+    Returns
+    -------
+    brian.SpikeGeneratorGroup
+        Brian's spike generator group.
+
+    """
+    import brian
+
+    times = []
+    indices = []
+    for i,spikes in enumerate(trains['spikes']):
+        times.append( spikes )
+        indices.append( np.ones(len(spikes)) * i )
+
+
+    indices = np.concatenate( indices )
+    times = np.concatenate( times ) * brian.second
+
+    group = brian.SpikeGeneratorGroup(
+        len(trains),
+        spiketimes=(indices, times)
+    )
+
+    return group
