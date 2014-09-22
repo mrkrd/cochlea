@@ -16,6 +16,7 @@
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import division, print_function, absolute_import
+from __future__ import unicode_literals
 
 __author__ = "Marek Rudnicki"
 
@@ -25,23 +26,17 @@ import pandas as pd
 import itertools
 
 from . import traveling_waves as tw
-from . traveling_waves import real_freq_map, get_nearest_cf
-
-from . holmberg2007_vesicles import run_holmberg2007_vesicles
 
 
-def run_holmberg2007(
+def run_holmberg2007_vesicles(
         sound,
         fs,
         anf_num,
         seed,
         cf=None,
 ):
-    """Run the inner ear model by [Holmberg2007]_.  It simulates the
-    traveling wave on the basilar membrane, inner hair cell, synapses
-    and generates auditory nerve spikes.  The model takes sound signal
-    as input and outputs auditory nerve spike trains.
-
+    """Run the inner ear model by [Holmberg2007]_ in the quantal mode and
+    return vesicles instead of spikes.
 
     Parameters
     ----------
@@ -60,8 +55,8 @@ def run_holmberg2007(
 
     Returns
     -------
-    spike_trains
-        Auditory nerve spike trains.
+    pd.DataFrame with vesicle timings
+        Vesicles in the format of spike_trains.
 
 
     References
@@ -185,33 +180,28 @@ def run_holmberg2007(
     trains = []
     for cf,anf_type in itertools.product(ihcrp.keys(),anf_types):
 
-        if (cf,anf_type) not in psps:
-            ### IHC and Synapse
-            psp = tw.run_ihc_meddis2000(
-                ihcrp=ihcrp[cf],
-                fs=fs,
-                **ihc_meddis2000_pars[anf_type]
-            )
-            psps[cf,anf_type] = psp
-
-        ### Spike generator (pars from Sumner et al. 2002)
-        spikes = tw.run_an_sg_carney_holmberg2007(
-            psp=psp,
+        ### IHC and Synapse
+        psp = tw.run_ihc_meddis2000(
+            ihcrp=ihcrp[cf],
             fs=fs,
-            c0=0.5,
-            c1=0.,
-            s0=0.8e-3,
-            s1=12.5e-3,
-            refractory_period=0.75e-3
+            opmode='quantal',
+            **ihc_meddis2000_pars[anf_type]
         )
 
+
+        psp = psp.astype(int)
+        t = np.arange(0, len(psp)) / fs
+        vesicles = np.repeat(t, psp)
+
+
         trains.append({
-            'spikes': spikes,
+            'vesicles': vesicles,
             'duration': duration,
             'cf': cf,
             'type': anf_type
         })
 
 
-    spike_trains = pd.DataFrame(trains)
-    return spike_trains
+    vesicle_trains = pd.DataFrame(trains)
+
+    return vesicle_trains

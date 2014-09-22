@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # Copyright 2009-2014 Marek Rudnicki
 
@@ -18,51 +17,51 @@
 # You should have received a copy of the GNU General Public License
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-
-"""This demo shows show to calculate rate-level characteristic of
-a model.
+"""Run innear ear model by [Holmberg2007]_.
 
 """
-from __future__ import division, absolute_import, print_function
+from __future__ import division, print_function, absolute_import
 
 __author__ = "Marek Rudnicki"
 
-
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.signal as dsp
+
+import thorns as th
 
 import cochlea
-from cochlea.stats import calc_rate_level
-
-# import cochlea.external
 
 def main():
 
-    # rates = calc_rate_level(
-    #     model=cochlea.run_holmberg2007,
-    #     cf=cochlea.get_nearest_cf_holmberg2007(1000),
-    #     model_pars={'fs': 48e3}
-    # )
+    fs = 48e3
+    tmax = 0.1
 
-    rates = calc_rate_level(
-        model=cochlea.run_zilany2014,
-        cf=1000,
-        model_pars={'fs': 100e3, 'species': 'human'}
+    ### Make sound
+    t = np.arange(0, tmax, 1/fs)
+    s = np.zeros_like(t)
+
+
+    ### Run model
+    vesicle_trains = cochlea.run_holmberg2007_vesicles(
+        s,
+        fs,
+        anf_num=(1,0,0),
+        seed=0,
     )
 
 
-    # rates = calc_rate_level(
-    #     model=cochlea.external.run_matlab_auditory_periphery,
-    #     cf=1000,
-    #     model_pars={'fs': 48e3}
-    # )
 
-    print(rates)
+    print(vesicle_trains)
 
-    rates.plot()
 
-    plt.legend()
-    plt.show()
+    ### Calculate average rate
+    all_vesicles = np.concatenate(vesicle_trains['vesicles'])
+    rate = len(all_vesicles) / tmax / len(vesicle_trains['vesicles'])
+    print()
+    print("Rate:", rate)
+
+
 
 if __name__ == "__main__":
     main()

@@ -1,27 +1,25 @@
-"""Copyright L. H. Carney
-Copyright 1996-1997 L. P. O'Mard
-Copyright 2000-2001 Werner Hemmert
-Copyright 2002-2007 Marcus Holmberg
-Copyright 2009-2014 Marek Rudnicki
+# Copyright L. H. Carney
+# Copyright 1996-1997 L. P. O'Mard
+# Copyright 2000-2001 Werner Hemmert
+# Copyright 2002-2007 Marcus Holmberg
+# Copyright 2009-2014 Marek Rudnicki
 
-This file is part of cochlea.
+# This file is part of cochlea.
 
-cochlea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# cochlea is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-cochlea is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# cochlea is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-======================================================================
-
-This file is a Cython reimplementation of various C files from the
+"""This file is a Cython reimplementation of various C files from the
 oryginal model [Holmberg2007]_
 
 """
@@ -613,7 +611,7 @@ def run_ihc_meddis2000(
 
     if (spontCleft_c0 > 0) and opmode == 'probability':
         spontFreePool_q0 = spontCleft_c0 * (loss_rate_l + recovery_rate_r) / k0
-    elif (spontCleft_c0 > 0) and opmode == 'spikes':
+    elif (spontCleft_c0 > 0) and opmode == 'quantal':
         spontFreePool_q0 = np.floor( (spontCleft_c0 * (loss_rate_l+recovery_rate_r) / k0) + 0.5 )
     else:
         spontFreePool_q0 = max_free_pool
@@ -671,7 +669,8 @@ def run_ihc_meddis2000(
             psp[i] = ejected
 
             reprocessedW += reUptake - reprocessed
-        elif opmode == 'spikes':
+
+        elif opmode == 'quantal':
             if reservoirQ < max_free_pool:
                 replenish = (np.random.geometric(
                     replenish_rate_y * dt,
@@ -708,7 +707,7 @@ def run_ihc_meddis2000(
 
 
         else:
-            raise RuntimeError
+            raise NotImplementedError("Unimplemented opmode: {}".format(opmode))
 
     return psp
 
