@@ -25,6 +25,7 @@ __author__ = "Marek Rudnicki"
 
 
 import warnings
+import platform
 import numpy as np
 
 from cochlea.zilany2009 import run_zilany2009
@@ -39,6 +40,13 @@ from cochlea.holmberg2007 import get_nearest_cf as get_nearest_cf_holmberg2007
 
 
 __version__ = "1.2"
+
+
+### Check if running 64-bit version of Python
+_bits, _ = platform.architecture()
+if _bits == '32bit':
+    warnings.warn("cochlea: it seems that you are using 32-bit version of Python.  If you experience issues, please switch to 64-bit version.")
+
 
 
 def set_dbspl(signal, dbspl):
