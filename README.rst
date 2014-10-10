@@ -202,7 +202,8 @@ Requirements
 
 
 Note: On Windows you can install a Python distribution such as
-Anaconda_ or `Python(x,y)`_ to fulfill most of the dependencies.
+Anaconda_ or `Python(x,y)`_ to fulfill most of the dependencies.  Make
+sure that you have 64-bit version of Python.
 
 
 .. _thorns: https://github.com/mrkrd/thorns
