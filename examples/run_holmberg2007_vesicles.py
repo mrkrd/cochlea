@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Run innear ear model by [Holmberg2007]_.
+"""Run innear ear model by [Holmberg2007]_ in quantal mode and output
+vesicle events instead of spikes.
 
 """
 from __future__ import division, print_function, absolute_import
@@ -54,13 +55,19 @@ def main():
 
     print(vesicle_trains)
 
+    ### Need to rename a column: vesicles -> spikes, because that's
+    ### the expected name by many functions in thorns
+    trains = vesicle_trains.rename(columns={'vesicles': 'spikes'})
 
     ### Calculate average rate
-    all_vesicles = np.concatenate(vesicle_trains['vesicles'])
-    rate = len(all_vesicles) / tmax / len(vesicle_trains['vesicles'])
+    rate = th.firing_rate(trains)
     print()
-    print("Rate:", rate)
+    print("Spontanious rate:", rate)
 
+
+    ### Raster plot
+    th.plot_raster(trains)
+    th.show()
 
 
 if __name__ == "__main__":
