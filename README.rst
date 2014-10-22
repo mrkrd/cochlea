@@ -64,6 +64,7 @@ to release it for the community.
 .. _Brian: http://briansimulator.org/
 
 
+
 Models
 ------
 
@@ -80,11 +81,12 @@ Models
   parameters and expanded simulation options for a model of the
   auditory periphery. The Journal of the Acoustical Society of
   America, 135(1), 283-286.
-- MATLAB Auditory Periphery by Meddis et al. (external model, not
+- `MATLAB Auditory Periphery`_ by Meddis et al. (external model, not
   implemented in the package, but easily accessible through
   matlab_wrapper_).
 
 
+.. _`MATLAB Auditory Periphery`: http://www.essexpsychology.macmate.me/HearingLab/modelling.html
 .. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
 
 
@@ -131,10 +133,9 @@ Plot the results::
   th.show()
 
 
-
-
 .. _DEMO: http://nbviewer.ipython.org/github/mrkrd/cochlea/blob/master/examples/cochlea_demo.ipynb
 .. _examples: https://github.com/mrkrd/cochlea/tree/master/examples
+
 
 
 Spike Train Format
@@ -186,6 +187,7 @@ spike trains.
 .. _thorns: https://github.com/mrkrd/thorns
 
 
+
 Requirements
 ------------
 
@@ -212,6 +214,7 @@ sure that you have 64-bit version of Python.
 .. _`Python(x,y)`: https://code.google.com/p/pythonxy/
 
 
+
 Installation
 ------------
 
@@ -225,7 +228,6 @@ Issues and Bugs
 ---------------
 
 https://github.com/mrkrd/cochlea/issues
-
 
 
 
