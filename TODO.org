@@ -11,3 +11,8 @@
 * TODO Brian interoperability example
 
 make_brian_group(trains)
+
+[[file:examples/brian_interop.py]]
+
+
+* NEURON interoperability example
