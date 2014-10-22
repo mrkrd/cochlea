@@ -94,7 +94,8 @@ Models
 Usage
 -----
 
-Check our online DEMO_ and examples_!
+Check our online DEMO_ and examples_ (probably the easiest is to start
+with `run_zilany2014.py`_).
 
 
 Initialize the modules::
@@ -135,7 +136,7 @@ Plot the results::
 
 .. _DEMO: http://nbviewer.ipython.org/github/mrkrd/cochlea/blob/master/examples/cochlea_demo.ipynb
 .. _examples: https://github.com/mrkrd/cochlea/tree/master/examples
-
+.. _`run_zilany2014.py`: https://github.com/mrkrd/cochlea/blob/master/examples/run_zilany2014.py
 
 
 Spike Train Format
