@@ -19,8 +19,8 @@
 # along with cochlea.  If not, see <http://www.gnu.org/licenses/>.
 
 
-"""This demo shows show to calculate rate-level characteristic of
-a model.
+"""This demo shows how to calculate rate-level characteristic of a
+model.
 
 """
 from __future__ import division, absolute_import, print_function
@@ -41,7 +41,7 @@ def main():
     # rates = calc_rate_level(
     #     model=cochlea.run_holmberg2007,
     #     cf=cochlea.get_nearest_cf_holmberg2007(1000),
-    #     model_pars={'fs': 48e3}
+    #     model_pars={'fs': 48e3, 'syn_mode': 'quantal'},
     # )
 
     rates = calc_rate_level(

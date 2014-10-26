@@ -39,6 +39,12 @@ def calc_rate_level(
 ):
     """Calculate rate-level characteristic of an auditory model.
 
+    Parameters
+    ----------
+    dbspls : array_like, optional
+        An array of sound levels (dB SPL) for which to calculate
+        rates.
+
     """
     if model_pars is None:
         model_pars = {}
@@ -89,15 +95,17 @@ def _run_model(model, dbspl, cf, model_pars):
         **model_pars
     )
 
-    hsr = anf[anf['type']=='hsr']
+
+    ### TODO: try to use DataFrame.groupby instead
+    hsr = anf.query("type == 'hsr'")
     hsr = th.trim(hsr, onset, None)
     rate_hsr = th.firing_rate(hsr)
 
-    msr = anf[anf['type']=='msr']
+    msr = anf.query("type == 'msr'")
     msr = th.trim(msr, onset, None)
     rate_msr = th.firing_rate(msr)
 
-    lsr = anf[anf['type']=='lsr']
+    lsr = anf.query("type == 'lsr'")
     lsr = th.trim(lsr, onset, None)
     rate_lsr = th.firing_rate(lsr)
 
