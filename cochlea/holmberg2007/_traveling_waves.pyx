@@ -563,7 +563,7 @@ def run_ihc_meddis2000(
         np.float64_t recovery_rate_r,
         np.float64_t reprocess_rate_x,
         np.float64_t max_free_pool,
-        opmode='probability'
+        syn_mode='probability'
 ):
 
     cdef np.float64_t dt = 1/fs
@@ -609,9 +609,9 @@ def run_ihc_meddis2000(
         (replenish_rate_y * (loss_rate_l+recovery_rate_r) + k0*loss_rate_l)
     )
 
-    if (spontCleft_c0 > 0) and opmode == 'probability':
+    if (spontCleft_c0 > 0) and syn_mode == 'probability':
         spontFreePool_q0 = spontCleft_c0 * (loss_rate_l + recovery_rate_r) / k0
-    elif (spontCleft_c0 > 0) and opmode == 'quantal':
+    elif (spontCleft_c0 > 0) and syn_mode == 'quantal':
         spontFreePool_q0 = np.floor( (spontCleft_c0 * (loss_rate_l+recovery_rate_r) / k0) + 0.5 )
     else:
         spontFreePool_q0 = max_free_pool
@@ -649,7 +649,7 @@ def run_ihc_meddis2000(
 
 
         ### Synapse
-        if opmode == 'probability':
+        if syn_mode == 'probability':
             # cleftReplenishMode == IHC_MEDDIS2000_CLEFTREPLENISHMODE_ORIGINAL
             if reservoirQ < max_free_pool:
                 replenish = replenish_rate_y * dt * (max_free_pool - reservoirQ)
@@ -670,7 +670,7 @@ def run_ihc_meddis2000(
 
             reprocessedW += reUptake - reprocessed
 
-        elif opmode == 'quantal':
+        elif syn_mode == 'quantal':
             if reservoirQ < max_free_pool:
                 replenish = (np.random.geometric(
                     replenish_rate_y * dt,
@@ -707,7 +707,7 @@ def run_ihc_meddis2000(
 
 
         else:
-            raise NotImplementedError("Unimplemented opmode: {}".format(opmode))
+            raise NotImplementedError("Unimplemented syn_mode: {}".format(syn_mode))
 
     return psp
 
@@ -720,7 +720,7 @@ def run_an_sg_carney_holmberg2007(
         np.float64_t c1,
         np.float64_t s0,
         np.float64_t s1,
-        np.float64_t refractory_period
+        np.float64_t refractory_period,
 ):
 
     cdef np.float64_t dt
@@ -737,7 +737,6 @@ def run_an_sg_carney_holmberg2007(
 
     spikes = []
     for i in range(len(psp)):
-        p = psp[i]
 
         if timer > refractory_period:
             excess_time = timer - refractory_period
@@ -747,8 +746,7 @@ def run_an_sg_carney_holmberg2007(
                 c1*exp(-excess_time/s1)
             )
 
-            ### stochastical vesicle release
-            if p*(1-threshold) > rand[i]:
+            if (1-threshold)*psp[i] > rand[i]:
                 spikes.append(i*dt)
                 timer = 0
 

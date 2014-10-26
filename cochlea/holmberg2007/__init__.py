@@ -36,6 +36,7 @@ def run_holmberg2007(
         anf_num,
         seed,
         cf=None,
+        syn_mode='probability'
 ):
     """Run the inner ear model by [Holmberg2007]_.  It simulates the
     traveling wave on the basilar membrane, inner hair cell, synapses
@@ -56,6 +57,8 @@ def run_holmberg2007(
     cf : float or array_like or None, optional
         Characteristic frequencies.  If `None`, then calculate all 100
         predefined CFs.  CFs must be a subset of `real_freq_map`.
+    syn_mode : {'probability', 'quantal'}, optional
+        Output mode of the IHC synapse.
 
 
     Returns
@@ -131,7 +134,7 @@ def run_holmberg2007(
 
 
     ihc_meddis2000_pars = {
-        'hsr': {
+        'hsr': {                # H2 fiber from Sumner et al. (2002)
             'gamma_ca': 130,
             'beta_ca': 400,
             'tau_m': 1e-4,
@@ -185,14 +188,22 @@ def run_holmberg2007(
     trains = []
     for cf,anf_type in itertools.product(ihcrp.keys(),anf_types):
 
-        if (cf,anf_type) not in psps:
+        if (syn_mode == 'quantal') or ((cf,anf_type) not in psps):
             ### IHC and Synapse
             psp = tw.run_ihc_meddis2000(
                 ihcrp=ihcrp[cf],
                 fs=fs,
+                syn_mode=syn_mode,
                 **ihc_meddis2000_pars[anf_type]
             )
             psps[cf,anf_type] = psp
+
+        elif (syn_mode == 'probability') and ((cf,anf_type) in psps):
+            psp = psps[cf,anf_type]
+
+        else:
+            raise RuntimeError
+
 
         ### Spike generator (pars from Sumner et al. 2002)
         spikes = tw.run_an_sg_carney_holmberg2007(
@@ -202,7 +213,7 @@ def run_holmberg2007(
             c1=0.,
             s0=0.8e-3,
             s1=12.5e-3,
-            refractory_period=0.75e-3
+            refractory_period=0.75e-3,
         )
 
         trains.append({

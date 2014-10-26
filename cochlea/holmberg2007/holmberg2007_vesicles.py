@@ -184,7 +184,7 @@ def run_holmberg2007_vesicles(
         psp = tw.run_ihc_meddis2000(
             ihcrp=ihcrp[cf],
             fs=fs,
-            opmode='quantal',
+            syn_mode='quantal',
             **ihc_meddis2000_pars[anf_type]
         )
 
