@@ -18,6 +18,8 @@ Welcome to cochlea's documentation!
    :maxdepth: 2
 
    readme
+   installation
+   alternatives
    api
 
 

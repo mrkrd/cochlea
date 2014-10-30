@@ -16,7 +16,7 @@ cochlea
 Description
 -----------
 
-*cochlea* is a collection of inner ear models.  The models are easily
+*cochlea* is a collection of inner ear models.  All models are easily
 accessible as Python functions.  They take sound signal as input and
 return spike trains of the auditory nerve fibers::
 
@@ -28,18 +28,19 @@ return spike trains of the auditory nerve fibers::
        '-'     '-'         |           |-->  __|______|______|____
                            +-----------+
             Sound                               Spike Trains
+                                              (Auditory Nerve)
 
 
 
-The implemented models are state-of-the-art biophysical models and
-give realistic approximation of the auditory nerve activity.
+The package contains state-of-the-art biophysical models, which give
+realistic approximation of the auditory nerve activity.
 
-They are implemented using the original code from their authors
-whenever possible.  We wanted to have implementations that gives the
-same results as the original models.  We also made an effort to verify
-the implementation with unit testing (tests directory).
+The models are implemented using the original code from their authors
+whenever possible.  Therefore, they return the same results as the
+original models.  We made an effort to verify it with unit testing
+(tests directory).
 
-The models are also fast.  It is easy to generate responses of
+The implementation is also fast.  It is easy to generate responses of
 hundreds or even thousands of auditory nerve fibers (ANFs).  It is
 possible, for example, to generate responses of the whole human
 auditory nerve (around 30,000 ANFs).  We usually tested the models
@@ -189,63 +190,12 @@ spike trains.
 
 
 
-Requirements
-------------
-
-- Python (2.7)
-- Numpy
-- Scipy
-- Cython
-- Pandas
-
-- Matplotlib (optional, for examples)
-- docopt (optional, for the command line scripts)
-- thorns_ (optional, for examples and stats)
-- matlab_wrapper_ (optional, for the MAP external model)
-
-
-Note: On Windows you can install a Python distribution such as
-Anaconda_ or `Python(x,y)`_ to fulfill most of the dependencies.  Make
-sure that you have 64-bit version of Python.
-
-
-.. _thorns: https://github.com/mrkrd/thorns
-.. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
-.. _Anaconda: https://store.continuum.io/cshop/anaconda/
-.. _`Python(x,y)`: https://code.google.com/p/pythonxy/
-
-
-
-Installation
-------------
-
-::
-
-  pip install cochlea
-
 
 
 Issues and Bugs
 ---------------
 
 https://github.com/mrkrd/cochlea/issues
-
-
-
-Other Implementations
----------------------
-
-- `Carney Lab`_
-- `Matlab Auditory Periphery`_
-- DSAM_
-- `Brian Hears`_
-- `The Auditory Modeling Toolbox`_
-
-.. _`Carney Lab`: http://www.urmc.rochester.edu/labs/Carney-Lab/publications/auditory-models.cfm
-.. _DSAM: http://dsam.org.uk/
-.. _`Matlab Auditory Periphery`: http://www.essexpsychology.macmate.me/HearingLab/modelling.html
-.. _`Brian Hears`: http://www.briansimulator.org/docs/hears.html
-.. _`The Auditory Modeling Toolbox`: http://amtoolbox.sourceforge.net/
 
 
 
