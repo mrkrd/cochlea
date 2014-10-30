@@ -35,7 +35,8 @@ def calc_rate_level(
         model,
         dbspls=None,
         cf=1000,
-        model_pars=None
+        model_pars=None,
+        tone_duration=100e-3,
 ):
     """Calculate rate-level characteristic of an auditory model.
 
@@ -59,6 +60,7 @@ def calc_rate_level(
     kwargs = {
         'model': model,
         'cf': cf,
+        'tone_duration': tone_duration,
         'model_pars': model_pars,
     }
 
@@ -72,10 +74,10 @@ def calc_rate_level(
 
 
 
-def _run_model(model, dbspl, cf, model_pars):
+def _run_model(model, dbspl, cf, model_pars, tone_duration):
 
-    duration = 100e-3
     onset = 10e-3
+    assert tone_duration > onset
 
     fs = model_pars.setdefault('fs', 100e3)
     model_pars.setdefault('anf_num', (250,250,250))
@@ -84,7 +86,7 @@ def _run_model(model, dbspl, cf, model_pars):
     sound = wv.ramped_tone(
         fs=fs,
         freq=cf,
-        duration=duration,
+        duration=tone_duration,
         pad=0,
         dbspl=dbspl
     )
