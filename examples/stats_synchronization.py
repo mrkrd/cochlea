@@ -49,14 +49,7 @@ def main():
 
     print(vss)
 
-    vss = vss.reset_index()
-
-    hsr_vss = vss.pivot(index='dbspl', columns='cf', values='hsr')
-
-    fig,ax = plt.subplots(2,1)
-
-    ax[0].imshow(hsr_vss, aspect='auto', interpolation='nearest')
-    hsr_vss.max().plot(ax=ax[1], logx=True)
+    vss.plot(logx=True)
 
     plt.show()
 

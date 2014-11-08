@@ -60,14 +60,18 @@ def calc_synchronization(
         'model_pars': model_pars,
     }
 
-    vss = th.util.map(
+    all_vss = th.util.map(
         _run_model,
         space,
         kwargs=kwargs,
         backend=map_backend,
     )
 
-    return vss
+    vss = all_vss.reset_index()
+
+    best_vss = vss.groupby('cf').max().drop('dbspl', axis=1)
+
+    return best_vss
 
 
 
@@ -95,32 +99,20 @@ def _run_model(model, dbspl, cf, model_pars):
         **model_pars
     )
 
+    # th.plot_raster(anf)
+    # th.show()
 
     ### We want to make sure the the output CF is equal to the desired
     ### CF.
     real_cf, = np.unique(anf['cf'])
     assert real_cf == cf
 
-    hsr = anf[anf['type']=='hsr']
-    hsr = th.trim(hsr, onset, None)
-    si_hsr = th.vector_strength(hsr, cf)
 
-    msr = anf[anf['type']=='msr']
-    msr = th.trim(msr, onset, None)
-    si_msr = th.vector_strength(msr, cf)
+    vss = {}
+    for typ,group in anf.groupby('type'):
+        trimmed = th.trim(group, onset, None)
+        vs = th.vector_strength(trimmed, cf)
+        vss[typ] = vs
 
-    lsr = anf[anf['type']=='lsr']
-    lsr = th.trim(lsr, onset, None)
-    si_lsr = th.vector_strength(lsr, cf)
-
-    # print(si_hsr)
-    # th.plot_raster(anf)
-    # th.show()
-
-    vss = {
-        'hsr': si_hsr,
-        'msr': si_msr,
-        'lsr': si_lsr,
-    }
 
     return vss
