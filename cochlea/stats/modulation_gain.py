@@ -43,6 +43,7 @@ def calc_modulation_gain(
         cf=10e3,
         model_pars=None,
         m=1,
+        level_above_threshold=10,
         map_backend=None,
 ):
     """Calculate modulation gain of an inner ear model.
@@ -51,6 +52,9 @@ def calc_modulation_gain(
     ----------
     fms : array_like
         List of modulation frequencies [Hz].
+    level_above_threshold : scalar
+        Sound level which will be added to the threshold level to
+        calculate modulation gain.
 
     TODO: document parameters
 
@@ -69,7 +73,7 @@ def calc_modulation_gain(
         model_pars=model_pars
     )
 
-    dbspl = threshold['threshold'].iloc[0] + 10
+    dbspl = threshold['threshold'].iloc[0] + level_above_threshold
     log.info("Sound level: {} dB SPL".format(dbspl))
 
     space = {

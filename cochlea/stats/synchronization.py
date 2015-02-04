@@ -19,6 +19,7 @@
 
 """
 from __future__ import division, absolute_import, print_function
+from __future__ import unicode_literals
 
 __author__ = "Marek Rudnicki"
 
