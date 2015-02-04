@@ -97,24 +97,10 @@ def _run_model(model, dbspl, cf, model_pars, tone_duration):
         **model_pars
     )
 
-
-    ### TODO: try to use DataFrame.groupby instead
-    hsr = anf.query("type == 'hsr'")
-    hsr = th.trim(hsr, onset, None)
-    rate_hsr = th.firing_rate(hsr)
-
-    msr = anf.query("type == 'msr'")
-    msr = th.trim(msr, onset, None)
-    rate_msr = th.firing_rate(msr)
-
-    lsr = anf.query("type == 'lsr'")
-    lsr = th.trim(lsr, onset, None)
-    rate_lsr = th.firing_rate(lsr)
-
-    rates = {
-        'hsr': rate_hsr,
-        'msr': rate_msr,
-        'lsr': rate_lsr,
-    }
+    rates = {}
+    for typ,trains in anf.groupby('type'):
+        trimmed = th.trim(trains, onset, None)
+        rate = th.firing_rate(trimmed)
+        rates[typ] = rate
 
     return rates
