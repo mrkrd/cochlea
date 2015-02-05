@@ -60,8 +60,10 @@ def main():
 
     human_ths = calc_human_hearing_thresholds(cfs)
 
-    human_ths.plot(logx=True, style='--', linewidth=5)
-    ths.plot(logx=True)
+    fig, ax = plt.subplots()
+
+    human_ths.plot(ax=ax, logx=True, style='--', linewidth=5)
+    ths.plot(ax=ax, logx=True)
 
     plt.show()
 
