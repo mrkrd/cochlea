@@ -25,7 +25,7 @@ __author__ = "Marek Rudnicki"
 
 
 import warnings
-import platform
+import sys
 import numpy as np
 
 from cochlea.zilany2009 import run_zilany2009
@@ -42,11 +42,11 @@ from cochlea.holmberg2007 import get_nearest_cf as get_nearest_cf_holmberg2007
 __version__ = "1.2"
 
 
-### Check if running 64-bit version of Python
-_bits, _ = platform.architecture()
-if _bits == '32bit':
-    warnings.warn("cochlea: it seems that you are using 32-bit version of Python.  If you experience issues, please switch to 64-bit version.")
-
+# Check if running 64-bit version of Python
+if sys.maxsize <= 2**32:
+    warnings.warn("cochlea: it seems that you are using 32-bit" +
+                  "version of Python." +
+                  "If you experience issues, please switch to 64-bit version.")
 
 
 def set_dbspl(signal, dbspl):
@@ -66,7 +66,7 @@ def set_dbspl(signal, dbspl):
 
     """
     p0 = 20e-6
-    rms = np.sqrt( np.sum(signal**2) / signal.size )
+    rms = np.sqrt(np.sum(signal**2) / signal.size)
 
     scalled = signal * 10**(dbspl/20) * p0 / rms
 
@@ -76,13 +76,12 @@ def set_dbspl(signal, dbspl):
 def set_dba_isolet(signal, dba):
     p0 = 20e-6
 
-    ### value from miclib (precalculated for all ISOLET files)
+    # value from miclib (precalculated for all ISOLET files)
     rms_dba = 0.02972401089
 
     scaled = signal * 10**(dba/20) * p0 / rms_dba
 
     return scaled
-
 
 
 def make_brian_group(trains):
@@ -103,13 +102,12 @@ def make_brian_group(trains):
 
     times = []
     indices = []
-    for i,spikes in enumerate(trains['spikes']):
-        times.append( spikes )
-        indices.append( np.ones(len(spikes)) * i )
+    for i, spikes in enumerate(trains['spikes']):
+        times.append(spikes)
+        indices.append(np.ones(len(spikes)) * i)
 
-
-    indices = np.concatenate( indices )
-    times = np.concatenate( times ) * brian.second
+    indices = np.concatenate(indices)
+    times = np.concatenate(times) * brian.second
 
     group = brian.SpikeGeneratorGroup(
         len(trains),
