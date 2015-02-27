@@ -25,6 +25,7 @@ def calc_human_hearing_thresholds(freqs):
     http://www.diracdelta.co.uk/science/source/t/h/threshold%20of%20hearing/source.html
 
     """
+    freqs = np.atleast_1d(freqs)
     f = freqs/1000
 
     thresholds = (
