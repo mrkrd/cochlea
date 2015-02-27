@@ -24,7 +24,6 @@ __author__ = "Marek Rudnicki"
 
 
 import numpy as np
-import pandas as pd
 import logging
 
 import thorns as th
@@ -48,8 +47,7 @@ def calc_thresholds_rate(
     if model_pars is None:
         model_pars = {}
 
-
-    ### Calculate spontaneous rate for reference
+    # Calculate spontaneous rate for reference
     spont_rate = th.util.cache(calc_spont_threshold)(
         model=model,
         cf=cfs[0],
@@ -66,7 +64,6 @@ def calc_thresholds_rate(
         'asr_filter': asr_filter,
     }
 
-
     thresholds = th.util.map(
         calc_threshold,
         space,
@@ -79,15 +76,13 @@ def calc_thresholds_rate(
     return thresholds
 
 
-
-
 def calc_spont_threshold(model, cf, model_pars):
 
     pars = dict(model_pars)
 
     fs = pars.setdefault('fs', 100e3)
     pars.setdefault('seed', 0)
-    pars.setdefault('anf_num', (1000,0,0))
+    pars.setdefault('anf_num', (1000, 0, 0))
 
     tmax = 250e-3
     silence = np.zeros(fs*tmax)
@@ -107,8 +102,6 @@ def calc_spont_threshold(model, cf, model_pars):
     return threshold
 
 
-
-
 def calc_threshold(
         model,
         cf,
@@ -119,7 +112,7 @@ def calc_threshold(
 ):
 
     kwargs = {
-        'model':model,
+        'model': model,
         'model_pars': model_pars,
         'cf': cf,
         'spont_rate': spont_rate,
@@ -136,8 +129,6 @@ def calc_threshold(
     )
 
     return dbspl_opt
-
-
 
 
 def error_func(
