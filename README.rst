@@ -1,24 +1,9 @@
 cochlea
 =======
 
-*Inner ear models in Python*
-
-
-:Name: cochlea
-:Author: Marek Rudnicki
-:Email: marek.rudnicki@tum.de
-:URL: https://github.com/mrkrd/cochlea
-:Documentation: https://pythonhosted.org/cochlea/
-:License: GNU General Public License v3 or later (GPLv3+)
-
-
-
-Description
------------
-
 *cochlea* is a collection of inner ear models.  All models are easily
 accessible as Python functions.  They take sound signal as input and
-return spike trains of the auditory nerve fibers::
+return `spike trains`_ of the auditory nerve fibers::
 
 
 
@@ -38,7 +23,7 @@ realistic approximation of the auditory nerve activity.
 The models are implemented using the original code from their authors
 whenever possible.  Therefore, they return the same results as the
 original models.  We made an effort to verify it with unit testing
-(tests directory).
+(see tests directory for details).
 
 The implementation is also fast.  It is easy to generate responses of
 hundreds or even thousands of auditory nerve fibers (ANFs).  It is
@@ -51,23 +36,26 @@ I developed *cochlea* during my PhD in the group of Werner Hemmert
 several versions and rewrites.  Now, it is quite stable and we decided
 to release it for the community.
 
-*cochlea* could be used by:
-
-- researchers doing computational neuroscience (combines well with
-  NEURON_ and Brian_),
-- experimenters that require realistic input spike trains,
-- researchers improving inner ear models,
-- everyone interested in understanding how hearing works.
-
-
+.. _`spike trains`: https://en.wikipedia.org/wiki/Spike_train
 .. _`Bio-Inspired Information Processing`: http://www.imetum.tum.de/research/bai/home/?L=1
+
+
+
+Features
+--------
+
+- State of the art inner ear models accessible from Python.
+- Contains full biophysical inner ear models: sound in, spikes out.
+- Fast; can generate thousands of spike trains.
+- Interoperability with neuron simulation software such as NEURON_ and Brian_.
+
 .. _NEURON: http://www.neuron.yale.edu/neuron/
 .. _Brian: http://briansimulator.org/
 
 
 
-Models
-------
+Implemented Models
+------------------
 
 - Holmberg, M. (2007). Speech Encoding in the Human Auditory
   Periphery: Modeling and Quantitative Assessment by Means of
@@ -89,6 +77,7 @@ Models
 
 .. _`MATLAB Auditory Periphery`: http://www.essexpsychology.macmate.me/HearingLab/modelling.html
 .. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
+
 
 
 
@@ -135,9 +124,32 @@ Plot the results::
   th.show()
 
 
+You can browse through the API documentation at:
+https://pythonhosted.org/cochlea/
+
+
 .. _DEMO: http://nbviewer.ipython.org/github/mrkrd/cochlea/blob/master/examples/cochlea_demo.ipynb
 .. _examples: https://github.com/mrkrd/cochlea/tree/master/examples
 .. _`run_zilany2014.py`: https://github.com/mrkrd/cochlea/blob/master/examples/run_zilany2014.py
+
+
+
+
+
+Installation
+------------
+
+::
+
+  pip install cochlea
+
+Check INSTALL.rst_ for details.
+
+.. _INSTALL.rst: INSTALL.rst
+
+
+
+
 
 
 Spike Train Format
@@ -190,12 +202,39 @@ spike trains.
 
 
 
+Contribute
+----------
+
+- Open tasks: TODO.org_ (best viewed in Emacs org-mode)
+- Issue Tracker: https://github.com/mrkrd/cochlea/issues
+- Source Code: https://github.com/mrkrd/cochlea
+
+.. _TODO.org: TODO.org
 
 
-Issues and Bugs
----------------
 
-https://github.com/mrkrd/cochlea/issues
+Support
+-------
+
+If you are having issues, please let us know.  We have a mailing list
+located at: cochlea-and-thorns@googlegroups.com
+
+
+
+Other Implementations
+---------------------
+
+- `Carney Lab`_
+- `Matlab Auditory Periphery`_
+- DSAM_
+- `Brian Hears`_
+- `The Auditory Modeling Toolbox`_
+
+.. _`Carney Lab`: http://www.urmc.rochester.edu/labs/Carney-Lab/publications/auditory-models.cfm
+.. _DSAM: http://dsam.org.uk/
+.. _`Matlab Auditory Periphery`: http://www.essexpsychology.macmate.me/HearingLab/modelling.html
+.. _`Brian Hears`: http://www.briansimulator.org/docs/hears.html
+.. _`The Auditory Modeling Toolbox`: http://amtoolbox.sourceforge.net/
 
 
 
@@ -236,3 +275,10 @@ Neuroscience (reference No. 01GQ0441 and 01GQ1004B) and the German
 Research Foundation Foundation's Priority Program PP 1608 *Ultrafast
 and temporally precise information processing: Normal and
 dysfunctional hearing*.
+
+
+License
+-------
+
+The project is licensed under the GNU General Public License v3 or
+later (GPLv3+).

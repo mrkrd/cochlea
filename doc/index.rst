@@ -7,21 +7,14 @@ Welcome to cochlea's documentation!
 .. moduleauthor:: Marek Rudnicki
 
 
-
-.. include:: ../README.rst
-   :start-after: =======
-   :end-before: Description
+The module is available at https://github.com/mrkrd/cochlea
 
 
 
 .. toctree::
    :maxdepth: 2
 
-   readme
-   installation
-   alternatives
    api
-
 
 
 

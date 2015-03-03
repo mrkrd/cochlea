@@ -1,9 +1,3 @@
-
-.. toctree::
-   :maxdepth: 2
-
-
-
 Installation
 ============
 
@@ -26,15 +20,13 @@ Python 2.7 (64-bit) is supported.
 - matlab_wrapper_ (optional, for the MAP external model)
 
 
-Note: On Windows you can install a Python distribution such as
-Anaconda_ or `Python(x,y)`_ to fulfill most/all of the dependencies.
-Make sure that you have 64-bit version of Python.
+Note: We recommend Anaconda_ Python distribution for Windows users.
+It comes with all required dependencies in one package.
 
 
 .. _thorns: https://github.com/mrkrd/thorns
 .. _matlab_wrapper: https://github.com/mrkrd/matlab_wrapper
 .. _Anaconda: https://store.continuum.io/cshop/anaconda/
-.. _`Python(x,y)`: https://code.google.com/p/pythonxy/
 
 
 
@@ -42,14 +34,16 @@ Make sure that you have 64-bit version of Python.
 Installation from PyPI
 ----------------------
 
-This is the easiest and recommended way to install *cochlea*.  On
-GNU/Linux/BSD, it will download the source package from Python Package
-Index (PyPI) repository, compile and install it on your system.  On
-Windows, it will download a pre-compiled binary package and install
-it.  Because the package is already compiled, you will not need Cython
-nor C compiler on Windows.  Make sure that you have at least `Numpy`,
-`Scipy` and `Pandas` on your system, otherwise the installation
-program (pip) will try to install them from PyPI.
+This is the easiest and recommended way to install *cochlea*.
+
+On GNU/Linux/BSD, it will download the source package from Python
+Package Index (PyPI) repository, compile and install it on your
+system.  On Windows, it will download a pre-compiled binary package
+and install it.  Because the package is already compiled, you will not
+need Cython nor C compiler on Windows.  Make sure that you have at
+least `Numpy`, `Scipy` and `Pandas` on your system, otherwise the
+installation program (pip) will try (and probably fail) to install
+them from PyPI.
 
 Type in the console/terminal as root/administrator::
 

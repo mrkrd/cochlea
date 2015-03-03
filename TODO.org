@@ -16,6 +16,6 @@ make_brian_group(trains)
 
 
 * NEURON interoperability example
-* Modernize the documentation
+* DONE Modernize the documentation
 
 https://write-the-docs.readthedocs.org/
