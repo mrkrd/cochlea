@@ -1,4 +1,4 @@
-# Copyright 2009-2014 Marek Rudnicki
+# Copyright 2009-2015 Marek Rudnicki
 
 # This file is part of cochlea.
 
@@ -24,7 +24,6 @@ __author__ = "Marek Rudnicki"
 
 
 import numpy as np
-import pandas as pd
 
 import thorns as th
 import thorns.waves as wv
@@ -34,7 +33,6 @@ from . threshold_rate import calc_thresholds_rate
 import logging
 
 log = logging.getLogger('thorns')
-
 
 
 def calc_modulation_gain(
@@ -51,12 +49,20 @@ def calc_modulation_gain(
     Parameters
     ----------
     fms : array_like
-        List of modulation frequencies [Hz].
-    level_above_threshold : scalar
+        List of modulation frequencies (Hz).
+    cf : scalar, optional
+        Characteristic frequency (Hz).
+    model_pars : dict, ooptional
+        Additional parameters to be passed to the model funtion.
+    m : float, optional
+        Modulation depth in the range of <0, 1>.
+    level_above_threshold : scalar, optional
         Sound level which will be added to the threshold level to
         calculate modulation gain.
 
-    TODO: document parameters
+    map_backend : str, optional
+        Map backend that will be used in the calculation.  See
+        `thorns.util.map()`.
 
     """
     if model_pars is None:
@@ -65,8 +71,7 @@ def calc_modulation_gain(
     if fms is None:
         fms = np.logspace(np.log10(10), np.log10(2e3), 16)
 
-
-    ### Calculate dbspl = threshold + 10 dB
+    # Calculate dbspl = threshold + 10 dB
     threshold = calc_thresholds_rate(
         model=model,
         cfs=[cf],
@@ -88,7 +93,6 @@ def calc_modulation_gain(
         'm': m,
     }
 
-
     gains = th.util.map(
         _run_model,
         space,
@@ -101,17 +105,14 @@ def calc_modulation_gain(
     return gains
 
 
-
-
 def _run_model(model, fm, cf, dbspl, model_pars, m):
 
     duration = 0.6
     onset = 10e-3
 
     fs = model_pars.setdefault('fs', 100e3)
-    model_pars.setdefault('anf_num', (250,0,0))
+    model_pars.setdefault('anf_num', (250, 0, 0))
     model_pars.setdefault('seed', 0)
-
 
     sound = wv.amplitude_modulated_tone(
         fs=fs,
@@ -128,7 +129,9 @@ def _run_model(model, fm, cf, dbspl, model_pars, m):
         **model_pars
     )
 
-    si = th.vector_strength(anf, fm)
-    gain = 20 * np.log10(2*si / m)
+    trimmed = th.trim(anf, onset)
+
+    vs = th.vector_strength(trimmed, fm)
+    gain = 20 * np.log10(2*vs / m)
 
     return gain
