@@ -6,7 +6,8 @@ Authors
 -------
 
 * Marek Rudnicki <marekrud@gmail.com>
-* M. Holmberg
-* M. S. Zilany
-* I. C. Bruce
-* L. H. Carney
+* Werner Hemmert <werner.hemmert@tum.de>
+* Marcus Holmberg
+* Muhammad S. A. Zilany
+* Ian C. Bruce
+* Laurel H. Carney
