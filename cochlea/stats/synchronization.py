@@ -25,7 +25,6 @@ __author__ = "Marek Rudnicki"
 
 
 import numpy as np
-import pandas as pd
 
 import thorns as th
 import thorns.waves as wv
@@ -49,7 +48,6 @@ def calc_synchronization(
 
     if dbspls is None:
         dbspls = [20, 40, 60]
-
 
     space = {
         'dbspl': dbspls,
@@ -75,15 +73,13 @@ def calc_synchronization(
     return best_vss
 
 
-
-
 def _run_model(model, dbspl, cf, model_pars):
 
     duration = 100e-3
     onset = 10e-3
 
     fs = model_pars.setdefault('fs', 100e3)
-    model_pars.setdefault('anf_num', (250,250,250))
+    model_pars.setdefault('anf_num', (250, 250, 250))
     model_pars.setdefault('seed', 0)
 
     sound = wv.ramped_tone(
@@ -103,17 +99,15 @@ def _run_model(model, dbspl, cf, model_pars):
     # th.plot_raster(anf)
     # th.show()
 
-    ### We want to make sure the the output CF is equal to the desired
-    ### CF.
+    # We want to make sure the the output CF is equal to the desired
+    # CF.
     real_cf, = np.unique(anf['cf'])
     assert real_cf == cf
 
-
     vss = {}
-    for typ,group in anf.groupby('type'):
+    for typ, group in anf.groupby('type'):
         trimmed = th.trim(group, onset, None)
         vs = th.vector_strength(trimmed, cf)
         vss[typ] = vs
-
 
     return vss
