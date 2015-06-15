@@ -128,7 +128,7 @@ You can browse through the API documentation at:
 https://pythonhosted.org/cochlea/
 
 
-.. _DEMO: http://nbviewer.ipython.org/github/mrkrd/cochlea/blob/master/examples/cochlea_demo.ipynb
+.. _DEMO: https://github.com/mrkrd/cochlea/tree/master/examples/cochlea_demo.ipynb
 .. _examples: https://github.com/mrkrd/cochlea/tree/master/examples
 .. _`run_zilany2014.py`: https://github.com/mrkrd/cochlea/blob/master/examples/run_zilany2014.py
 
