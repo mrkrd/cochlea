@@ -44,7 +44,7 @@ import logging
 from scikits import audiolab
 
 import cochlea
-import mrlib.waves as wv
+import thorns.waves as wv
 
 
 from docopt import docopt
