@@ -37,7 +37,7 @@ several versions and rewrites.  Now, it is quite stable and we decided
 to release it for the community.
 
 .. _`spike trains`: https://en.wikipedia.org/wiki/Spike_train
-.. _`Bio-Inspired Information Processing`: http://www.imetum.tum.de/research/bai/home/?L=1
+.. _`Bio-Inspired Information Processing`: http://www.imetum.tum.de/research-groups/bai/home/?L=1
 
 
 
@@ -247,6 +247,12 @@ models in Python*, https://github.com/mrkrd/cochlea.
 
 When you use any of the models, always cite the original publications
 describing the model.
+
+We published an open access paper with results from *cochlea*: Marek
+Rudnicki, Oliver Schoppe, Michael Isik, Florian Völk and Werner
+Hemmert (2015) *Modeling auditory coding: from sound to spikes*, Cell
+and Tissue Research,
+http://link.springer.com/article/10.1007/s00441-015-2202-z
 
 
 
