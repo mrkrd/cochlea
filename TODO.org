@@ -20,3 +20,7 @@ make_brian_group(trains)
 
 https://write-the-docs.readthedocs.org/
 * Add Python 3 compatibility
+* Add DOI for the repository for better citing
+
+  - https://guides.github.com/activities/citable-code/
+  - http://www.g-node.org/tools-and-services
