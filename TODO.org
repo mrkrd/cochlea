@@ -29,3 +29,4 @@ https://write-the-docs.readthedocs.org/
 
   - [ ] check the overlap with calc_cfs()
   - [ ] unit test
+* Purge __author__ and similar
