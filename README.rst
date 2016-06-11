@@ -157,7 +157,7 @@ Spike Train Format
 
 Spike train data format is based on a standard DataFrame_ format from
 the excellent pandas_ library.  Spike trains and their meta data are
-stored in DataFrame, where each row corresponds to a single neuron:
+stored in DataFrame_, where each row corresponds to a single neuron:
 
 =====  ========  ====  ====  =================================================
 index  duration  type    cf                                             spikes
@@ -183,7 +183,7 @@ low-spontaneous rate fibers.
 Advantages of the format:
 
 - easy addition of new meta data,
-- efficient grouping and filtering of trains using _DataFrame
+- efficient grouping and filtering of trains using DataFrame_
   functionality,
 - export to MATLAB struct array through mat files::
 
