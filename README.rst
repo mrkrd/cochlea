@@ -202,8 +202,8 @@ spike trains.
 
 
 
-Contribute
-----------
+Contribute & Support
+--------------------
 
 - Open tasks: TODO.org_ (best viewed in Emacs org-mode)
 - Issue Tracker: https://github.com/mrkrd/cochlea/issues
@@ -213,16 +213,8 @@ Contribute
 
 
 
-Support
--------
-
-If you are having issues, please let us know.  We have a mailing list
-located at: cochlea-and-thorns@googlegroups.com
-
-
-
-Other Implementations
----------------------
+Similar Projects
+----------------
 
 - `Carney Lab`_
 - `Matlab Auditory Periphery`_
