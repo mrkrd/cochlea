@@ -30,4 +30,10 @@ https://write-the-docs.readthedocs.org/
   - [ ] check the overlap with calc_cfs()
   - [ ] unit test
 * Purge __author__ and similar
-* from throns import set_dbspl
+* from throns import set_dbspl                                       :cancel:
+
+It's useful to have basic operation/import without the thorns library.
+
+As long as `from thorns import set_dbspl` in cochlea.__init__ would be
+the only reference to throns, I prefer to have this little function
+duplicated.
