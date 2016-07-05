@@ -2,11 +2,11 @@
 #+AUTHOR: Marek Rudnicki
 #+CATEGORY: cochlea
 
-* Test and activate ffGn in zilany2009
+* TODO Test and activate ffGn in zilany2009
 
 - Remove the notes in docstrings
 
-* Generate new test data for Zilany2009 model
+* TODO Generate new test data for Zilany2009 model
 
 * TODO Brian interoperability example
 
@@ -15,22 +15,22 @@ make_brian_group(trains)
 [[file:examples/brian_interop.py]]
 
 
-* NEURON interoperability example
+* TODO NEURON interoperability example
 * DONE Modernize the documentation
 
 https://write-the-docs.readthedocs.org/
-* Add Python 3 compatibility
-* Add DOI for the repository for better citing
+* TODO Add Python 3 compatibility
+* TODO Add DOI for the repository for better citing
 
   - https://guides.github.com/activities/citable-code/
   - http://www.g-node.org/tools-and-services
 
-* Pull Jörg's Greenwood functions
+* TODO Pull Jörg's Greenwood functions
 
   - [ ] check the overlap with calc_cfs()
   - [ ] unit test
-* Purge __author__ and similar
-* from throns import set_dbspl                                       :cancel:
+* TODO Purge __author__ and similar
+* CANCELED from throns import set_dbspl
 
 It's useful to have basic operation/import without the thorns library.
 
