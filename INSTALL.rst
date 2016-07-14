@@ -67,7 +67,7 @@ First, clone the repository::
   git clone https://github.com/mrkrd/cochlea.git
 
 
-Second, inside of the repository. call the installation script::
+Second, call the installation script inside of the repository::
 
   python setup.py install
 
