@@ -242,7 +242,7 @@ def run_spike_generator(
     cdef double *synout_data = <double *>np.PyArray_DATA(synout)
 
     # Output spikes (signal)
-    sptimes = np.zeros(np.int_(np.ceil(len(synout)/0.00075/fs)))
+    sptimes = np.zeros(int(np.ceil(len(synout)/0.00075/fs)))
     cdef double *sptimes_data = <double *>np.PyArray_DATA(sptimes)
 
 
