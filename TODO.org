@@ -37,3 +37,7 @@ It's useful to have basic operation/import without the thorns library.
 As long as `from thorns import set_dbspl` in cochlea.__init__ would be
 the only reference to throns, I prefer to have this little function
 duplicated.
+* DONE Merge Jörg's PR: typecasting in pyx
+  CLOSED: [2016-07-14 Thu 13:46]
+
+https://github.com/mrkrd/cochlea/pull/3
