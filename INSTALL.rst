@@ -99,7 +99,7 @@ but you will need to set up a proper environment to compile the
 Cython/C extensions.
 
 I followed roughly the instructions from
-64BitCythonExtensionsOnWindows_.  First of all, you will need Windows
+CythonExtensionsOnWindows_.  First of all, you will need Windows
 SDK (.NET 3.5 SP1).  Next, I installed necessary requirements from the
 `Unofficial Windows Binaries for Python Extension Packages`_
 repository (I'm not sure, if it would work with Anaconda's
@@ -119,5 +119,5 @@ in Python, most likely the binary sub-modules are not
 compiled/installed.
 
 
-.. _64BitCythonExtensionsOnWindows: https://github.com/cython/cython/wiki/64BitCythonExtensionsOnWindows
+.. _CythonExtensionsOnWindows: https://github.com/cython/cython/wiki/CythonExtensionsOnWindows
 .. _`Unofficial Windows Binaries for Python Extension Packages`: http://www.lfd.uci.edu/~gohlke/pythonlibs/
