@@ -42,6 +42,6 @@ duplicated.
 
 https://github.com/mrkrd/cochlea/pull/3
 * DONE [#A] Check RP #4: ffGn
-  CLOSED: [2016-07-20 Wed 19:32]
+  CLOSED: [2016-07-20 Wed 19:34]
 
 https://github.com/mrkrd/cochlea/issues/4
