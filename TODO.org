@@ -25,10 +25,11 @@ https://write-the-docs.readthedocs.org/
   - https://guides.github.com/activities/citable-code/
   - http://www.g-node.org/tools-and-services
 
-* TODO Pull Jörg's Greenwood functions
+* WAITING Pull Jörg's Greenwood functions
 
   - [ ] check the overlap with calc_cfs()
   - [ ] unit test
+
 * DONE Purge __author__ and similar
   CLOSED: [2016-07-23 Sat 21:19]
 * CANCELED from throns import set_dbspl
