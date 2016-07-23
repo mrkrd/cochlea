@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 """Run inner ear model by Zilany et al. (2014).
 
 Usage:
@@ -33,8 +34,6 @@ Examaple:
 
 from __future__ import division
 from __future__ import print_function
-
-__author__ = "Marek Rudnicki"
 
 import numpy as np
 import scipy.io

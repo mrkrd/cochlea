@@ -5,11 +5,6 @@
 """
 from __future__ import division, print_function, absolute_import
 
-__author__ = "Marek Rudnicki"
-__copyright__ = "Copyright 2014, Marek Rudnicki"
-__license__ = "GPLv3+"
-
-
 import numpy as np
 
 import cochlea

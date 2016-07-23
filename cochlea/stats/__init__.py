@@ -2,8 +2,6 @@
 
 from __future__ import division, print_function, absolute_import
 
-__author__ = "Marek Rudnicki"
-
 import numpy as np
 import pandas as pd
 

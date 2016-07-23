@@ -29,7 +29,8 @@ https://write-the-docs.readthedocs.org/
 
   - [ ] check the overlap with calc_cfs()
   - [ ] unit test
-* TODO Purge __author__ and similar
+* DONE Purge __author__ and similar
+  CLOSED: [2016-07-23 Sat 21:19]
 * CANCELED from throns import set_dbspl
 
 It's useful to have basic operation/import without the thorns library.

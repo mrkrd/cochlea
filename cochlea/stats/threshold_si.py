@@ -7,8 +7,6 @@ from __future__ import print_function
 raise NotImplementedError
 
 
-__author__ = "Marek Rudnicki"
-
 import numpy as np
 import pandas as pd
 import logging
