@@ -2,11 +2,17 @@
 #+AUTHOR: Marek Rudnicki
 #+CATEGORY: cochlea
 
-* TODO Test and activate ffGn in zilany2009
+* CANCELED Test and activate ffGn in zilany2009
+  CLOSED: [2016-07-25 Mon 14:48]
+
+Zilany2009 model is depricated by Zilany2014.
 
 - Remove the notes in docstrings
 
-* TODO Generate new test data for Zilany2009 model
+* CANCELED Generate new test data for Zilany2009 model
+  CLOSED: [2016-07-25 Mon 14:47]
+
+Zilany2009 model is depricated by Zilany2014.
 
 * TODO Brian interoperability example
 
