@@ -29,7 +29,11 @@ https://write-the-docs.readthedocs.org/
 * TODO Add DOI for the repository for better citing
 
   - https://guides.github.com/activities/citable-code/
-  - http://www.g-node.org/tools-and-services
+
+  - http://www.g-node.org/tools-and-services -- G-Node is more for
+    data sets and not code
+
+
 
 * WAITING Pull Jörg's Greenwood functions
 
