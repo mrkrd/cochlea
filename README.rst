@@ -1,6 +1,8 @@
 cochlea
 =======
 
+[![DOI](https://zenodo.org/badge/24233/mrkrd/cochlea.svg)](https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea)
+
 *cochlea* is a collection of inner ear models.  All models are easily
 accessible as Python functions.  They take sound signal as input and
 return `spike trains`_ of the auditory nerve fibers::
@@ -233,15 +235,15 @@ Similar Projects
 Citing
 ------
 
-If you are using this software in your research, please make a
-reference: Rudnicki, M. and Hemmert, W. (2014) *Cochlea: inner ear
-models in Python*, https://github.com/mrkrd/cochlea.
+If you are using this software, please make an appropriate citation
+using our DOI:
+[![DOI](https://zenodo.org/badge/24233/mrkrd/cochlea.svg)](https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea)
 
-When you use any of the models, always cite the original publications
-describing the model.
+When using a model from *cochlea*, please cite additionally the
+original authors of the model.
 
-We published an open access paper with results from *cochlea*: Marek
-Rudnicki, Oliver Schoppe, Michael Isik, Florian Völk and Werner
+We have published an open access paper with results from *cochlea*:
+Marek Rudnicki, Oliver Schoppe, Michael Isik, Florian Völk and Werner
 Hemmert (2015) *Modeling auditory coding: from sound to spikes*, Cell
 and Tissue Research,
 http://link.springer.com/article/10.1007/s00441-015-2202-z
