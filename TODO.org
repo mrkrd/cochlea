@@ -26,14 +26,18 @@ make_brian_group(trains)
 
 https://write-the-docs.readthedocs.org/
 * TODO Add Python 3 compatibility
-* TODO Add DOI for the repository for better citing
+* DONE Add DOI for the repository for better citing
+  CLOSED: [2016-09-04 Sun 16:22]
 
   - https://guides.github.com/activities/citable-code/
 
   - http://www.g-node.org/tools-and-services -- G-Node is more for
     data sets and not code
 
+  - zenodo required to make a new github release, which will get a new
+    DOI (tags are not enough)
 
+  - link to the latest doi: https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea
 
 * WAITING Pull Jörg's Greenwood functions
 
