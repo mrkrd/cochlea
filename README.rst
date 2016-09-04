@@ -1,7 +1,8 @@
 cochlea
 =======
 
-[![DOI](https://zenodo.org/badge/24233/mrkrd/cochlea.svg)](https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea)
+.. image:: https://zenodo.org/badge/24233/mrkrd/cochlea.svg
+   :target: https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea
 
 *cochlea* is a collection of inner ear models.  All models are easily
 accessible as Python functions.  They take sound signal as input and
@@ -237,7 +238,8 @@ Citing
 
 If you are using this software, please make an appropriate citation
 using our DOI:
-[![DOI](https://zenodo.org/badge/24233/mrkrd/cochlea.svg)](https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea)
+.. image:: https://zenodo.org/badge/24233/mrkrd/cochlea.svg
+   :target: https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea
 
 When using a model from *cochlea*, please cite additionally the
 original authors of the model.
