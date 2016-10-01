@@ -85,6 +85,7 @@ def run_zilany2014(
 
     np.random.seed(seed)
 
+    # TODO: use cochlea.greenwood() instead
     cfs = calc_cfs(cf, species)
 
     channel_args = [

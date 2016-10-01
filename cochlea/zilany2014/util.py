@@ -96,7 +96,6 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1, random_debug=None):
 
 
 def calc_cfs(cf, species):
-
     if np.isscalar(cf):
         cfs = [float(cf)]
 

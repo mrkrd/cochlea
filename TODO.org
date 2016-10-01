@@ -39,12 +39,13 @@ https://write-the-docs.readthedocs.org/
 
   - link to the latest doi: https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea
 
-* TODO Pull Jörg's Greenwood functions
+* DONE Pull Jörg's Greenwood functions
+  CLOSED: [2016-10-01 Sat 20:29]
 
 https://github.com/mrkrd/cochlea/pull/5
 
-  - [ ] check the overlap with calc_cfs()
-  - [ ] unit test
+  - [X] check the overlap with calc_cfs()
+  - [X] unit test
 
 * DONE Purge __author__ and similar
   CLOSED: [2016-07-23 Sat 21:19]
