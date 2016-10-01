@@ -6,8 +6,9 @@ import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 import cochlea
 
+
 def test_invertable():
-    """ Test if the greenwood function is invertable
+    """Test if the greenwood function is invertable.
 
     """
     freq = np.linspace(20, 20e3, 100)
@@ -16,26 +17,28 @@ def test_invertable():
 
     assert_almost_equal(freq, freq_greenwood)
 
+
 def test_function():
-    """Compare function results with correct value
+    """Compare function results with correct value.
 
     """
     freq_0 = cochlea.greenwood(0, 'human')
 
-    freq_0_calc = 165.4 * (1 - 0.88)
+    freq_0_target = 165.4 * (1 - 0.88)
 
-    assert(freq_0 == freq_0_calc)
+    assert_equal(freq_0, freq_0_target)
+
 
 def test_parameters():
-    """ Test if providing parameters results in the same as providing species
+    """Test if providing parameters results in the same as providing species.
 
     """
     x = np.linspace(0, 35e-3, 100)
 
-    freq = cochlea.greenwood(x, A=165.4, a=60, k=0.88, species=None)
+    freq = cochlea.greenwood(x, A=165.4, a=60, k=0.88)
     freq_human = cochlea.greenwood(x, 'human')
 
-    x = cochlea.greenwood_inverse(freq, A=165.4, a=60, k=0.88, species=None)
+    x = cochlea.greenwood_inverse(freq, A=165.4, a=60, k=0.88)
     x_human = cochlea.greenwood_inverse(freq, 'human')
 
     assert_equal(freq, freq_human)

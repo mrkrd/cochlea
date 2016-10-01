@@ -114,70 +114,65 @@ def make_brian_group(trains):
 
     return group
 
-_species  = {'human': (165.4, 60, 0.88),
-             'cat': (456, 84, 0.8)}
+
+_greenwood_pars  = {
+    'human': {'A': 165.4, 'a': 60, 'k': 0.88},
+    'cat': {'A': 456, 'a': 84, 'k': 0.8},
+}
 
 
-def _get_coefficents(species, args):
-    """Extract Greenwood coefficents
-    Helper function to extract the greenwood coefficents
-    """
-    if len(args) == 0:
-        if species not in _species:
-            raise NotImplementedError
-        else:
-            A, a, k = _species[species]
-    else:
-        if 'A' in args and 'a' in args and 'k' in args:
-            A = args['A']
-            a = args['a']
-            k = args['k']
-        else:
-            raise NotImplementedError
 
-    return (A, a, k)
+def greenwood(x, species=None, A=None, a=None, k=None):
+    '''Greenwood function.
 
-def greenwood(x, species, **kwargs):
-    '''Greenwood function
     Calculates the corresponding center frequency for a place on the
     basilar membrane.
     Center frequency and place on the basilar membrane can be
-    connected by using the greenwood equation [1].
+    connected by using the Greenwood equation [1].
     .. math:: cf = A(10^{x \cdot a) - k)
     where cf is the center frequency in Hz and x the place on the
     basilar membrane given from apex to base (apex = 0). The parameter
     A has the unit Hz, a has a unit of 1/m and k is unit less.
+
     Parameters
     ----------
     x : float or ndarray
-      The position of the basilar membrane in meters. Apex = 0m
+        The position of the basilar membrane in meters. Apex = 0m
     species : str
         A string specifing the species ('human' or 'cat')
         coeffients from [1])
     A, x, k : float
-        Specifying the parameters of the greenwood equation
+        Specifying the parameters of the Greenwood equation
         instead of using the implemented species. If parameters
         are given, the species parameter is ignored.
+
     .. [1] Greenwood, D. D. (1990). A cochlear frequency-position
     function for several species--29 years later. The Journal of the
     Acoustical Society of America, 87(6)
     '''
 
-    A, a, k = _get_coefficents(species, kwargs)
+    if species is not None:
+        A = _greenwood_pars[species]['A']
+        a = _greenwood_pars[species]['a']
+        k = _greenwood_pars[species]['k']
+
     cf = A * (10**(x * a) - k)
 
     return cf
 
-def greenwood_inverse(cf, species, **kwargs):
+
+def greenwood_inverse(cf, species=None, A=None, a=None, k=None):
     '''Inverse Greenwood function
+
     Calculate the place on the basilar membrane from the corresponding
     center frequency.
     Center frequency and place on the basilar membrane can be
-    connected by using the greenwood equation [1].
+    connected by using the Greenwood equation [1].
     .. math:: x = \frac{log_{10}(cf / A + k)}{a}
     where cf is the center frequency in Hz and x the place on the
     basilar membrane given from apex to base (apex = 0). The parameter
     A has the unit Hz, a has a unit of 1/m and k is unit less.
+
     Parameters
     ----------
     cf : scalar or ndarray
@@ -186,18 +181,25 @@ def greenwood_inverse(cf, species, **kwargs):
         A string specifing the species ('human' or 'cat')
         coeffients from [1])
     A, x, k : float
-        Specifying the parameters of the greenwood equation
+        Specifying the parameters of the Greenwood equation
         instead of using the implemented species. If parameters
         are given, the species parameter is ignored.
+
     Returns
     -------
     scalar or ndarray
         The position on the basilar membrane in m where Apex = 0m
+
     .. [1] Greenwood, D. D. (1990). A cochlear frequency-position
     function for several species--29 years later. The Journal of the
     Acoustical Society of America, 87(6)
     '''
-    A, a, k = _get_coefficents(species, kwargs)
+
+    if species is not None:
+        A = _greenwood_pars[species]['A']
+        a = _greenwood_pars[species]['a']
+        k = _greenwood_pars[species]['k']
+
     x = np.log10((cf / A) + k) / a
 
     return x
