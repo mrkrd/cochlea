@@ -21,4 +21,5 @@ _zilany2014.html
 _build
 .ipynb_checkpoints
 *.pyd
-.idea/
+.idea
+.cache
