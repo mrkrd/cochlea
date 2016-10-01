@@ -116,10 +116,9 @@ def make_brian_group(trains):
 
 
 _greenwood_pars  = {
-    'human': {'A': 165.4, 'a': 60, 'k': 0.88},
-    'cat': {'A': 456, 'a': 84, 'k': 0.8},
+    'human': {'A': 165.4, 'a': 60, 'k': 0.88, 'length': 35e-3},
+    'cat': {'A': 456, 'a': 84, 'k': 0.8, 'length': 25e-3},
 }
-
 
 
 def greenwood(x, species=None, A=None, a=None, k=None):
@@ -150,11 +149,15 @@ def greenwood(x, species=None, A=None, a=None, k=None):
     function for several species--29 years later. The Journal of the
     Acoustical Society of America, 87(6)
     '''
-
     if species is not None:
-        A = _greenwood_pars[species]['A']
-        a = _greenwood_pars[species]['a']
-        k = _greenwood_pars[species]['k']
+        pars = _greenwood_pars[species]
+
+        A = pars['A']
+        a = pars['a']
+        k = pars['k']
+
+        if np.any(x > pars['length']):
+            raise ValueError("Cochlea too long.")
 
     cf = A * (10**(x * a) - k)
 
@@ -194,11 +197,12 @@ def greenwood_inverse(cf, species=None, A=None, a=None, k=None):
     function for several species--29 years later. The Journal of the
     Acoustical Society of America, 87(6)
     '''
-
     if species is not None:
-        A = _greenwood_pars[species]['A']
-        a = _greenwood_pars[species]['a']
-        k = _greenwood_pars[species]['k']
+        pars = _greenwood_pars[species]
+
+        A = pars['A']
+        a = pars['a']
+        k = pars['k']
 
     x = np.log10((cf / A) + k) / a
 

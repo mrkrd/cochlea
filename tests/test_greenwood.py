@@ -2,6 +2,8 @@
 
 from __future__ import division, print_function, absolute_import
 
+import pytest
+
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 import cochlea
@@ -43,3 +45,8 @@ def test_parameters():
 
     assert_equal(freq, freq_human)
     assert_equal(x, x_human)
+
+
+def test_too_long():
+    with pytest.raises(ValueError):
+        cochlea.greenwood(40e-3, 'human')
