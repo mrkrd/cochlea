@@ -195,7 +195,7 @@ Advantages of the format:
         {'spike_trains': spike_trains.to_records()}
     )
 
-Please, check thorns_ for more information and functions to manipulate
+The library thorns_ has more information and functions to manipulate
 spike trains.
 
 
