@@ -237,7 +237,7 @@ Citing
 ------
 
 If you are using this software, please make an appropriate citation
-using our DOI:
+using our DOI (click on the link for a full reference):
 
 .. image:: https://zenodo.org/badge/24233/mrkrd/cochlea.svg
    :target: https://zenodo.org/badge/latestdoi/24233/mrkrd/cochlea
