@@ -40,7 +40,7 @@ several versions and rewrites.  Now, it is quite stable and we decided
 to release it for the community.
 
 .. _`spike trains`: https://en.wikipedia.org/wiki/Spike_train
-.. _`Bio-Inspired Information Processing`: http://www.imetum.tum.de/research-groups/bai/home/?L=1
+.. _`Bio-Inspired Information Processing`: http://www.imetum.tum.de/en/research-groups/bai/
 
 
 
