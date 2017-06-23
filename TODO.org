@@ -14,14 +14,16 @@ Zilany2009 model is depricated by Zilany2014.
 
 Zilany2009 model is depricated by Zilany2014.
 
-* TODO Brian interoperability example
+* CANCELED Brian interoperability example
+  CLOSED: [2017-06-23 Fri 13:17]
 
 make_brian_group(trains)
 
 [[file:examples/brian_interop.py]]
 
 
-* TODO NEURON interoperability example
+* CANCELED NEURON interoperability example
+  CLOSED: [2017-06-23 Fri 13:17]
 * DONE Modernize the documentation
 
 https://write-the-docs.readthedocs.org/
