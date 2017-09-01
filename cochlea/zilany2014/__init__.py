@@ -157,7 +157,7 @@ def _run_channel(args):
     trains = []
     for anf_type in anf_types:
 
-        if anf_type not in synout:
+        if (anf_type not in synout) or ffGn:
             ### Run synapse
             synout[anf_type] = _zilany2014.run_synapse(
                 fs=fs,
