@@ -158,7 +158,7 @@ def _run_channel(args):
     trains = []
     for anf_type in anf_types:
 
-        if (anf_type not in synout) or ffGn:
+        if (anf_type not in synout):
             ### Run synapse
             synout[anf_type] = _pycat.run_synapse(
                 fs=fs,
