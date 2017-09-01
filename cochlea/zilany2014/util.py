@@ -27,9 +27,9 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1, random_debug=None):
 
 
     # Downsampling No. of points to match with those of Scott jackson (tau 1e-1)
-    resamp = np.ceil(1e-1 / tdres)
+    resamp = int(np.ceil(1e-1 / tdres))
     nop = N
-    N = np.ceil(N / resamp) + 1
+    N = int(np.ceil(N / resamp) + 1)
     if N < 10:
         N = 10
 
@@ -52,7 +52,7 @@ def ffGn(N, tdres, Hinput, noiseType, mu, sigma=1, random_debug=None):
             y = random_debug
     else:
         # TODO: make variables persistant
-        Nfft = 2 ** np.ceil(np.log2(2*(N-1)))
+        Nfft = int(2 ** np.ceil(np.log2(2*(N-1))))
         NfftHalf = np.round(Nfft / 2)
 
         k = np.concatenate( (np.arange(0,NfftHalf), np.arange(NfftHalf,0,-1)) )
