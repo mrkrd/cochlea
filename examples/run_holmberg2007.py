@@ -21,7 +21,7 @@ def main():
     t = np.arange(0, 0.1, 1/fs)
     s = dsp.chirp(t, 80, t[-1], 20000)
     s = cochlea.set_dbspl(s, 50)
-    s = np.concatenate( (s, np.zeros(10e-3 * fs)) )
+    s = np.concatenate( (s, np.zeros(int(10e-3 * fs))) )
 
 
 

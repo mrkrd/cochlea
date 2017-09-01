@@ -26,8 +26,8 @@ def main():
 
     tone = cochlea.set_dbspl(tone, 20)
 
-    pad = np.zeros(50e-3 * fs)
-    sound = np.concatenate( (tone, pad) )
+    pad = np.zeros(int(50e-3 * fs))
+    sound = np.concatenate( (pad, tone, pad) )
 
 
 
