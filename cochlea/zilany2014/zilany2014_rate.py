@@ -3,7 +3,6 @@ from __future__ import division, print_function, absolute_import
 import itertools
 import numpy as np
 import pandas as pd
-import itertools
 
 from . import _zilany2014
 from . util import calc_cfs
@@ -65,12 +64,12 @@ def run_zilany2014_rate(
 
 
     ### Run model for each channel
-    results = map(
+    nested_results = map(
         _run_channel,
         channel_args
     )
-    results = sum(results, [])
 
+    results = list(itertools.chain(*nested_results))
 
     columns = pd.MultiIndex.from_tuples(
         [(r['anf_type'],r['cf']) for r in results],
