@@ -29,6 +29,8 @@ Notes
 The modification include replacing of the MEX specific code by Python
 specific code.
 
+The calculation of endOfLastDeadtime in SpikeGenerator() was also
+fixed.
 
 
 The Oryginal Note
@@ -366,7 +368,11 @@ int SpikeGenerator(double *synouttmp, double tdres, int totalstim, int nrep, dou
         refracMult1 = 1 - tdres/s1;  /* If y1(t) = c1*exp(-t/s1), then y1(t+tdres) = y1(t)*refracMult1 */
 
         /* Calculate effects of a random spike before t=0 on refractoriness and the time-warping sum at t=0 */
-    endOfLastDeadtime = __max(0,log(randNums[randBufIndex++]) / synouttmp[0] + dead);  /* End of last deadtime before t=0 */
+        if (synouttmp[0] == 0) {
+             endOfLastDeadtime = 0.0;
+        } else {
+             endOfLastDeadtime = log(randNums[randBufIndex++]) / synouttmp[0];  /* End of last deadtime before t=0 */
+        }
     refracValue0 = c0*exp(endOfLastDeadtime/s0);     /* Value of first exponential in refractory function */
         refracValue1 = c1*exp(endOfLastDeadtime/s1);     /* Value of second exponential in refractory function */
         Xsum = synouttmp[0] * (-endOfLastDeadtime + c0*s0*(exp(endOfLastDeadtime/s0)-1) + c1*s1*(exp(endOfLastDeadtime/s1)-1));
