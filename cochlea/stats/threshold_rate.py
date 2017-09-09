@@ -65,7 +65,7 @@ def calc_spont_threshold(model, cf, model_pars):
     pars.setdefault('anf_num', (1000, 0, 0))
 
     tmax = 250e-3
-    silence = np.zeros(fs*tmax)
+    silence = np.zeros(int(fs*tmax))
 
     anf = model(
         sound=silence,
