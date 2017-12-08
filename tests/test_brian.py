@@ -3,13 +3,14 @@
 from __future__ import division, print_function, absolute_import
 from __future__ import unicode_literals
 
+import pytest
 
 from numpy.testing import assert_equal
 import pandas as pd
 
 import cochlea
 
-
+@pytest.mark.skipif('True')
 def test_make_brian_group():
 
     trains = pd.DataFrame([
