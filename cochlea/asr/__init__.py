@@ -22,7 +22,7 @@ def adjust_to_human_thresholds(signal, fs, model):
     """
 
     if inspect.isfunction(model):
-        name = model.func_name
+        name = model.__name__
     else:
         name = str(model)
 
