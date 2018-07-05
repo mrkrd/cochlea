@@ -23,3 +23,4 @@ _build
 *.pyd
 .idea
 .cache
+.pytest_cache
