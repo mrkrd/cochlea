@@ -1,9 +1,6 @@
 cochlea
 =======
 
-.. image:: https://zenodo.org/badge/24233/mrkrd/cochlea.svg
-
-
 *cochlea* is a collection of inner ear models.  All models are easily
 accessible as Python functions.  They take sound signal as input and
 return `spike trains`_ of the auditory nerve fibers::
