@@ -1,4 +1,6 @@
-# Copyright 2009-2014 Marek Rudnicki
+# -*- coding: utf-8 -*-
+#
+# Copyright 2009-2018 Marek Rudnicki
 #
 # This file is part of cochlea.
 #
@@ -45,6 +47,29 @@ if sys.maxsize <= 2**32:
     warnings.warn("cochlea: it seems that you are using 32-bit" +
                   "version of Python." +
                   "If you experience issues, please switch to 64-bit version.")
+
+
+
+print("""
+================================================================
+How to cite *cochlea*:
+
+Rudnicki M. and Hemmert W. (2009—). Cochlea: inner ear models in
+Python.  https://github.com/mrkrd/cochlea/
+
+@Misc{Rudnicki2009-Cochlea,
+  author       = {Rudnicki, M. and Hemmert, W.},
+  title        = {Cochlea: inner ear models in Python},
+  year         = {2009--},
+  howpublished = {https://github.com/mrkrd/cochlea},
+  url          = {https://github.com/mrkrd/cochlea},
+}
+================================================================
+""",
+    file=sys.stderr
+)
+
+
 
 
 def set_dbspl(signal, dbspl):
