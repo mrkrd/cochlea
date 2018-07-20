@@ -27,7 +27,7 @@ make_brian_group(trains)
 * DONE Modernize the documentation
 
 https://write-the-docs.readthedocs.org/
-* TODO Add Python 3 compatibility
+* TODO [#C] Add Python 3 compatibility
 * DONE Add DOI for the repository for better citing
   CLOSED: [2016-09-04 Sun 16:22]
 
