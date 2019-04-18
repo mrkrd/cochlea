@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2009-2018 Marek Rudnicki
+# Copyright 2009-2019 Marek Rudnicki
 #
 # This file is part of cochlea.
 #
@@ -49,25 +49,26 @@ if sys.maxsize <= 2**32:
                   "If you experience issues, please switch to 64-bit version.")
 
 
+_citation = """Rudnicki M., Schoppe O., Isik M., Völk F. and Hemmert W. (2015).
+Modeling auditory coding: from sound to spikes.
+Cell and Tissue Research, Springer Nature, 361, pp. 159—175.
+doi:10.1007/s00441-015-2202-z
+https://link.springer.com/article/10.1007/s00441-015-2202-z"""
+_citation_width = 64
 
-print("""
-================================================================
-How to cite *cochlea*:
-
-Rudnicki M. and Hemmert W. (2009—). Cochlea: inner ear models in
-Python.  https://github.com/mrkrd/cochlea/
-
-@Misc{Rudnicki2009-Cochlea,
-  author       = {Rudnicki, M. and Hemmert, W.},
-  title        = {Cochlea: inner ear models in Python},
-  year         = {2009--},
-  howpublished = {https://github.com/mrkrd/cochlea},
-  url          = {https://github.com/mrkrd/cochlea},
-}
-================================================================
-""",
+print(
+    " Please cite ".center(_citation_width, '='),
     file=sys.stderr
 )
+print(
+    _citation,
+    file=sys.stderr
+)
+print(
+    " Thank you! ".center(_citation_width, '='),
+    file=sys.stderr
+)
+
 
 
 
