@@ -49,29 +49,6 @@ if sys.maxsize <= 2**32:
                   "If you experience issues, please switch to 64-bit version.")
 
 
-_citation = """Rudnicki M., Schoppe O., Isik M., Völk F. and Hemmert W. (2015).
-Modeling auditory coding: from sound to spikes.
-Cell and Tissue Research, Springer Nature, 361, pp. 159—175.
-doi:10.1007/s00441-015-2202-z
-https://link.springer.com/article/10.1007/s00441-015-2202-z"""
-_citation_width = 64
-
-print(
-    " Please cite ".center(_citation_width, '='),
-    file=sys.stderr
-)
-print(
-    _citation,
-    file=sys.stderr
-)
-print(
-    " Thank you! ".center(_citation_width, '='),
-    file=sys.stderr
-)
-
-
-
-
 
 def set_dbspl(signal, dbspl):
     """Rescale the signal to a new level in dB SPL.
