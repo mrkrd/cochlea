@@ -43,7 +43,7 @@ extensions = [
 
 setup(
     name = "cochlea",
-    version = "2",
+    version = "3",
     author = "Marek Rudnicki",
     author_email = "marek.rudnicki@tum.de",
 
