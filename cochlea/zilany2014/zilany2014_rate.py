@@ -82,9 +82,6 @@ def run_zilany2014_rate(
         columns=columns
     )
 
-    if hasattr(np.fft, 'fftpack') and isinstance(np.fft.fftpack._fft_cache, dict):
-        np.fft.fftpack._fft_cache = {}
-
     return rates
 
 

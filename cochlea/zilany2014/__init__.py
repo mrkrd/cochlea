@@ -117,9 +117,6 @@ def run_zilany2014(
     spike_trains = pd.DataFrame(list(trains))
 
 
-    if hasattr(np.fft, 'fftpack') and isinstance(np.fft.fftpack._fft_cache, dict):
-        np.fft.fftpack._fft_cache = {}
-
     return spike_trains
 
 
